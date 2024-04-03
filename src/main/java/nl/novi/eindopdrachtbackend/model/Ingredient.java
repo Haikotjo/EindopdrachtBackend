@@ -17,4 +17,43 @@ public class Ingredient {
 //Relation to menuItem
     @ManyToMany(mappedBy = "ingredients")
     private Set<MenuItem> menuItems;
+
+//    constructors
+    public Ingredient() {
+    }
+
+    public Ingredient(String name, int quantity, Set<MenuItem> menuItems) {
+        this.name = name;
+        this.quantity = quantity;
+        this.menuItems = menuItems;
+    }
+
+    //    getters and setters
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public Set<MenuItem> getMenuItems() {
+        return menuItems;
+    }
+
+    public void setMenuItems(Set<MenuItem> menuItems) {
+        this.menuItems = menuItems;
+    }
 }
