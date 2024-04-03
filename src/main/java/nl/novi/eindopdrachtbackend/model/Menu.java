@@ -34,6 +34,11 @@ public class Menu {
     public Menu() {
     }
 
+    public Menu(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     public Menu(String name, String description, Set<MenuItem> menuItems, Restaurant restaurant) {
         this.name = name;
         this.description = description;

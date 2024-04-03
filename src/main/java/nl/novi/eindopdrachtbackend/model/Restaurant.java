@@ -25,6 +25,12 @@ public class Restaurant {
     public Restaurant() {
     }
 
+    public Restaurant(String name, String address, String phoneNumber) {
+        this.name = name;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+    }
+
     public Restaurant(String name, String address, String phoneNumber, Set<Menu> menus) {
         this.name = name;
         this.address = address;

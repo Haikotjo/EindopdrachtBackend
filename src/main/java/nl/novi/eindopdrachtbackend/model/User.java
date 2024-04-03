@@ -28,6 +28,15 @@ public class User {
     public User() {
     }
 
+    public User(String name, String email, String password, String role, String address, String phoneNumber) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+    }
+
     public User(String name, String email, String password, String role, String address, String phoneNumber, List<Order> orders) {
         this.name = name;
         this.email = email;

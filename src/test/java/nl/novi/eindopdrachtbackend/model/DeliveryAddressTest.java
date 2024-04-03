@@ -1,28 +1,21 @@
 package nl.novi.eindopdrachtbackend.model;
 
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class DeliveryAddressTest {
+public class DeliveryAddressTest {
 
     @Test
-    void shouldKeepCityAndStreet() {
-        // Arrange
-        DeliveryAddress d = new DeliveryAddress("Gracht", 244, "Amsterdam", 1515, "GG", "Netherlands");
+    public void testDeliveryAddressConstructor() {
+        // Create an instance of DeliveryAddress using the constructor
+        DeliveryAddress address = new DeliveryAddress("Baker Street", 221, "London", 1234, "NW1", "UK");
 
-        // Act
-        String cityResult = d.getCity();
-        String streetResult = d.getStreet();
-        int houseNumberResult = d.getHouseNumber();
-        String postcodeResult = d.getPostcode();
-        int postcodeNumberResult = d.getPostcodeNumber();
-
-        // Assert
-        assertEquals("Amsterdam", cityResult);
-        assertEquals("Gracht", streetResult);
-        assertEquals("GG", postcodeResult);
-        assertEquals(1515, postcodeNumberResult);
-        assertEquals(244, houseNumberResult);
+        // Verify that the constructor correctly initializes the fields
+        assertEquals("Baker Street", address.getStreet(), "The street does not match");
+        assertEquals(221, address.getHouseNumber(), "The house number does not match");
+        assertEquals("London", address.getCity(), "The city does not match");
+        assertEquals(1234, address.getPostcodeNumber(), "The postcode number does not match");
+        assertEquals("NW1", address.getPostcode(), "The postcode does not match");
+        assertEquals("UK", address.getCountry(), "The country does not match");
     }
 }
