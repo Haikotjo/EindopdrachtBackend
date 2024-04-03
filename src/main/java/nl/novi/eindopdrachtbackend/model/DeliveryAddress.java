@@ -18,7 +18,9 @@ public class DeliveryAddress {
     private int postcodeNumber;
     private String country;
 
+
 //  constructors
+
     public DeliveryAddress() {
     }
     public DeliveryAddress(String street,int houseNumber, String city, int postcodeNumber, String postcode, String country) {
@@ -30,7 +32,9 @@ public class DeliveryAddress {
         this.country = country;
     }
 
+
     //    getters and setters
+
     public Long getId() {
         return id;
     }

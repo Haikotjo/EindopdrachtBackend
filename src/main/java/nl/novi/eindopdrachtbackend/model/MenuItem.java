@@ -30,4 +30,77 @@ public class MenuItem {
 //Relation to Menu
     @ManyToMany(mappedBy = "menuItems")
     private Set<Menu> menus;
+
+
+
+    //    constructors
+
+    public MenuItem() {
+    }
+
+    public MenuItem(String name, double price, String description, String image, Set<Ingredient> ingredients, Set<Menu> menus) {
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.image = image;
+        this.ingredients = ingredients;
+        this.menus = menus;
+    }
+
+
+    // getters and setters
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public Set<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(Set<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+    }
+
+    public Set<Menu> getMenus() {
+        return menus;
+    }
+
+    public void setMenus(Set<Menu> menus) {
+        this.menus = menus;
+    }
 }
+
+

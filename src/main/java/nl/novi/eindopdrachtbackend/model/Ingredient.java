@@ -18,7 +18,9 @@ public class Ingredient {
     @ManyToMany(mappedBy = "ingredients")
     private Set<MenuItem> menuItems;
 
+
 //    constructors
+
     public Ingredient() {
     }
 
@@ -29,6 +31,7 @@ public class Ingredient {
     }
 
     //    getters and setters
+
     public Long getId() {
         return id;
     }
