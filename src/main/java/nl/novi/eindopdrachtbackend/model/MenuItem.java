@@ -42,12 +42,11 @@ public class MenuItem {
     public MenuItem() {
     }
 
-    public MenuItem(String name, double price, String description, String image, Set<Ingredient> ingredients) {
+    public MenuItem(String name, double price, String description, String image) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.image = image;
-        this.ingredients = ingredients;
     }
 
     public MenuItem(String name, double price, String description, String image, Set<Ingredient> ingredients, Set<Menu> menus) {

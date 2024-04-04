@@ -9,11 +9,18 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private boolean fulfilled;
+
     //Relation to users
     @ManyToOne
+    @JoinColumn(name = "customer_id")
     private User customer;
 
-    private boolean fulfilled;
+    //Relation to restaurant
+    @ManyToOne
+    @JoinColumn(name = "restaurant_id")
+    private Restaurant restaurant;
+
 
 
     //    constructors
@@ -37,6 +44,14 @@ public class Order {
         return id;
     }
 
+    public boolean isFulfilled() {
+        return fulfilled;
+    }
+
+    public void setFulfilled(boolean fulfilled) {
+        this.fulfilled = fulfilled;
+    }
+
     public User getCustomer() {
         return customer;
     }
@@ -45,12 +60,12 @@ public class Order {
         this.customer = customer;
     }
 
-    public boolean isFulfilled() {
-        return fulfilled;
+    public Restaurant getRestaurant() {
+        return restaurant;
     }
 
-    public void setFulfilled(boolean fulfilled) {
-        this.fulfilled = fulfilled;
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
     }
 }
 

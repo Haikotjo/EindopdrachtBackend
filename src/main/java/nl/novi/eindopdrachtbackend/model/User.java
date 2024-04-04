@@ -2,6 +2,8 @@ package nl.novi.eindopdrachtbackend.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Entity
@@ -19,8 +21,18 @@ public class User {
     private String phoneNumber;
 
     //Relation to orders
-    @OneToMany(mappedBy = "customer")
-    private List<Order> orders;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders = new ArrayList<>();
+
+    public void addOrder(Order order) {
+        orders.add(order);
+        order.setCustomer(this);
+    }
+
+    public void removeOrder(Order order) {
+        orders.remove(order);
+        order.setCustomer(null);
+    }
 
 
     //    constructors
@@ -103,6 +115,9 @@ public class User {
     }
 
     public List<Order> getOrders() {
+        if (orders == null) {
+            orders = new ArrayList<>();
+        }
         return orders;
     }
 

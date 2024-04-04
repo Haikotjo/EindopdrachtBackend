@@ -24,7 +24,13 @@ public class Menu {
     )
     private Set<MenuItem> menuItems;
 
-//Relation to restaurants
+    public void addMenuItem(MenuItem menuItem) {
+        this.getMenuItems().add(menuItem);
+        menuItem.getMenus().add(this);
+    }
+
+
+    //Relation to restaurants
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;

@@ -35,7 +35,7 @@ class IngredientMenuItemRelationTest {
         MenuItem menuItem = new MenuItem();
         menuItem.setName("Pizza Margherita");
         menuItem.setPrice(9.99);
-        menuItem.setDescription("Klassieke pizza");
+        menuItem.setDescription("Classic pizza");
         menuItem.setImage("image.jpg");
 
         // Insert Ingredient to MenuItem
