@@ -12,7 +12,7 @@ public class IngredientTest {
         Ingredient ingredient = new Ingredient("Tomato", 100);
 
         // Verify that the constructor correctly initializes the fields
-        assertEquals("Tomaat", ingredient.getName(), "Well done");
+        assertEquals("Tomato", ingredient.getName(), "Well done");
         assertEquals(100, ingredient.getQuantity(), "Ok!");
     }
 }

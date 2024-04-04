@@ -25,7 +25,6 @@ public class Menu {
     private Set<MenuItem> menuItems;
 
     public void addMenuItem(MenuItem menuItem) {
-        this.getMenuItems().add(menuItem);
         menuItem.getMenus().add(this);
     }
 
