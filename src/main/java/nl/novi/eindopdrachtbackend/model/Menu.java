@@ -2,6 +2,7 @@ package nl.novi.eindopdrachtbackend.model;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -69,6 +70,9 @@ public class Menu {
     }
 
     public Set<MenuItem> getMenuItems() {
+        if (menuItems == null) {
+            menuItems = new HashSet<>();
+        }
         return menuItems;
     }
 

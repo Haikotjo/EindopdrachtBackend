@@ -2,6 +2,7 @@ package nl.novi.eindopdrachtbackend.model;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -26,11 +27,14 @@ public class MenuItem {
     )
     private Set<Ingredient> ingredients;
 
-
-//Relation to Menu
+    //Relation to Menu
     @ManyToMany(mappedBy = "menuItems")
     private Set<Menu> menus;
 
+    public void addIngredient(Ingredient ingredient) {
+        this.getIngredients().add(ingredient);
+        ingredient.getMenuItems().add(this);
+    }
 
 
     //    constructors
@@ -95,6 +99,9 @@ public class MenuItem {
     }
 
     public Set<Ingredient> getIngredients() {
+        if (ingredients == null) {
+            ingredients = new HashSet<>();
+        }
         return ingredients;
     }
 
@@ -103,6 +110,9 @@ public class MenuItem {
     }
 
     public Set<Menu> getMenus() {
+        if (menus == null){
+            menus = new HashSet<>();
+        }
         return menus;
     }
 
