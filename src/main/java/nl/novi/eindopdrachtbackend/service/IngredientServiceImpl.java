@@ -28,7 +28,6 @@ public class IngredientServiceImpl implements IngredientService {
 
         ingredient.setName(ingredientDetails.getName());
         ingredient.setQuantity(ingredientDetails.getQuantity());
-        // Mogelijk meer velden bijwerken
 
         return ingredientRepository.save(ingredient);
     }
