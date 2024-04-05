@@ -46,6 +46,7 @@ class MenuItemServiceImplTest {
         // Action
         List<MenuItem> menuItems = menuItemService.getAllMenuItems();
 
+        // Verification
         assertNotNull(menuItems);
         assertEquals(2, menuItems.size());
         verify(menuItemRepository).findAll();
@@ -121,7 +122,7 @@ class MenuItemServiceImplTest {
 
         MenuItem updatedMenuItem = new MenuItem("Updated Pizza", 20.99, "Updated description", "updated_pizza.jpg");
 
-        // Action    // Verification
+        // Action & Verification
         assertThrows(ResourceNotFoundException.class, () -> menuItemService.updateMenuItem(1L, updatedMenuItem));
 
         verify(menuItemRepository).findById(anyLong());
@@ -146,7 +147,7 @@ class MenuItemServiceImplTest {
         // Preparation
         when(menuItemRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // Action   // Verification// Verification
+        // Action & Verification
         assertThrows(ResourceNotFoundException.class, () -> menuItemService.deleteMenuItem(1L));
 
         verify(menuItemRepository).findById(anyLong());
@@ -174,7 +175,7 @@ class MenuItemServiceImplTest {
         // Preparation
         when(menuItemRepository.findByNameIgnoreCase("nonexistent")).thenReturn(Collections.emptyList());
 
-        // Action   // Verification
+        // Action & Verification
         assertThrows(ResourceNotFoundException.class, () -> menuItemService.findByNameIgnoreCase("nonexistent"));
 
         verify(menuItemRepository).findByNameIgnoreCase("nonexistent");
