@@ -1,4 +1,2 @@
-package nl.novi.eindopdrachtbackend.service;
-
-public class UserService {
+package nl.novi.eindopdrachtbackend.service;public interface UserService {
 }
