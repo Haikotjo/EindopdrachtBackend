@@ -12,4 +12,6 @@ public interface MenuItemService {
     MenuItem getMenuItemById(Long id);
     void deleteMenuItem(Long id);
     List<MenuItem> findByNameIgnoreCase(String name);
+    void addIngredientToMenuItem(Long menuItemId, Long ingredientId);
+
 }
