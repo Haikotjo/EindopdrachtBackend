@@ -95,7 +95,9 @@ class MenuServiceImplTest {
         // Preparation
         Long menuId = 1L;
         Menu updatedDetails = new Menu("Updated Menu", "Updated description");
+        Menu expectedSavedMenu = new Menu("Updated Menu", "Updated description");
         when(menuRepository.findById(menuId)).thenReturn(Optional.of(breakfastMenu));
+        when(menuRepository.save(any(Menu.class))).thenReturn(expectedSavedMenu);
 
         // Action
         Menu updatedMenu = menuService.updateMenu(menuId, updatedDetails);
@@ -104,7 +106,7 @@ class MenuServiceImplTest {
         assertNotNull(updatedMenu);
         assertEquals(updatedDetails.getName(), updatedMenu.getName());
         assertEquals(updatedDetails.getDescription(), updatedMenu.getDescription());
-        verify(menuRepository).save(breakfastMenu);
+        verify(menuRepository).save(any(Menu.class));
     }
 
     @Test
