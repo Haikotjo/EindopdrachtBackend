@@ -5,7 +5,6 @@ import nl.novi.eindopdrachtbackend.model.Menu;
 import nl.novi.eindopdrachtbackend.model.Restaurant;
 import nl.novi.eindopdrachtbackend.repository.MenuRepository;
 import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,8 +31,8 @@ class MenuRestaurantRelationTest {
 
         // Create Menu and link to Restaurant
         Menu menu = new Menu("Spring Specials", "Seasonal dishes for spring");
-        menu.setRestaurant(savedRestaurant); // Directly linking menu to restaurant
-        // It's crucial to add the menu to the restaurant to maintain the bidirectional relationship
+        menu.setRestaurant(savedRestaurant);
+
         savedRestaurant.addMenu(menu);
 
         // Save the menu after adding to restaurant
