@@ -43,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void deleteOrder(Long id) {
-        Order order = getOrderById(id); // Gebruik de reeds gedefinieerde methode om herhaling te voorkomen.
+        Order order = getOrderById(id);
         orderRepository.delete(order);
     }
 
