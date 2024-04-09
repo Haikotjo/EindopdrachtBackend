@@ -1,6 +1,5 @@
 package nl.novi.eindopdrachtbackend.service;
 
-import nl.novi.eindopdrachtbackend.model.Ingredient;
 import nl.novi.eindopdrachtbackend.model.MenuItem;
 
 import java.util.List;
