@@ -32,6 +32,14 @@ public class DeliveryAddress {
         this.country = country;
     }
 
+    //Relation to DeliveryAddress
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     //    getters and setters
 

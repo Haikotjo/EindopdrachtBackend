@@ -34,6 +34,11 @@ public class User {
         order.setCustomer(null);
     }
 
+    //Relation to DeliveryAddress
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DeliveryAddress> deliveryAddresses = new ArrayList<>();
+
 
     //    constructors
 
@@ -49,7 +54,7 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public User(String name, String email, String password, String role, String address, String phoneNumber, List<Order> orders) {
+    public User(String name, String email, String password, String role, String address, String phoneNumber, List<Order> orders, List<DeliveryAddress> deliveryAddresses) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -57,6 +62,7 @@ public class User {
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.orders = orders;
+        this.deliveryAddresses = deliveryAddresses;
     }
 
 // getters and setters
@@ -123,6 +129,24 @@ public class User {
 
     public void setOrders(List<Order> orders) {
         this.orders = orders;
+    }
+
+    public void addDeliveryAddress(DeliveryAddress address) {
+        deliveryAddresses.add(address);
+        address.setUser(this);
+    }
+
+    public void removeDeliveryAddress(DeliveryAddress address) {
+        deliveryAddresses.remove(address);
+        address.setUser(null);
+    }
+
+    public List<DeliveryAddress> getDeliveryAddresses() {
+        return deliveryAddresses;
+    }
+
+    public void setDeliveryAddresses(List<DeliveryAddress> deliveryAddresses) {
+        this.deliveryAddresses = deliveryAddresses;
     }
 }
 
