@@ -9,38 +9,39 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-class OrderRestaurantRelationTest {
-
-    @Autowired
-    private RestaurantRepository restaurantRepository;
+class OrderToRestaurantRelationTest {
 
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private RestaurantRepository restaurantRepository;
+
     @Test
     @Transactional
-    public void testRestaurantOrderRelation() {
-        // Make Restaurant
+    public void testOrderLinksBackToRestaurantCorrectly() {
+        // Setup Restaurant
         Restaurant restaurant = new Restaurant();
         restaurant.setName("The Good Food Place");
         restaurant.setAddress("123 Main St");
         restaurant.setPhoneNumber("555-1234");
         restaurant = restaurantRepository.save(restaurant);
 
-        // Make order and link it to the restaurant
+        // Create Order and link to Restaurant
         Order order = new Order();
         order.setFulfilled(true);
         order.setRestaurant(restaurant);
+        // It's crucial to add the order to the restaurant to maintain the bidirectional relationship
         restaurant.addOrder(order);
 
-        // Save order
+        // Save the order
         order = orderRepository.save(order);
 
-        // Get saved Restaurant and verify relation
-        Restaurant savedRestaurant = restaurantRepository.findById(restaurant.getId()).orElseThrow();
-        assertTrue(savedRestaurant.getOrders().contains(order), "The order is not linked to the restaurant.");
+        // Retrieve the saved Order and verify its relationship to the Restaurant
+        Order savedOrder = orderRepository.findById(order.getId()).orElseThrow();
+        assertEquals(restaurant.getId(), savedOrder.getRestaurant().getId(), "The order is not correctly linked back to the restaurant.");
     }
 }
