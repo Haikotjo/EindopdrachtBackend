@@ -45,10 +45,6 @@ class IngredientMenuItemRelationTest {
         // Get saved MenuItem and verify relation
         MenuItem savedMenuItem = menuItemRepository.findById(menuItem.getId()).get();
         assertTrue(savedMenuItem.getIngredients().contains(ingredient));
-
-        // Cleanup
-        menuItemRepository.delete(savedMenuItem);
-        ingredientRepository.delete(ingredient);
     }
 }
 

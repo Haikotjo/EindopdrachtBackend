@@ -38,9 +38,5 @@ class MenuItemMenuRelationTest {
         // Verify the relationship from the MenuItem back to the Menu
         MenuItem savedMenuItem = menuItemRepository.findById(menuItem.getId()).orElseThrow();
         assertTrue(savedMenuItem.getMenus().contains(menu), "The MenuItem does not link back to the Menu correctly.");
-
-        // Cleanup
-        menuItemRepository.delete(savedMenuItem);
-        menuRepository.delete(menu);
     }
 }

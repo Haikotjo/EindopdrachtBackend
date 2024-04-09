@@ -43,9 +43,5 @@ class MenuMenuItemRelationTest {
         // Get saved Menu and verify relation
         Menu savedMenu = menuRepository.findById(menu.getId()).get();
         assertTrue(savedMenu.getMenuItems().contains(menuItem));
-
-        // Cleanup
-        menuItemRepository.delete(menuItem);
-        menuRepository.delete(savedMenu);
     }
 }

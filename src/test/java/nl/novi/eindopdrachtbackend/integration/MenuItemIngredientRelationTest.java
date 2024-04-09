@@ -46,10 +46,5 @@ class MenuItemIngredientRelationTest {
         // Verify relation
         assertTrue(savedMenuItem.getIngredients().contains(savedIngredient), "MenuItem does not contain the expected ingredient");
         assertTrue(savedIngredient.getMenuItems().contains(savedMenuItem), "Ingredient does not link back to the MenuItem correctly");
-
-        // Cleanup
-        menuItemRepository.delete(savedMenuItem);
-        ingredientRepository.delete(savedIngredient);
     }
-
 }
