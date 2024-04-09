@@ -1,9 +1,8 @@
-package nl.novi.eindopdrachtbackend.service.impl;
+package nl.novi.eindopdrachtbackend.service;
 
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.Order;
 import nl.novi.eindopdrachtbackend.repository.OrderRepository;
-import nl.novi.eindopdrachtbackend.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
