@@ -18,7 +18,7 @@ public class Restaurant {
     private String address;
     private String phoneNumber;
 
-//Relation to Menu
+    //Relation to Menu
     @OneToMany(mappedBy = "restaurant")
     private Set<Menu> menus;
 
@@ -29,7 +29,7 @@ public class Restaurant {
 
     //Relation to Orders
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Order> orders = new ArrayList<>();
+    private Set<Order> orders = new HashSet<>();
 
     public void addOrder(Order order) {
         orders.add(order);
@@ -53,7 +53,7 @@ public class Restaurant {
         this.phoneNumber = phoneNumber;
     }
 
-    public Restaurant(String name, String address, String phoneNumber, Set<Menu> menus, List<Order> orders) {
+    public Restaurant(String name, String address, String phoneNumber, Set<Menu> menus, Set<Order> orders) {
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;
@@ -103,14 +103,14 @@ public class Restaurant {
         this.menus = menus;
     }
 
-    public List<Order> getOrders() {
+    public Set<Order> getOrders() {
         if (orders == null) {
-            orders = new ArrayList<>();
+            orders = new HashSet<>();
         }
         return orders;
     }
 
-    public void setOrders(List<Order> orders) {
+    public void setOrders(Set<Order> orders) {
         this.orders = orders;
     }
 }

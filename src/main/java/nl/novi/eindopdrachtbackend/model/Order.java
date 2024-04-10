@@ -13,13 +13,18 @@ public class Order {
 
     //Relation to users
     @ManyToOne
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id", nullable = false)
     private User customer;
 
     //Relation to restaurant
     @ManyToOne
-    @JoinColumn(name = "restaurant_id")
+    @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
+
+    // Relation to DeliveryAddress
+    @ManyToOne
+    @JoinColumn(name = "delivery_address_id", nullable = false)
+    private DeliveryAddress deliveryAddress;
 
 
 
@@ -28,12 +33,19 @@ public class Order {
     public Order() {
     }
 
-    public Order(boolean fulfilled) {
-        this.fulfilled = fulfilled;
-    }
+//    public Order(boolean fulfilled) {
+//        this.fulfilled = fulfilled;
+//    }
+//
+//    public Order(User customer, boolean fulfilled) {
+//        this.customer = customer;
+//        this.fulfilled = fulfilled;
+//    }
 
-    public Order(User customer, boolean fulfilled) {
+    public Order(User customer, Restaurant restaurant, DeliveryAddress deliveryAddress, boolean fulfilled) {
         this.customer = customer;
+        this.restaurant = restaurant;
+        this.deliveryAddress = deliveryAddress;
         this.fulfilled = fulfilled;
     }
 
@@ -66,6 +78,14 @@ public class Order {
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+    }
+
+    public DeliveryAddress getDeliveryAddress() {
+        return deliveryAddress;
+    }
+
+    public void setDeliveryAddress(DeliveryAddress deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
     }
 }
 
