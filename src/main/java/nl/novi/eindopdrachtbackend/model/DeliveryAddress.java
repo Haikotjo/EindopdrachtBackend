@@ -2,6 +2,9 @@ package nl.novi.eindopdrachtbackend.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "deliveryAddresses")
 public class DeliveryAddress {
@@ -32,7 +35,7 @@ public class DeliveryAddress {
         this.country = country;
     }
 
-    //Relation to DeliveryAddress
+    //Relation to user
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -40,6 +43,29 @@ public class DeliveryAddress {
     public void setUser(User user) {
         this.user = user;
     }
+
+    //Relation order
+    @OneToMany(mappedBy = "deliveryAddress", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders = new ArrayList<>();
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void addOrder(Order order) {
+        if (orders == null) {
+            orders = new ArrayList<>();
+        }
+        orders.add(order);
+        order.setDeliveryAddress(this);
+    }
+
+
+    public void removeOrder(Order order) {
+        orders.remove(order);
+        order.setDeliveryAddress(null);
+    }
+
 
     //    getters and setters
 
