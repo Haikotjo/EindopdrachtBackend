@@ -33,15 +33,6 @@ public class Order {
     public Order() {
     }
 
-//    public Order(boolean fulfilled) {
-//        this.fulfilled = fulfilled;
-//    }
-//
-//    public Order(User customer, boolean fulfilled) {
-//        this.customer = customer;
-//        this.fulfilled = fulfilled;
-//    }
-
     public Order(User customer, Restaurant restaurant, DeliveryAddress deliveryAddress, boolean fulfilled) {
         this.customer = customer;
         this.restaurant = restaurant;
