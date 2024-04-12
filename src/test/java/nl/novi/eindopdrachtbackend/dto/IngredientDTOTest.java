@@ -11,7 +11,7 @@ class IngredientDTOTest {
     void testIngredientDTO() throws NoSuchFieldException, IllegalAccessException {
         Ingredient ingredient = new Ingredient("Sugar", 100);
 
-        // Zet id via reflection
+        // Set id via reflection
         Field field = Ingredient.class.getDeclaredField("id");
         field.setAccessible(true);
         field.set(ingredient, 1L);
