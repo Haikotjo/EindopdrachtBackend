@@ -1,5 +1,6 @@
 package nl.novi.eindopdrachtbackend.repository;
 
+import nl.novi.eindopdrachtbackend.dto.IngredientDTO;
 import nl.novi.eindopdrachtbackend.model.Ingredient;
 import org.springframework.data.jpa.repository.JpaRepository;
 

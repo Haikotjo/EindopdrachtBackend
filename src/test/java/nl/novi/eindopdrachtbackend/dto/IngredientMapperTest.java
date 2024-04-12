@@ -3,39 +3,45 @@ package nl.novi.eindopdrachtbackend.dto;
 import nl.novi.eindopdrachtbackend.model.Ingredient;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class IngredientMapperTest {
+public class IngredientMapperTest {
 
     @Test
-    void testToEntity() {
-        IngredientInputDTO dto = new IngredientInputDTO();
-        dto.setName("Sugar");
-        dto.setQuantity(100);
+    void testToIngredientDTO() {
+        // Arrange
+        Ingredient ingredient = new Ingredient();
+        ingredient.setName("Tomato");
+        ingredient.setQuantity(10);
 
-        Ingredient ingredient = IngredientMapper.toEntity(dto);
+        // Act
+        IngredientDTO dto = IngredientMapper.toIngredientDTO(ingredient);
 
-        assertEquals("Sugar", ingredient.getName());
-        assertEquals(100, ingredient.getQuantity());
+        // Assert
+        assertEquals("Tomato", dto.getName());
+        assertEquals(10, dto.getQuantity());
     }
 
     @Test
-    void testToDTO() throws NoSuchFieldException, IllegalAccessException {
-        Ingredient ingredient = new Ingredient();
-        ingredient.setName("Salt");
-        ingredient.setQuantity(50);
+    void testToIngredient() throws NoSuchFieldException, IllegalAccessException {
+        // Arrange
+        IngredientInputDTO inputDTO = new IngredientInputDTO();
+        inputDTO.setName("Tomato");
+        inputDTO.setQuantity(10);
 
-        // Set id via reflection
-        Field field = Ingredient.class.getDeclaredField("id");
+        Ingredient ingredient = IngredientMapper.toIngredient(inputDTO);
+
+        // Reflect ID-veld no setter
+        java.lang.reflect.Field field = Ingredient.class.getDeclaredField("id");
         field.setAccessible(true);
         field.set(ingredient, 1L);
 
-        IngredientDTO resultDTO = IngredientMapper.toDTO(ingredient);
+        // Act
+        IngredientDTO dto = IngredientMapper.toIngredientDTO(ingredient);
 
-        assertEquals(1L, resultDTO.getId());
-        assertEquals("Salt", resultDTO.getName());
-        assertEquals(50, resultDTO.getQuantity());
+        // Assert
+        assertEquals("Tomato", dto.getName());
+        assertEquals(10, dto.getQuantity());
+        assertEquals(1L, dto.getId());
     }
 }

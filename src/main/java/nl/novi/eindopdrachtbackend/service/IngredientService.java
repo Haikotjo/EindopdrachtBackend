@@ -1,14 +1,18 @@
 package nl.novi.eindopdrachtbackend.service;
 
+import nl.novi.eindopdrachtbackend.dto.IngredientDTO;
+import nl.novi.eindopdrachtbackend.dto.IngredientInputDTO;
 import nl.novi.eindopdrachtbackend.model.Ingredient;
 
 import java.util.List;
 
 public interface IngredientService {
-    Ingredient createIngredient(Ingredient ingredient);
-    Ingredient updateIngredient(Long id, Ingredient ingredientDetails);
-    List<Ingredient> getAllIngredients();
-    Ingredient getIngredientById(Long id);
+
+    Ingredient createIngredient(IngredientInputDTO ingredientInputDTO);
+
+    Ingredient updateIngredient(Long id, IngredientInputDTO ingredientInputDTO);
+    List<IngredientDTO> getAllIngredients();
+    IngredientDTO getIngredientById(Long id);
     void deleteIngredient(Long id);
-    List<Ingredient> findByNameIgnoreCase(String name);
+    List<IngredientDTO> findByNameIgnoreCase(String name);
 }

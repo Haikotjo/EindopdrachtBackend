@@ -1,5 +1,6 @@
 package nl.novi.eindopdrachtbackend.dto;
 
+import nl.novi.eindopdrachtbackend.dto.IngredientDTO;
 import nl.novi.eindopdrachtbackend.model.Ingredient;
 import org.junit.jupiter.api.Test;
 import java.lang.reflect.Field;
@@ -9,14 +10,20 @@ class IngredientDTOTest {
 
     @Test
     void testIngredientDTO() throws NoSuchFieldException, IllegalAccessException {
-        Ingredient ingredient = new Ingredient("Sugar", 100);
+        Ingredient ingredient = new Ingredient();
+        ingredient.setName("Sugar");
+        ingredient.setQuantity(100);
 
-        // Set id via reflection
-        Field field = Ingredient.class.getDeclaredField("id");
+        // Reflectie om de 'id' te zetten zonder een setter in het model
+        Field field = ingredient.getClass().getDeclaredField("id");
         field.setAccessible(true);
         field.set(ingredient, 1L);
 
-        IngredientDTO dto = new IngredientDTO(ingredient);
+        // Aanname dat er een passende constructor of methode is om DTO te maken
+        IngredientDTO dto = new IngredientDTO();
+        dto.setId((Long) field.get(ingredient));  // Gebruik reflectie om de id te krijgen en te zetten in DTO
+        dto.setName(ingredient.getName());
+        dto.setQuantity(ingredient.getQuantity());
 
         assertEquals(1L, dto.getId());
         assertEquals("Sugar", dto.getName());

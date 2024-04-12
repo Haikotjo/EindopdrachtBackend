@@ -1,11 +1,15 @@
 package nl.novi.eindopdrachtbackend.service;
 
+import nl.novi.eindopdrachtbackend.dto.IngredientDTO;
+import nl.novi.eindopdrachtbackend.dto.IngredientInputDTO;
+import nl.novi.eindopdrachtbackend.dto.IngredientMapper;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.Ingredient;
 import nl.novi.eindopdrachtbackend.repository.IngredientRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class IngredientServiceImpl implements IngredientService {
@@ -17,46 +21,53 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public Ingredient createIngredient(Ingredient ingredient) {
-        return ingredientRepository.save(ingredient);
+    public List<IngredientDTO> getAllIngredients() {
+        List<Ingredient> ingredients = ingredientRepository.findAll();
+        return ingredients.stream()
+                .map(IngredientMapper::toIngredientDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Ingredient updateIngredient(Long id, Ingredient ingredientDetails) {
+    public IngredientDTO getIngredientById(Long id) {
+        Ingredient ingredient = ingredientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id));
+        return IngredientMapper.toIngredientDTO(ingredient);
+    }
+
+    @Override
+    public Ingredient updateIngredient(Long id, IngredientInputDTO ingredientInputDTO) {
+
         Ingredient ingredient = ingredientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id));
 
-        ingredient.setName(ingredientDetails.getName());
-        ingredient.setQuantity(ingredientDetails.getQuantity());
+        ingredient.setName(ingredientInputDTO.getName());
+        ingredient.setQuantity(ingredientInputDTO.getQuantity());
 
         return ingredientRepository.save(ingredient);
-    }
-
-    @Override
-    public List<Ingredient> getAllIngredients() {
-        return ingredientRepository.findAll();
-    }
-
-    @Override
-    public Ingredient getIngredientById(Long id) {
-        return ingredientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id));
-    }
-
-    @Override
-    public List<Ingredient> findByNameIgnoreCase(String name) {
-        List<Ingredient> ingredients = ingredientRepository.findByNameIgnoreCase(name);
-        if (ingredients.isEmpty()) {
-            throw new ResourceNotFoundException("Ingredient not found with name: " + name);
-        }
-        return ingredients;
     }
 
     @Override
     public void deleteIngredient(Long id) {
         Ingredient ingredient = ingredientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id));
-
         ingredientRepository.delete(ingredient);
+    }
+
+    @Override
+    public Ingredient createIngredient(IngredientInputDTO ingredientInputDTO) {
+        Ingredient ingredient = IngredientMapper.toIngredient(ingredientInputDTO);
+        return ingredientRepository.save(ingredient);
+    }
+
+    @Override
+    public List<IngredientDTO> findByNameIgnoreCase(String name) {
+        List<Ingredient> ingredients = ingredientRepository.findByNameIgnoreCase(name);
+        if (ingredients.isEmpty()) {
+            throw new ResourceNotFoundException("Ingredient not found with name: " + name);
+        }
+        return ingredients.stream()
+                .map(IngredientMapper::toIngredientDTO)
+                .collect(Collectors.toList());
     }
 }
