@@ -71,6 +71,21 @@ public class IngredientControllerTest {
                 .andExpect(jsonPath("$.data.quantity").value(10));
     }
 
+    @Test
+    public void testDeleteIngredient() throws Exception {
+        // Arrange
+        Long id = 1L;
+        doNothing().when(ingredientService).deleteIngredient(id);
+
+        // Act & Assert
+        mockMvc.perform(delete("/ingredients/{id}", id))
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.message").value("Ingredient successfully deleted."));
+
+        verify(ingredientService).deleteIngredient(id);
+    }
+
     private void setField(Object object, String fieldName, Object value) {
         try {
             Field field = object.getClass().getDeclaredField(fieldName);
