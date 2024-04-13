@@ -139,12 +139,11 @@ public class IngredientControllerTest {
 
         // Act & Assert
         mockMvc.perform(delete("/ingredients/{id}", id))
-                .andExpect(status().isNoContent())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("Ingredient successfully deleted."));
+                .andExpect(status().isNoContent());  // Verwacht No Content status
 
         verify(ingredientService).deleteIngredient(id);
     }
+
 
     private void setField(Object object, String fieldName, Object value) {
         try {
