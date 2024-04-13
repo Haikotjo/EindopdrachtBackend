@@ -1,5 +1,6 @@
 package nl.novi.eindopdrachtbackend.controller;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -19,6 +20,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebMvcTest(IngredientController.class)
 public class IngredientControllerTest {
@@ -35,10 +38,39 @@ public class IngredientControllerTest {
     }
 
     @Test
+    public void testGetAllIngredients() throws Exception {
+        // Arrange
+        List<IngredientDTO> ingredients = new ArrayList<>();
+        IngredientDTO ingredient1 = new IngredientDTO();
+        setField(ingredient1, "id", 1L);
+        ingredient1.setName("Tomato");
+        ingredient1.setQuantity(10);
+
+        IngredientDTO ingredient2 = new IngredientDTO();
+        setField(ingredient2, "id", 2L);
+        ingredient2.setName("Lettuce");
+        ingredient2.setQuantity(5);
+
+        ingredients.add(ingredient1);
+        ingredients.add(ingredient2);
+
+        when(ingredientService.getAllIngredients()).thenReturn(ingredients);
+
+        // Act & Assert
+        mockMvc.perform(get("/ingredients"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].name").value("Tomato"))
+                .andExpect(jsonPath("$[0].quantity").value(10))
+                .andExpect(jsonPath("$[1].name").value("Lettuce"))
+                .andExpect(jsonPath("$[1].quantity").value(5));
+    }
+
+    @Test
     public void testGetIngredientById() throws Exception {
         IngredientDTO mockIngredient = new IngredientDTO();
         mockIngredient.setName("Tomato");
-        setField(mockIngredient, "id", 1L);  // Reflectie om 'id' te zetten
+        setField(mockIngredient, "id", 1L);
 
         when(ingredientService.getIngredientById(1L)).thenReturn(mockIngredient);
 
@@ -71,6 +103,34 @@ public class IngredientControllerTest {
                 .andExpect(jsonPath("$.data.quantity").value(10));
     }
 
+    @Test
+    public void testUpdateIngredient() throws Exception {
+        // Arrange
+        Long id = 1L;
+        IngredientInputDTO inputDTO = new IngredientInputDTO();
+        inputDTO.setName("Updated Tomato");
+        inputDTO.setQuantity(20);
+
+        Ingredient updatedIngredient = new Ingredient();
+        updatedIngredient.setName("Updated Tomato");
+        updatedIngredient.setQuantity(20);
+        setField(updatedIngredient, "id", id);  // Zet het ID veld met reflectie
+
+        IngredientDTO updatedIngredientDTO = new IngredientDTO();
+        updatedIngredientDTO.setName(updatedIngredient.getName());
+        updatedIngredientDTO.setQuantity(updatedIngredient.getQuantity());
+        setField(updatedIngredientDTO, "id", id);  // Zet het ID veld met reflectie
+
+        when(ingredientService.updateIngredient(eq(id), any(IngredientInputDTO.class))).thenReturn(updatedIngredient);
+
+        // Act & Assert
+        mockMvc.perform(put("/ingredients/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(inputDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.name").value("Updated Tomato"))
+                .andExpect(jsonPath("$.data.quantity").value(20));
+    }
     @Test
     public void testDeleteIngredient() throws Exception {
         // Arrange

@@ -35,15 +35,16 @@ public class IngredientServiceImpl implements IngredientService {
         return IngredientMapper.toIngredientDTO(ingredient);
     }
 
-    @Override
-    public Ingredient updateIngredient(Long id, IngredientInputDTO ingredientInputDTO) {
-        Ingredient ingredient = ingredientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id));
 
-        ingredient.setName(ingredientInputDTO.getName());
-        ingredient.setQuantity(ingredientInputDTO.getQuantity());
-        return ingredientRepository.save(ingredient);
+
+    public Ingredient updateIngredient(Long id, IngredientInputDTO ingredientInputDTO) {
+        Ingredient existingIngredient = ingredientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id));
+        existingIngredient.setName(ingredientInputDTO.getName());
+        existingIngredient.setQuantity(ingredientInputDTO.getQuantity());
+        return ingredientRepository.save(existingIngredient);
     }
+
 
     @Override
     public void deleteIngredient(Long id) {

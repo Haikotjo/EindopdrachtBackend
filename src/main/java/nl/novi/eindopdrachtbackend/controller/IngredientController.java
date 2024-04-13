@@ -58,5 +58,4 @@ public class IngredientController {
         ApiResponse apiResponse = new ApiResponse(true, "Ingredient successfully deleted.", null);
         return new ResponseEntity<>(apiResponse, HttpStatus.NO_CONTENT);
     }
-
 }
