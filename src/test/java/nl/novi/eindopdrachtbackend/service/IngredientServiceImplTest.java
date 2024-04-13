@@ -2,7 +2,6 @@ package nl.novi.eindopdrachtbackend.service;
 
 import nl.novi.eindopdrachtbackend.dto.IngredientDTO;
 import nl.novi.eindopdrachtbackend.dto.IngredientInputDTO;
-import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.Ingredient;
 import nl.novi.eindopdrachtbackend.repository.IngredientRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -76,7 +76,14 @@ public class IngredientServiceImplTest {
     @Test
     void testUpdateIngredient() {
         // Arrange
+        Ingredient tomato = new Ingredient();
+        setField(tomato, "id", 1L);  // Zet de ID via reflectie
+        tomato.setName("Tomato");
+        tomato.setQuantity(10);
+
         when(ingredientRepository.findById(1L)).thenReturn(Optional.of(tomato));
+        when(ingredientRepository.save(any(Ingredient.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
         IngredientInputDTO updatedTomatoDto = new IngredientInputDTO();
         updatedTomatoDto.setName("Updated Tomato");
         updatedTomatoDto.setQuantity(15);
@@ -92,6 +99,7 @@ public class IngredientServiceImplTest {
         verify(ingredientRepository, times(1)).save(any());
     }
 
+
     @Test
     void testDeleteIngredient() {
         // Arrange
@@ -103,6 +111,15 @@ public class IngredientServiceImplTest {
         // Assert
         verify(ingredientRepository, times(1)).findById(1L);
         verify(ingredientRepository, times(1)).delete(any());
+    }
+    private void setField(Object object, String fieldName, Object value) {
+        try {
+            Field field = object.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(object, value);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException("Failed to set field", e);
+        }
     }
 
 

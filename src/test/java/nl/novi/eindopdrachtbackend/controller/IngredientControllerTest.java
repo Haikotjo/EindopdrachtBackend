@@ -35,9 +35,9 @@ public class IngredientControllerTest {
         mockIngredient.setName("Tomato");
         setField(mockIngredient, "id", 1L);  // Reflectie om 'id' te zetten
 
-        given(ingredientService.getIngredientById(1L)).willReturn(mockIngredient);
+        when(ingredientService.getIngredientById(1L)).thenReturn(mockIngredient);
 
-        mockMvc.perform(get("/api/ingredients/{id}", 1L))
+        mockMvc.perform(get("/ingredients/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Tomato"));
     }

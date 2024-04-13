@@ -1,5 +1,6 @@
 package nl.novi.eindopdrachtbackend.controller;
 
+import nl.novi.eindopdrachtbackend.common.ApiResponse;
 import nl.novi.eindopdrachtbackend.dto.IngredientDTO;
 import nl.novi.eindopdrachtbackend.dto.IngredientInputDTO;
 import nl.novi.eindopdrachtbackend.dto.IngredientMapper;
@@ -43,10 +44,11 @@ public class IngredientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<IngredientDTO> updateIngredient(@PathVariable Long id, @RequestBody IngredientInputDTO ingredientInputDTO) {
+    public ResponseEntity<ApiResponse> updateIngredient(@PathVariable Long id, @RequestBody IngredientInputDTO ingredientInputDTO) {
         Ingredient updatedIngredient = ingredientService.updateIngredient(id, ingredientInputDTO);
-        IngredientDTO updatedIngredientDto = IngredientMapper.toIngredientDTO(updatedIngredient);
-        return new ResponseEntity<>(updatedIngredientDto, HttpStatus.OK);
+        IngredientDTO updatedIngredientDTO = IngredientMapper.toIngredientDTO(updatedIngredient);
+        ApiResponse apiResponse = new ApiResponse(true, "Ingredient successfully updated.", updatedIngredientDTO);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

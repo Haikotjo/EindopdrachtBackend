@@ -37,13 +37,11 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     public Ingredient updateIngredient(Long id, IngredientInputDTO ingredientInputDTO) {
-
         Ingredient ingredient = ingredientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id));
 
         ingredient.setName(ingredientInputDTO.getName());
         ingredient.setQuantity(ingredientInputDTO.getQuantity());
-
         return ingredientRepository.save(ingredient);
     }
 
