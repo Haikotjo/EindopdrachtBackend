@@ -37,10 +37,11 @@ public class IngredientController {
     }
 
     @PostMapping
-    public ResponseEntity<IngredientDTO> createIngredient(@RequestBody IngredientInputDTO ingredientInputDTO) {
+    public ResponseEntity<ApiResponse> createIngredient(@RequestBody IngredientInputDTO ingredientInputDTO) {
         Ingredient ingredient = ingredientService.createIngredient(ingredientInputDTO);
         IngredientDTO createdIngredientDto = IngredientMapper.toIngredientDTO(ingredient);
-        return new ResponseEntity<>(createdIngredientDto, HttpStatus.CREATED);
+        ApiResponse apiResponse = new ApiResponse(true, "Ingredient successfully created.", createdIngredientDto);
+        return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
