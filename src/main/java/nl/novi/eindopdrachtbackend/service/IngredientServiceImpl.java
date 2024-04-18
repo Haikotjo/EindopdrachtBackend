@@ -21,6 +21,23 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
+    public IngredientDTO createIngredient(IngredientInputDTO ingredientInputDTO) {
+        Ingredient ingredient = IngredientMapper.toIngredient(ingredientInputDTO);
+        Ingredient savedIngredient = ingredientRepository.save(ingredient);
+        return IngredientMapper.toIngredientDTO(savedIngredient);
+    }
+
+    @Override
+    public IngredientDTO updateIngredient(Long id, IngredientInputDTO ingredientInputDTO) {
+        Ingredient existingIngredient = ingredientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id));
+        existingIngredient.setName(ingredientInputDTO.getName());
+        existingIngredient.setQuantity(ingredientInputDTO.getQuantity());
+        Ingredient updatedIngredient = ingredientRepository.save(existingIngredient);
+        return IngredientMapper.toIngredientDTO(updatedIngredient);
+    }
+
+    @Override
     public List<IngredientDTO> getAllIngredients() {
         List<Ingredient> ingredients = ingredientRepository.findAll();
         return ingredients.stream()
@@ -35,28 +52,11 @@ public class IngredientServiceImpl implements IngredientService {
         return IngredientMapper.toIngredientDTO(ingredient);
     }
 
-
-
-    public Ingredient updateIngredient(Long id, IngredientInputDTO ingredientInputDTO) {
-        Ingredient existingIngredient = ingredientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id));
-        existingIngredient.setName(ingredientInputDTO.getName());
-        existingIngredient.setQuantity(ingredientInputDTO.getQuantity());
-        return ingredientRepository.save(existingIngredient);
-    }
-
-
     @Override
     public void deleteIngredient(Long id) {
         Ingredient ingredient = ingredientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id));
         ingredientRepository.delete(ingredient);
-    }
-
-    @Override
-    public Ingredient createIngredient(IngredientInputDTO ingredientInputDTO) {
-        Ingredient ingredient = IngredientMapper.toIngredient(ingredientInputDTO);
-        return ingredientRepository.save(ingredient);
     }
 
     @Override
