@@ -1,5 +1,8 @@
 package nl.novi.eindopdrachtbackend.service;
 
+import nl.novi.eindopdrachtbackend.dto.MenuItemDTO;
+import nl.novi.eindopdrachtbackend.dto.MenuItemInputDTO;
+import nl.novi.eindopdrachtbackend.dto.MenuItemMapper;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.Ingredient;
 import nl.novi.eindopdrachtbackend.model.MenuItem;
@@ -8,6 +11,7 @@ import nl.novi.eindopdrachtbackend.repository.MenuItemRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuItemServiceImpl implements MenuItemService{
@@ -21,59 +25,66 @@ public class MenuItemServiceImpl implements MenuItemService{
     }
 
     @Override
-    public MenuItem createMenuItem(MenuItem menuItem) {
-        return menuItemRepository.save(menuItem);
+    public MenuItemDTO createMenuItem(MenuItemInputDTO menuItemInputDTO) {
+        MenuItem menuItem = MenuItemMapper.toMenuItem(menuItemInputDTO);
+        MenuItem savedMenuItem = menuItemRepository.save(menuItem);
+        return MenuItemMapper.toMenuItemDTO(savedMenuItem);
     }
 
     @Override
-    public MenuItem updateMenuItem(Long id, MenuItem menuItemDetails) {
+    public MenuItemDTO updateMenuItem(Long id, MenuItemInputDTO menuItemInputDTO) {
+        MenuItem existingMenuItem = menuItemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Menu item not found for this id :: " + id));
+
+        existingMenuItem.setName(menuItemInputDTO.getName());
+        existingMenuItem.setDescription(menuItemInputDTO.getDescription());
+        existingMenuItem.setPrice(menuItemInputDTO.getPrice());
+        existingMenuItem.setImage(menuItemInputDTO.getImage());
+        MenuItem updatedMenuItem = menuItemRepository.save(existingMenuItem);
+
+        return MenuItemMapper.toMenuItemDTO(updatedMenuItem);
+    }
+
+    @Override
+    public List<MenuItemDTO> getAllMenuItems() {
+        List<MenuItem> menuItems = menuItemRepository.findAll();
+        return menuItems.stream()
+                .map(MenuItemMapper::toMenuItemDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public MenuItemDTO getMenuItemById(Long id) {
         MenuItem menuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Menu item not found for this id :: " + id));
+        return MenuItemMapper.toMenuItemDTO(menuItem);
 
-        menuItem.setName(menuItemDetails.getName());
-        menuItem.setDescription(menuItemDetails.getDescription());
-        menuItem.setPrice(menuItemDetails.getPrice());
-        menuItem.setImage(menuItemDetails.getImage());
-
-        return menuItemRepository.save(menuItem);
-    }
-
-    @Override
-    public List<MenuItem> getAllMenuItems() {
-        return menuItemRepository.findAll();
-    }
-
-    @Override
-    public MenuItem getMenuItemById(Long id) {
-        return menuItemRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Menu item not found for this id :: " + id));
     }
 
     @Override
     public void deleteMenuItem(Long id) {
         MenuItem menuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Menu Item not found for this id :: " + id));
-
         menuItemRepository.delete(menuItem);
     }
 
     @Override
-    public List<MenuItem> findByNameIgnoreCase(String name) {
+    public List<MenuItemDTO> findByNameIgnoreCase(String name) {
         List<MenuItem> menuItem = menuItemRepository.findByNameIgnoreCase(name);
         if (menuItem.isEmpty()){
             throw new ResourceNotFoundException("Menu item not found with name: " + name);
         }
-        return menuItem;
+        return menuItem.stream()
+                .map(MenuItemMapper::toMenuItemDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     public void addIngredientToMenuItem(Long menuItemId, Long ingredientId) {
         MenuItem menuItem = menuItemRepository.findById(menuItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Menu item not found for this id :: " + menuItemId));
-
         Ingredient ingredient = ingredientRepository.findById(ingredientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + ingredientId));
-
         menuItem.addIngredient(ingredient);
         menuItemRepository.save(menuItem);
     }
