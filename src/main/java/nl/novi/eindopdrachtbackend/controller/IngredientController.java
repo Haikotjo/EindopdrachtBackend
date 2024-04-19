@@ -3,8 +3,6 @@ package nl.novi.eindopdrachtbackend.controller;
 import nl.novi.eindopdrachtbackend.common.ApiResponse;
 import nl.novi.eindopdrachtbackend.dto.IngredientDTO;
 import nl.novi.eindopdrachtbackend.dto.IngredientInputDTO;
-import nl.novi.eindopdrachtbackend.dto.IngredientMapper;
-import nl.novi.eindopdrachtbackend.model.Ingredient;
 import nl.novi.eindopdrachtbackend.service.IngredientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
