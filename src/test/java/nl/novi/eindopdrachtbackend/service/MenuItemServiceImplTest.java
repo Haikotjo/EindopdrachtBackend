@@ -15,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,44 +74,68 @@ public class MenuItemServiceImplTest {
     }
 
     @Test
-    void getMenuItemById_ReturnsMenuItem() {
+    void createMenuItem_WithIngredients_ReturnsCreatedMenuItem() {
         // Arrange
-        MenuItem pizza = new MenuItem();
-        pizza.setName(pizzaDTO.getName());
-        pizza.setPrice(pizzaDTO.getPrice());
+        MenuItemInputDTO newMenuItemDTO = new MenuItemInputDTO();
+        newMenuItemDTO.setName("New Pizza");
+        newMenuItemDTO.setPrice(12.99);
+        newMenuItemDTO.setDescription("Spicy pizza with extra cheese");
+        newMenuItemDTO.setImage("spicy_pizza.jpg");
+        newMenuItemDTO.setIngredientIds(Arrays.asList(1L, 2L));  // IDs of existing ingredients
 
-        when(menuItemRepository.findById(1L)).thenReturn(Optional.of(pizza));
+        Ingredient cheese = new Ingredient("Cheese", 100);
+        Ingredient pepper = new Ingredient("Pepper", 20);
+
+        when(ingredientRepository.findById(1L)).thenReturn(Optional.of(cheese));
+        when(ingredientRepository.findById(2L)).thenReturn(Optional.of(pepper));
+        when(menuItemRepository.save(any(MenuItem.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Act
-        MenuItemDTO result = menuItemService.getMenuItemById(1L);
+        MenuItemDTO createdMenuItemDTO = menuItemService.createMenuItem(newMenuItemDTO);
 
         // Assert
-        assertNotNull(result);
-        assertEquals(pizzaDTO.getName(), result.getName());
-        assertEquals(pizzaDTO.getPrice(), result.getPrice());
-        verify(menuItemRepository, times(1)).findById(1L);
+        assertNotNull(createdMenuItemDTO);
+        assertEquals(newMenuItemDTO.getName(), createdMenuItemDTO.getName());
+        assertEquals(newMenuItemDTO.getPrice(), createdMenuItemDTO.getPrice());
+        assertEquals(2, createdMenuItemDTO.getIngredients().size()); // Check if two ingredients are added
+        verify(menuItemRepository).save(any(MenuItem.class));
+        verify(ingredientRepository).findById(1L);
+        verify(ingredientRepository).findById(2L);
     }
 
     @Test
-    void updateMenuItem_ReturnsUpdatedMenuItem() {
+    void updateMenuItem_WithIngredients_ReturnsUpdatedMenuItem() {
         // Arrange
-        MenuItem existingMenuItem = new MenuItem();
-        existingMenuItem.setName(pizzaDTO.getName());
-        existingMenuItem.setPrice(pizzaDTO.getPrice());
+        Long menuItemId = 1L;
+        MenuItem existingMenuItem = new MenuItem("Old Pizza", 10.99, "Old description", "old_pizza.jpg");
+        existingMenuItem.getIngredients().add(new Ingredient("Old Ingredient", 10)); // Bestaande ingredienten voor volledigheid
 
-        when(menuItemRepository.findById(1L)).thenReturn(Optional.of(existingMenuItem));
-        when(menuItemRepository.save(any(MenuItem.class))).thenReturn(existingMenuItem);
+        MenuItemInputDTO updateMenuItemDTO = new MenuItemInputDTO();
+        updateMenuItemDTO.setName("Updated Pizza");
+        updateMenuItemDTO.setPrice(11.99);
+        updateMenuItemDTO.setDescription("Updated spicy pizza with extra cheese");
+        updateMenuItemDTO.setImage("updated_spicy_pizza.jpg");
+        updateMenuItemDTO.setIngredientIds(Arrays.asList(3L));  // Nieuwe ingrediënt ID
+
+        Ingredient updatedIngredient = new Ingredient("Basil", 5);
+
+        when(menuItemRepository.findById(menuItemId)).thenReturn(Optional.of(existingMenuItem));
+        when(ingredientRepository.findById(3L)).thenReturn(Optional.of(updatedIngredient));
+        when(menuItemRepository.save(any(MenuItem.class))).thenReturn(existingMenuItem); // Geen ID manipulatie
 
         // Act
-        MenuItemDTO updated = menuItemService.updateMenuItem(1L, updatePizzaDTO);
+        MenuItemDTO updatedMenuItemDTO = menuItemService.updateMenuItem(menuItemId, updateMenuItemDTO);
 
         // Assert
-        assertNotNull(updated);
-        assertEquals(updatePizzaDTO.getName(), updated.getName());
-        assertEquals(updatePizzaDTO.getPrice(), updated.getPrice());
-        verify(menuItemRepository, times(1)).findById(1L);
-        verify(menuItemRepository, times(1)).save(any(MenuItem.class));
+        assertNotNull(updatedMenuItemDTO);
+        assertEquals(updateMenuItemDTO.getName(), updatedMenuItemDTO.getName());
+        assertEquals(updateMenuItemDTO.getPrice(), updatedMenuItemDTO.getPrice());
+        assertEquals(1, updatedMenuItemDTO.getIngredients().size()); // Controleer of één nieuw ingrediënt is toegevoegd
+        verify(menuItemRepository).findById(menuItemId);
+        verify(menuItemRepository).save(any(MenuItem.class));
+        verify(ingredientRepository).findById(3L);
     }
+
 
     @Test
     void deleteMenuItem_DeletesMenuItem() {
