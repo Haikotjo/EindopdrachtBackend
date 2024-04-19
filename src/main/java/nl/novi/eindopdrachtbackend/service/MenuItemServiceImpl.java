@@ -11,6 +11,7 @@ import nl.novi.eindopdrachtbackend.repository.MenuItemRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +28,13 @@ public class MenuItemServiceImpl implements MenuItemService{
     @Override
     public MenuItemDTO createMenuItem(MenuItemInputDTO menuItemInputDTO) {
         MenuItem menuItem = MenuItemMapper.toMenuItem(menuItemInputDTO);
+        if (menuItemInputDTO.getIngredientIds() != null && !menuItemInputDTO.getIngredientIds().isEmpty()) {
+            Set<Ingredient> ingredients = menuItemInputDTO.getIngredientIds().stream()
+                    .map(id -> ingredientRepository.findById(id)
+                            .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id)))
+                    .collect(Collectors.toSet());
+            menuItem.setIngredients(ingredients);
+        }
         MenuItem savedMenuItem = menuItemRepository.save(menuItem);
         return MenuItemMapper.toMenuItemDTO(savedMenuItem);
     }
@@ -40,10 +48,19 @@ public class MenuItemServiceImpl implements MenuItemService{
         existingMenuItem.setDescription(menuItemInputDTO.getDescription());
         existingMenuItem.setPrice(menuItemInputDTO.getPrice());
         existingMenuItem.setImage(menuItemInputDTO.getImage());
-        MenuItem updatedMenuItem = menuItemRepository.save(existingMenuItem);
 
+        if (menuItemInputDTO.getIngredientIds() != null) {
+            Set<Ingredient> newIngredients = menuItemInputDTO.getIngredientIds().stream()
+                    .map(ingredientId -> ingredientRepository.findById(ingredientId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + ingredientId)))
+                    .collect(Collectors.toSet());
+            existingMenuItem.setIngredients(newIngredients);
+        }
+
+        MenuItem updatedMenuItem = menuItemRepository.save(existingMenuItem);
         return MenuItemMapper.toMenuItemDTO(updatedMenuItem);
     }
+
 
     @Override
     public List<MenuItemDTO> getAllMenuItems() {
