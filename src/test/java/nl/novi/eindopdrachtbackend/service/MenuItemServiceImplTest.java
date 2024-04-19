@@ -1,235 +1,209 @@
-//package nl.novi.eindopdrachtbackend.service;
-//
-//import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
-//import nl.novi.eindopdrachtbackend.model.Ingredient;
-//import nl.novi.eindopdrachtbackend.model.MenuItem;
-//import nl.novi.eindopdrachtbackend.repository.IngredientRepository;
-//import nl.novi.eindopdrachtbackend.repository.MenuItemRepository;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.MockitoAnnotations;
-//import java.util.Arrays;
-//import java.util.Collections;
-//import java.util.List;
-//import java.util.Optional;
-//import static org.junit.jupiter.api.Assertions.*;
-//import static org.mockito.Mockito.*;
-//
-//class MenuItemServiceImplTest {
-//
-//    @Mock
-//    private MenuItemRepository menuItemRepository;
-//
-//    @Mock
-//    private IngredientRepository ingredientRepository;
-//
-//    @InjectMocks
-//    private MenuItemServiceImpl menuItemService;
-//
-//    private MenuItem pizza;
-//    private MenuItem burger;
-//
-//    @BeforeEach
-//    void setUp() {
-//        MockitoAnnotations.openMocks(this);
-//        pizza = new MenuItem("Pizza", 15.99, "Delicious cheese pizza", "pizza.jpg");
-//        burger = new MenuItem("Burger", 11.99, "Beef burger with cheese", "burger.jpg");
-//    }
-//
-//    @Test
-//    void getAllMenuItems_ReturnsListOfMenuItems() {
-//        // Preparation
-//        when(menuItemRepository.findAll()).thenReturn(Arrays.asList(pizza, burger));
-//
-//        // Action
-//        List<MenuItem> menuItems = menuItemService.getAllMenuItems();
-//
-//        // Verification
-//        assertNotNull(menuItems);
-//        assertEquals(2, menuItems.size());
-//        verify(menuItemRepository).findAll();
-//    }
-//
-//    @Test
-//    void getMenuItemById_ReturnsMenuItem() {
-//        // Preparation
-//        when(menuItemRepository.findById(anyLong())).thenReturn(Optional.of(pizza));
-//
-//        // Action
-//        MenuItem foundMenuItem = menuItemService.getMenuItemById(1L);
-//
-//        // Verification
-//        assertNotNull(foundMenuItem);
-//        assertEquals("Pizza", foundMenuItem.getName());
-//        verify(menuItemRepository).findById(anyLong());
-//    }
-//
-//    @Test
-//    void getMenuItemById_ThrowsResourceNotFoundException() {
-//        // Preparation
-//        when(menuItemRepository.findById(anyLong())).thenReturn(Optional.empty());
-//
-//        // Action
-//        assertThrows(ResourceNotFoundException.class, () -> menuItemService.getMenuItemById(1L));
-//
-//        // Verification
-//        verify(menuItemRepository).findById(anyLong());
-//    }
-//
-//    @Test
-//    void createMenuItem_ReturnsCreatedMenuItem() {
-//        // Preparation
-//        when(menuItemRepository.save(any(MenuItem.class))).thenReturn(pizza);
-//
-//        // Action
-//        MenuItem createdMenuItem = menuItemService.createMenuItem(pizza);
-//
-//        // Verification
-//        assertNotNull(createdMenuItem);
-//        assertEquals("Pizza", createdMenuItem.getName());
-//        assertEquals(15.99, createdMenuItem.getPrice());
-//        assertEquals("Delicious cheese pizza", createdMenuItem.getDescription());
-//        assertEquals("pizza.jpg", createdMenuItem.getImage());
-//        verify(menuItemRepository).save(any(MenuItem.class));
-//    }
-//
-//    @Test
-//        // Preparation
-//    void updateMenuItem_ReturnsUpdatedMenuItem() {
-//        when(menuItemRepository.findById(anyLong())).thenReturn(Optional.of(pizza));
-//        when(menuItemRepository.save(any(MenuItem.class))).thenReturn(pizza);
-//
-//        // Action
-//        MenuItem updatedMenuItem = new MenuItem("Pizza", 17.99, "Delicious cheese pizza with extra cheese", "pizza_cheese.jpg");
-//        MenuItem result = menuItemService.updateMenuItem(1L, updatedMenuItem);
-//
-//        // Verification
-//        assertNotNull(result);
-//        assertEquals(updatedMenuItem.getPrice(), result.getPrice());
-//        assertEquals(updatedMenuItem.getDescription(), result.getDescription());
-//        assertEquals(updatedMenuItem.getImage(), result.getImage());
-//        verify(menuItemRepository).save(any(MenuItem.class));
-//        verify(menuItemRepository).findById(anyLong());
-//    }
-//
-//    @Test
-//    void updateMenuItem_ThrowsResourceNotFoundExceptionWhenNotFound() {
-//        // Preparation
-//        when(menuItemRepository.findById(anyLong())).thenReturn(Optional.empty());
-//
-//
-//        MenuItem updatedMenuItem = new MenuItem("Updated Pizza", 20.99, "Updated description", "updated_pizza.jpg");
-//
-//        // Action & Verification
-//        assertThrows(ResourceNotFoundException.class, () -> menuItemService.updateMenuItem(1L, updatedMenuItem));
-//
-//        verify(menuItemRepository).findById(anyLong());
-//        verify(menuItemRepository, never()).save(any(MenuItem.class));
-//    }
-//
-//
-//    @Test
-//    void deleteMenuItem_DeletesMenuItem() {
-//        // Preparation
-//        when(menuItemRepository.findById(anyLong())).thenReturn(Optional.of(pizza));
-//
-//        // Action
-//        menuItemService.deleteMenuItem(1L);
-//
-//        // Verification
-//        verify(menuItemRepository).delete(pizza);
-//    }
-//
-//    @Test
-//    void deleteMenuItem_ThrowsResourceNotFoundExceptionWhenNotFound() {
-//        // Preparation
-//        when(menuItemRepository.findById(anyLong())).thenReturn(Optional.empty());
-//
-//        // Action & Verification
-//        assertThrows(ResourceNotFoundException.class, () -> menuItemService.deleteMenuItem(1L));
-//
-//        verify(menuItemRepository).findById(anyLong());
-//        verify(menuItemRepository, never()).delete(any(MenuItem.class));
-//    }
-//
-//    @Test
-//    void findByNameIgnoreCase_ReturnsListOfMenuItems() {
-//        // Preparation
-//        when(menuItemRepository.findByNameIgnoreCase("burger")).thenReturn(Arrays.asList(burger));
-//
-//        // Action
-//        List<MenuItem> result = menuItemService.findByNameIgnoreCase("burger");
-//
-//        // Verification
-//        assertNotNull(result);
-//        assertFalse(result.isEmpty());
-//        assertEquals(1, result.size());
-//        assertEquals("Burger", result.get(0).getName());
-//        verify(menuItemRepository).findByNameIgnoreCase("burger");
-//    }
-//
-//    @Test
-//    void findByNameIgnoreCase_ThrowsResourceNotFoundExceptionWhenNotFound() {
-//        // Preparation
-//        when(menuItemRepository.findByNameIgnoreCase("nonexistent")).thenReturn(Collections.emptyList());
-//
-//        // Action & Verification
-//        assertThrows(ResourceNotFoundException.class, () -> menuItemService.findByNameIgnoreCase("nonexistent"));
-//
-//        verify(menuItemRepository).findByNameIgnoreCase("nonexistent");
-//    }
-//
-//    @Test
-//    void addIngredientToMenuItem_AddsIngredientToMenuItem() {
-//        // Preparation
-//        Long menuItemId = 1L;
-//        Long ingredientId = 1L;
-//        MenuItem pizza = new MenuItem("Pizza", 15.99, "Delicious cheese pizza", "pizza.jpg");
-//        Ingredient cheese = new Ingredient("Cheese", 100);
-//
-//        when(menuItemRepository.findById(menuItemId)).thenReturn(Optional.of(pizza));
-//        when(ingredientRepository.findById(ingredientId)).thenReturn(Optional.of(cheese));
-//
-//        // Action
-//        menuItemService.addIngredientToMenuItem(menuItemId, ingredientId);
-//
-//        // Verificatie
-//        assertTrue(pizza.getIngredients().contains(cheese));
-//        verify(menuItemRepository).save(pizza);
-//        verify(ingredientRepository, never()).save(any(Ingredient.class));
-//    }
-//
-//    @Test
-//    void addIngredientToMenuItem_ThrowsResourceNotFoundExceptionWhenMenuItemNotFound() {
-//        // Preparation
-//        Long menuItemId = 1L;
-//        Long ingredientId = 1L;
-//        Ingredient cheese = new Ingredient("Cheese", 100);
-//
-//        when(menuItemRepository.findById(menuItemId)).thenReturn(Optional.empty());
-//        when(ingredientRepository.findById(ingredientId)).thenReturn(Optional.of(cheese));
-//
-//        // Action & Verification
-//        assertThrows(ResourceNotFoundException.class, () -> menuItemService.addIngredientToMenuItem(menuItemId, ingredientId));
-//        verify(menuItemRepository, never()).save(any(MenuItem.class));
-//        verify(ingredientRepository, never()).save(any(Ingredient.class));
-//    }
-//
-//    @Test
-//    void addIngredientToMenuItem_ThrowsResourceNotFoundExceptionWhenIngredientNotFound() {
-//        // Preparation
-//        Long menuItemId = 1L;
-//        Long ingredientId = 1L;
-//        MenuItem pizza = new MenuItem("Pizza", 15.99, "Delicious cheese pizza", "pizza.jpg");
-//
-//        when(menuItemRepository.findById(menuItemId)).thenReturn(Optional.of(pizza));
-//        when(ingredientRepository.findById(ingredientId)).thenReturn(Optional.empty());
-//
-//        // Action & Verification
-//        assertThrows(ResourceNotFoundException.class, () -> menuItemService.addIngredientToMenuItem(menuItemId, ingredientId));
-//        verify(menuItemRepository, never()).save(any(MenuItem.class));
-//        verify(ingredientRepository, never()).save(any(Ingredient.class));
-//    }
-//}
+package nl.novi.eindopdrachtbackend.service;
+
+import nl.novi.eindopdrachtbackend.dto.MenuItemDTO;
+import nl.novi.eindopdrachtbackend.dto.MenuItemInputDTO;
+import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
+import nl.novi.eindopdrachtbackend.model.Ingredient;
+import nl.novi.eindopdrachtbackend.model.MenuItem;
+import nl.novi.eindopdrachtbackend.repository.IngredientRepository;
+import nl.novi.eindopdrachtbackend.repository.MenuItemRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MenuItemServiceImplTest {
+
+    @Mock
+    private MenuItemRepository menuItemRepository;
+    @Mock
+    private IngredientRepository ingredientRepository;
+    @InjectMocks
+    private MenuItemServiceImpl menuItemService;
+
+    private MenuItemDTO pizzaDTO;
+    private MenuItemInputDTO updatePizzaDTO;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        pizzaDTO = new MenuItemDTO();
+        pizzaDTO.setId(1L);
+        pizzaDTO.setName("Pizza");
+        pizzaDTO.setPrice(9.99);
+        pizzaDTO.setDescription("Delicious cheese pizza");
+        pizzaDTO.setImage("pizza.jpg");
+
+        updatePizzaDTO = new MenuItemInputDTO();
+        updatePizzaDTO.setName("Updated Pizza");
+        updatePizzaDTO.setPrice(10.99);
+        updatePizzaDTO.setDescription("Delicious cheese pizza with extra toppings");
+        updatePizzaDTO.setImage("updated_pizza.jpg");
+    }
+
+    @Test
+    void getAllMenuItems_ReturnsListOfMenuItems() {
+        // Arrange
+        MenuItem pizza = new MenuItem();
+        pizza.setName(pizzaDTO.getName());
+        pizza.setPrice(pizzaDTO.getPrice());
+        List<MenuItem> menuItems = new ArrayList<>();
+        menuItems.add(pizza);
+
+        when(menuItemRepository.findAll()).thenReturn(menuItems);
+
+        // Act
+        List<MenuItemDTO> menuItemDTOList = menuItemService.getAllMenuItems();
+
+        // Assert
+        assertNotNull(menuItemDTOList);
+        assertEquals(1, menuItemDTOList.size());
+        assertEquals(pizzaDTO.getName(), menuItemDTOList.get(0).getName());
+        verify(menuItemRepository, times(1)).findAll();
+    }
+
+    @Test
+    void getMenuItemById_ReturnsMenuItem() {
+        // Arrange
+        MenuItem pizza = new MenuItem();
+        pizza.setName(pizzaDTO.getName());
+        pizza.setPrice(pizzaDTO.getPrice());
+
+        when(menuItemRepository.findById(1L)).thenReturn(Optional.of(pizza));
+
+        // Act
+        MenuItemDTO result = menuItemService.getMenuItemById(1L);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(pizzaDTO.getName(), result.getName());
+        assertEquals(pizzaDTO.getPrice(), result.getPrice());
+        verify(menuItemRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void updateMenuItem_ReturnsUpdatedMenuItem() {
+        // Arrange
+        MenuItem existingMenuItem = new MenuItem();
+        existingMenuItem.setName(pizzaDTO.getName());
+        existingMenuItem.setPrice(pizzaDTO.getPrice());
+
+        when(menuItemRepository.findById(1L)).thenReturn(Optional.of(existingMenuItem));
+        when(menuItemRepository.save(any(MenuItem.class))).thenReturn(existingMenuItem);
+
+        // Act
+        MenuItemDTO updated = menuItemService.updateMenuItem(1L, updatePizzaDTO);
+
+        // Assert
+        assertNotNull(updated);
+        assertEquals(updatePizzaDTO.getName(), updated.getName());
+        assertEquals(updatePizzaDTO.getPrice(), updated.getPrice());
+        verify(menuItemRepository, times(1)).findById(1L);
+        verify(menuItemRepository, times(1)).save(any(MenuItem.class));
+    }
+
+    @Test
+    void deleteMenuItem_DeletesMenuItem() {
+        // Arrange
+        MenuItem existingMenuItem = new MenuItem();
+        existingMenuItem.setName(pizzaDTO.getName());
+        existingMenuItem.setPrice(pizzaDTO.getPrice());
+
+        when(menuItemRepository.findById(1L)).thenReturn(Optional.of(existingMenuItem));
+
+        // Act
+        menuItemService.deleteMenuItem(1L);
+
+        // Assert
+        verify(menuItemRepository, times(1)).findById(1L);
+        verify(menuItemRepository, times(1)).delete(existingMenuItem);
+    }
+
+    @Test
+    void createMenuItem_ReturnsCreatedMenuItem() {
+        // Arrange
+        MenuItemInputDTO newMenuItemDTO = new MenuItemInputDTO();
+        newMenuItemDTO.setName("New Pizza");
+        newMenuItemDTO.setPrice(12.99);
+        newMenuItemDTO.setDescription("Spicy pizza with extra cheese");
+        newMenuItemDTO.setImage("spicy_pizza.jpg");
+
+        MenuItem newMenuItem = new MenuItem();
+        newMenuItem.setName(newMenuItemDTO.getName());
+        newMenuItem.setPrice(newMenuItemDTO.getPrice());
+
+        when(menuItemRepository.save(any(MenuItem.class))).thenReturn(newMenuItem);
+
+        // Act
+        MenuItemDTO createdMenuItemDTO = menuItemService.createMenuItem(newMenuItemDTO);
+
+        // Assert
+        assertNotNull(createdMenuItemDTO);
+        assertEquals(newMenuItemDTO.getName(), createdMenuItemDTO.getName());
+        assertEquals(newMenuItemDTO.getPrice(), createdMenuItemDTO.getPrice());
+        verify(menuItemRepository).save(any(MenuItem.class));
+    }
+
+    @Test
+    void findByNameIgnoreCase_ReturnsListOfMenuItems() {
+        // Arrange
+        List<MenuItem> menuItems = new ArrayList<>();
+        MenuItem pizza = new MenuItem();
+        pizza.setName("Pizza");
+        pizza.setPrice(9.99);
+        menuItems.add(pizza);
+
+        when(menuItemRepository.findByNameIgnoreCase("pizza")).thenReturn(menuItems);
+
+        // Act
+        List<MenuItemDTO> result = menuItemService.findByNameIgnoreCase("pizza");
+
+        // Assert
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(1, result.size());
+        assertEquals("Pizza", result.get(0).getName());
+        verify(menuItemRepository).findByNameIgnoreCase("pizza");
+    }
+
+    @Test
+    void addIngredientToMenuItem_AddsIngredientToMenuItem() throws Exception {
+        // Arrange
+        Long menuItemId = 1L;
+        Long ingredientId = 1L;
+        MenuItem pizza = new MenuItem("Pizza", 9.99, "Delicious cheese pizza", "pizza.jpg");
+        Ingredient cheese = new Ingredient("Cheese", 100);
+
+        // Reflection to set ID's
+        Field fieldPizzaId = MenuItem.class.getDeclaredField("id");
+        fieldPizzaId.setAccessible(true);
+        fieldPizzaId.set(pizza, menuItemId);
+
+        Field fieldCheeseId = Ingredient.class.getDeclaredField("id");
+        fieldCheeseId.setAccessible(true);
+        fieldCheeseId.set(cheese, ingredientId);
+
+        when(menuItemRepository.findById(menuItemId)).thenReturn(Optional.of(pizza));
+        when(ingredientRepository.findById(ingredientId)).thenReturn(Optional.of(cheese));
+
+        // Act
+        menuItemService.addIngredientToMenuItem(menuItemId, ingredientId);
+
+        // Assert
+        assertTrue(pizza.getIngredients().contains(cheese), "Cheese should be added to pizza ingredients");
+        verify(menuItemRepository).save(pizza);
+        verify(menuItemRepository).findById(menuItemId);
+        verify(ingredientRepository).findById(ingredientId);
+    }
+
+}
