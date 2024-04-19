@@ -1,5 +1,6 @@
 package nl.novi.eindopdrachtbackend.integration;
 
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import nl.novi.eindopdrachtbackend.dto.IngredientDTO;
 import nl.novi.eindopdrachtbackend.dto.IngredientInputDTO;
@@ -30,8 +31,13 @@ public class IngredientControllerIntegrationTest {
 
     private Long ingredientId;
 
+    @Autowired
+    private EntityManager entityManager;
+
     @BeforeEach
     void setup() {
+        entityManager.createNativeQuery("DELETE FROM menu_item_ingredients").executeUpdate();
+
         ingredientRepository.deleteAll();
 
         Ingredient ingredient = new Ingredient();
@@ -40,6 +46,7 @@ public class IngredientControllerIntegrationTest {
         ingredient = ingredientRepository.save(ingredient);
         ingredientId = ingredient.getId();
     }
+
 
     @Test
     void testGetAllIngredients() throws Exception {

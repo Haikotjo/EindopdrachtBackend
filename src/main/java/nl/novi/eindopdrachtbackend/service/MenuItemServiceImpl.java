@@ -1,5 +1,6 @@
 package nl.novi.eindopdrachtbackend.service;
 
+import jakarta.transaction.Transactional;
 import nl.novi.eindopdrachtbackend.dto.MenuItemDTO;
 import nl.novi.eindopdrachtbackend.dto.MenuItemInputDTO;
 import nl.novi.eindopdrachtbackend.dto.MenuItemMapper;
@@ -10,6 +11,7 @@ import nl.novi.eindopdrachtbackend.repository.IngredientRepository;
 import nl.novi.eindopdrachtbackend.repository.MenuItemRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,7 +41,7 @@ public class MenuItemServiceImpl implements MenuItemService{
         return MenuItemMapper.toMenuItemDTO(savedMenuItem);
     }
 
-    @Override
+    @Transactional
     public MenuItemDTO updateMenuItem(Long id, MenuItemInputDTO menuItemInputDTO) {
         MenuItem existingMenuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Menu item not found for this id :: " + id));
@@ -49,18 +51,22 @@ public class MenuItemServiceImpl implements MenuItemService{
         existingMenuItem.setPrice(menuItemInputDTO.getPrice());
         existingMenuItem.setImage(menuItemInputDTO.getImage());
 
-        if (menuItemInputDTO.getIngredientIds() != null) {
-            Set<Ingredient> newIngredients = menuItemInputDTO.getIngredientIds().stream()
-                    .map(ingredientId -> ingredientRepository.findById(ingredientId)
-                            .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + ingredientId)))
-                    .collect(Collectors.toSet());
-            existingMenuItem.setIngredients(newIngredients);
+        Set<Ingredient> currentIngredients = existingMenuItem.getIngredients();
+        Set<Long> newIngredientIds = new HashSet<>(menuItemInputDTO.getIngredientIds());
+
+        currentIngredients.removeIf(ingredient -> !newIngredientIds.contains(ingredient.getId()));
+
+        for (Long ingredientId : newIngredientIds) {
+            Ingredient ingredient = ingredientRepository.findById(ingredientId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + ingredientId));
+            if (!currentIngredients.contains(ingredient)) {
+                existingMenuItem.addIngredient(ingredient);
+            }
         }
 
         MenuItem updatedMenuItem = menuItemRepository.save(existingMenuItem);
         return MenuItemMapper.toMenuItemDTO(updatedMenuItem);
     }
-
 
     @Override
     public List<MenuItemDTO> getAllMenuItems() {
