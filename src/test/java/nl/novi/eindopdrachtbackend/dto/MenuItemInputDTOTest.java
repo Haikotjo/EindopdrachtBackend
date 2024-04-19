@@ -15,26 +15,26 @@ public class MenuItemInputDTOTest {
         ingredientIds.add(2L);
         ingredientIds.add(3L);
 
-        MenuInputDTO menuInputDTO = new MenuInputDTO();
+        MenuItemInputDTO menuItemInputDTO = new MenuItemInputDTO();
 
-        menuInputDTO.setName("Pizza");
-        menuInputDTO.setPrice(9.99);
-        menuInputDTO.setDescription("Delicious cheese pizza");
-        menuInputDTO.setImage("image.jpg");
-        menuInputDTO.setIngredientIds(ingredientIds);
+        menuItemInputDTO.setName("Pizza");
+        menuItemInputDTO.setPrice(9.99);
+        menuItemInputDTO.setDescription("Delicious cheese pizza");
+        menuItemInputDTO.setImage("image.jpg");
+        menuItemInputDTO.setIngredientIds(ingredientIds);
 
         // Assertions
-        assertEquals("Pizza", menuInputDTO.getName());
-        assertEquals(9.99, menuInputDTO.getPrice());
-        assertEquals("Delicious cheese pizza", menuInputDTO.getDescription());
-        assertEquals("image.jpg", menuInputDTO.getImage());
-        assertEquals(3, menuInputDTO.getIngredientIds().size());
-        assertEquals(1L, menuInputDTO.getIngredientIds().get(0));
-        assertEquals(2L, menuInputDTO.getIngredientIds().get(1));
-        assertEquals(3L, menuInputDTO.getIngredientIds().get(2));
+        assertEquals("Pizza", menuItemInputDTO.getName());
+        assertEquals(9.99, menuItemInputDTO.getPrice());
+        assertEquals("Delicious cheese pizza", menuItemInputDTO.getDescription());
+        assertEquals("image.jpg", menuItemInputDTO.getImage());
+        assertEquals(3, menuItemInputDTO.getIngredientIds().size());
+        assertEquals(1L, menuItemInputDTO.getIngredientIds().get(0));
+        assertEquals(2L, menuItemInputDTO.getIngredientIds().get(1));
+        assertEquals(3L, menuItemInputDTO.getIngredientIds().get(2));
 
         // Test updating values
-        menuInputDTO.setName("Burger");
-        assertEquals("Burger", menuInputDTO.getName());
+        menuItemInputDTO.setName("Burger");
+        assertEquals("Burger", menuItemInputDTO.getName());
     }
 }
