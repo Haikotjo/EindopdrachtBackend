@@ -5,7 +5,7 @@ import java.util.List;
 public class MenuInputDTO {
     private String name;
     private String description;
-    private List<Long> menuItemsIds;
+    private List<Long> menuItemIds;
 
     // Getters en Setters
 
@@ -25,11 +25,11 @@ public class MenuInputDTO {
         this.description = description;
     }
 
-    public List<Long> getMenuItemsIds() {
-        return menuItemsIds;
+    public List<Long> getMenuItemIds() {
+        return menuItemIds;
     }
 
-    public void setMenuItemsIds(List<Long> menuItemsIds) {
-        this.menuItemsIds = menuItemsIds;
+    public void setMenuItemIds(List<Long> menuItemsIds) {
+        this.menuItemIds = menuItemsIds;
     }
 }
