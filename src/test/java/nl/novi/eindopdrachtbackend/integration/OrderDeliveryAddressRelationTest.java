@@ -33,8 +33,8 @@ class OrderDeliveryAddressRelationTest {
     @Test
     @Transactional
     void testOrderIsLinkedToDeliveryAddressCorrectly() {
-        // Create and save a User
-        User user = new User("Jan Jansen", "jan@example.com", "securepassword", "ROLE_USER", "User Street 1", "0612345678");
+        // Create and save a User with the correct Role
+        User user = new User("Jan Jansen", "jan@example.com", "securepassword", User.Role.CUSTOMER, "User Street 1", "0612345678");
         user = userRepository.save(user);
 
         // Create and save a Restaurant
@@ -54,4 +54,3 @@ class OrderDeliveryAddressRelationTest {
         assertEquals(deliveryAddress.getId(), savedOrder.getDeliveryAddress().getId(), "De order is niet correct gekoppeld aan het bezorgadres.");
     }
 }
-

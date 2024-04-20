@@ -30,8 +30,8 @@ class UserServiceImplTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        johnDoe = new User("John Doe", "john.doe@example.com", "password123", "USER", "1234 Main St", "555-1234");
-        janeDoe = new User("Jane Doe", "jane.doe@example.com", "securePassword", "ADMIN", "5678 Market St", "555-5678");
+        johnDoe = new User("John Doe", "john.doe@example.com", "password123", User.Role.OWNER, "1234 Main St", "555-1234");
+        janeDoe = new User("Jane Doe", "jane.doe@example.com", "securePassword", User.Role.CUSTOMER, "5678 Market St", "555-5678");
     }
 
     @Test

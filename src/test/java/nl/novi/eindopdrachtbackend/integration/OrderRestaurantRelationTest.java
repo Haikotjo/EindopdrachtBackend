@@ -34,7 +34,7 @@ class OrderRestaurantRelationTest {
     @Transactional
     public void testOrderLinksBackToRestaurantCorrectly() {
         // Setup User
-        User user = new User("Jan Jansen", "jan@example.com", "password123", "ADMIN", "Main Street 1", "0612345678");
+        User user = new User("Jan Jansen", "jan@example.com", "password123", User.Role.OWNER, "Main Street 1", "0612345678");
         user = userRepository.save(user);
 
         // Setup Restaurant

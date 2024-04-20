@@ -34,7 +34,7 @@ class OrderUserRelationTest {
     @Transactional
     public void testOrderLinksBackToUserCorrectly() {
         // Create and save a User
-        User user = new User("Lisa Meijer", "lisa@example.com", "securepassword", "CUSTOMER", "User Street 2", "0622334455");
+        User user = new User("Lisa Meijer", "lisa@example.com", "securepassword", User.Role.CUSTOMER, "User Street 2", "0622334455");
         user = userRepository.save(user);
 
         // Create and save a Restaurant

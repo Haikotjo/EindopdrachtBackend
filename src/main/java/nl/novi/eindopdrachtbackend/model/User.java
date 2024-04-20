@@ -16,7 +16,8 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
     private String address;
     private String phoneNumber;
 
@@ -36,16 +37,20 @@ public class User {
 
     //Relation to DeliveryAddress
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DeliveryAddress> deliveryAddresses = new ArrayList<>();
-
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private DeliveryAddress deliveryAddress;
 
     //    constructors
+
+    public enum Role {
+        CUSTOMER,
+        OWNER
+    }
 
     public User() {
     }
 
-    public User(String name, String email, String password, String role, String address, String phoneNumber) {
+    public User(String name, String email, String password, Role role, String address, String phoneNumber) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -54,7 +59,7 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public User(String name, String email, String password, String role, String address, String phoneNumber, List<Order> orders, List<DeliveryAddress> deliveryAddresses) {
+    public User(String name, String email, String password, Role role, String address, String phoneNumber, List<Order> orders, DeliveryAddress deliveryAddress) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -62,7 +67,7 @@ public class User {
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.orders = orders;
-        this.deliveryAddresses = deliveryAddresses;
+        this.deliveryAddress = deliveryAddress;
     }
 
 // getters and setters
@@ -96,11 +101,11 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
@@ -131,22 +136,12 @@ public class User {
         this.orders = orders;
     }
 
-    public void addDeliveryAddress(DeliveryAddress address) {
-        deliveryAddresses.add(address);
-        address.setUser(this);
+    public DeliveryAddress getDeliveryAddress() {
+        return deliveryAddress;
     }
 
-    public void removeDeliveryAddress(DeliveryAddress address) {
-        deliveryAddresses.remove(address);
-        address.setUser(null);
-    }
-
-    public List<DeliveryAddress> getDeliveryAddresses() {
-        return deliveryAddresses;
-    }
-
-    public void setDeliveryAddresses(List<DeliveryAddress> deliveryAddresses) {
-        this.deliveryAddresses = deliveryAddresses;
+    public void setDeliveryAddress(DeliveryAddress deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
     }
 }
 

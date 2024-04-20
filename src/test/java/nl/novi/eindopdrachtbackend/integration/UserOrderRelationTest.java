@@ -1,6 +1,5 @@
 package nl.novi.eindopdrachtbackend.integration;
 
-import jakarta.transaction.Transactional;
 import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
 import nl.novi.eindopdrachtbackend.model.Order;
 import nl.novi.eindopdrachtbackend.model.Restaurant;
@@ -23,20 +22,21 @@ class UserOrderRelationTest {
 
     @Autowired
     private OrderRepository orderRepository;
+
     @Autowired
     private RestaurantRepository restaurantRepository;
+
     @Autowired
     private DeliveryAddressRepository deliveryAddressRepository;
 
     @Test
-    @Transactional
     public void testUserOrderRelation() {
         // Make User
         User user = new User();
         user.setName("Jan Jansen");
         user.setEmail("jan@example.com");
         user.setPassword("password123");
-        user.setRole("ADMIN");
+        user.setRole(User.Role.CUSTOMER);
         user.setAddress("Main Street 1");
         user.setPhoneNumber("0612345678");
         user = userRepository.save(user);
@@ -44,7 +44,8 @@ class UserOrderRelationTest {
         // Make Restaurant
         Restaurant restaurant = new Restaurant("TestRestaurant", "Restaurant Street", "9876543210");
         restaurant = restaurantRepository.save(restaurant);
-        // Make DeliveryAdress
+
+        // Make DeliveryAddress
         DeliveryAddress deliveryAddress = new DeliveryAddress("Delivery Street", 1, "Delivery City", 1234, "1234AB", "Delivery Country");
         deliveryAddress = deliveryAddressRepository.save(deliveryAddress);
 

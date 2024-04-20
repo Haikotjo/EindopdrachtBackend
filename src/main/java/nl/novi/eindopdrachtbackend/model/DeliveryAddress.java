@@ -36,13 +36,10 @@ public class DeliveryAddress {
     }
 
     //Relation to user
-    @ManyToOne
+    @OneToOne
+    @MapsId
     @JoinColumn(name = "user_id")
     private User user;
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     //Relation order
     @OneToMany(mappedBy = "deliveryAddress", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -120,4 +117,12 @@ public class DeliveryAddress {
     public void setHouseNumber(int houseNumber) {
         this.houseNumber = houseNumber;
     }
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
 }

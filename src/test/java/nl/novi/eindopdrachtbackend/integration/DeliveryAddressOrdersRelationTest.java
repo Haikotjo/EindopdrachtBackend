@@ -34,7 +34,7 @@ class DeliveryAddressOrdersRelationTest {
     @Transactional
     void testDeliveryAddressIsLinkedToOrdersCorrectly() {
         // Create and save a User
-        User user = new User("Eva Evers", "eva@example.com", "password123", "ROLE_USER", "User Lane 2", "0698765432");
+        User user = new User("Eva Evers", "eva@example.com", "password123", User.Role.OWNER, "User Lane 2", "0698765432");
         user = userRepository.save(user);
 
         // Create and save a Restaurant
