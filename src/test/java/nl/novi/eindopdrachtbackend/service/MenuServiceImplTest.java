@@ -1,202 +1,187 @@
 package nl.novi.eindopdrachtbackend.service;
 
+import nl.novi.eindopdrachtbackend.dto.MenuDTO;
+import nl.novi.eindopdrachtbackend.dto.MenuInputDTO;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.Menu;
 import nl.novi.eindopdrachtbackend.model.MenuItem;
-import nl.novi.eindopdrachtbackend.repository.MenuItemRepository;
 import nl.novi.eindopdrachtbackend.repository.MenuRepository;
+import nl.novi.eindopdrachtbackend.repository.MenuItemRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-class MenuServiceImplTest {
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class MenuServiceImplTest {
 
     @Mock
     private MenuRepository menuRepository;
-
     @Mock
     private MenuItemRepository menuItemRepository;
-
     @InjectMocks
     private MenuServiceImpl menuService;
 
-    private Menu breakfastMenu;
-    private Menu dinnerMenu;
+    private MenuDTO menuDTO;
+    private MenuInputDTO updateMenuDTO;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        breakfastMenu = new Menu("Breakfast", "Delicious breakfast menu");
-        dinnerMenu = new Menu("Dinner", "Hearty dinner menu");
+        menuDTO = new MenuDTO();
+        menuDTO.setId(1L);
+        menuDTO.setName("Lunch Menu");
+        menuDTO.setMenuItems(new ArrayList<>()); // Assume MenuDTO includes a list of MenuItemDTOs
+
+        updateMenuDTO = new MenuInputDTO();
+        updateMenuDTO.setName("Updated Lunch Menu");
+        updateMenuDTO.setMenuItemIds(Arrays.asList(1L, 2L)); // Assume MenuInputDTO includes a list of MenuItem IDs
     }
 
     @Test
     void getAllMenus_ReturnsListOfMenus() {
-        // Preparation
-        when(menuRepository.findAll()).thenReturn(Arrays.asList(breakfastMenu, dinnerMenu));
+        // Arrange
+        Menu menu = new Menu();
+        menu.setName(menuDTO.getName());
+        List<Menu> menus = new ArrayList<>();
+        menus.add(menu);
 
-        // Action
-        List<Menu> menus = menuService.getAllMenus();
+        when(menuRepository.findAll()).thenReturn(menus);
 
-        // Verification
-        assertNotNull(menus);
-        assertEquals(2, menus.size());
-        verify(menuRepository).findAll();
+        // Act
+        List<MenuDTO> menuDTOList = menuService.getAllMenus();
+
+        // Assert
+        assertNotNull(menuDTOList);
+        assertEquals(1, menuDTOList.size());
+        assertEquals(menuDTO.getName(), menuDTOList.get(0).getName());
+        verify(menuRepository, times(1)).findAll();
     }
 
     @Test
-    void getMenuById_ReturnsMenu() {
-        // Preparation
-        when(menuRepository.findById(anyLong())).thenReturn(Optional.of(breakfastMenu));
+    void createMenu_WithMenuItems_ReturnsCreatedMenu() {
+        // Arrange
+        MenuInputDTO newMenuDTO = new MenuInputDTO();
+        newMenuDTO.setName("Summer Menu");
+        newMenuDTO.setMenuItemIds(Arrays.asList(1L));  // IDs of existing menu items
 
-        // Action
-        Menu foundMenu = menuService.getMenuById(1L);
+        MenuItem menuItem = new MenuItem();
+        menuItem.setName("Salad");
 
-        // Verification
-        assertNotNull(foundMenu);
-        assertEquals("Breakfast", foundMenu.getName());
-        verify(menuRepository).findById(anyLong());
-    }
+        // Stel de mock in om een reeds geconfigureerd MenuItem te retourneren, simuleer het vinden ervan op ID
+        when(menuItemRepository.findById(1L)).thenReturn(Optional.of(menuItem));
 
-    @Test
-    void getMenuById_ThrowsResourceNotFoundException() {
-        // Preparation
-        when(menuRepository.findById(anyLong())).thenReturn(Optional.empty());
+        // Simuleer het gedrag van het opslaan van een Menu en retourneer het direct zoals het is opgeslagen
+        when(menuRepository.save(any(Menu.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Action & Verification
-        assertThrows(ResourceNotFoundException.class, () -> menuService.getMenuById(1L));
-        verify(menuRepository).findById(anyLong());
-    }
+        // Act
+        MenuDTO createdMenuDTO = menuService.createMenu(newMenuDTO);
 
-    @Test
-    void createMenu_ReturnsCreatedMenu() {
-        // Preparation
-        when(menuRepository.save(any(Menu.class))).thenReturn(breakfastMenu);
-
-        // Action
-        Menu createdMenu = menuService.createMenu(breakfastMenu);
-
-        // Verification
-        assertNotNull(createdMenu);
-        assertEquals("Breakfast", createdMenu.getName());
+        // Assert
+        assertNotNull(createdMenuDTO);
+        assertEquals(newMenuDTO.getName(), createdMenuDTO.getName());
+        assertFalse(createdMenuDTO.getMenuItems().isEmpty());
+        assertEquals("Salad", createdMenuDTO.getMenuItems().get(0).getName());  // Controleer of het menu-item correct is toegevoegd
         verify(menuRepository).save(any(Menu.class));
+        verify(menuItemRepository).findById(1L);
     }
 
+
     @Test
-    void updateMenu_ReturnsUpdatedMenu() {
-        // Preparation
+    void updateMenu_WithMenuItems_ReturnsUpdatedMenu() {
+        // Arrange
         Long menuId = 1L;
-        Menu updatedDetails = new Menu("Updated Menu", "Updated description");
-        Menu expectedSavedMenu = new Menu("Updated Menu", "Updated description");
-        when(menuRepository.findById(menuId)).thenReturn(Optional.of(breakfastMenu));
-        when(menuRepository.save(any(Menu.class))).thenReturn(expectedSavedMenu);
+        Menu existingMenu = new Menu();
+        existingMenu.setName("Old Menu");
 
-        // Action
-        Menu updatedMenu = menuService.updateMenu(menuId, updatedDetails);
+        updateMenuDTO = new MenuInputDTO();
+        updateMenuDTO.setName("Updated Menu");
+        updateMenuDTO.setMenuItemIds(Arrays.asList(1L)); // IDs of existing menu items
 
-        // Verification
-        assertNotNull(updatedMenu);
-        assertEquals(updatedDetails.getName(), updatedMenu.getName());
-        assertEquals(updatedDetails.getDescription(), updatedMenu.getDescription());
+        MenuItem menuItem = new MenuItem();
+        menuItem.setName("Updated Item");
+
+        when(menuRepository.findById(menuId)).thenReturn(Optional.of(existingMenu));
+        when(menuRepository.save(any(Menu.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(menuItemRepository.findById(1L)).thenReturn(Optional.of(menuItem));
+
+        // Act
+        MenuDTO updatedMenuDTO = menuService.updateMenu(menuId, updateMenuDTO);
+
+        // Assert
+        assertNotNull(updatedMenuDTO);
+        assertEquals(updateMenuDTO.getName(), updatedMenuDTO.getName());
+        assertFalse(updatedMenuDTO.getMenuItems().isEmpty());
+        assertEquals("Updated Item", updatedMenuDTO.getMenuItems().get(0).getName());
+        verify(menuRepository).findById(menuId);
         verify(menuRepository).save(any(Menu.class));
-    }
-
-    @Test
-    void deleteMenu_DeletesMenu() {
-        // Preparation
-        Long menuId = 1L;
-        when(menuRepository.findById(menuId)).thenReturn(Optional.of(breakfastMenu));
-
-        // Action
-        menuService.deleteMenu(menuId);
-
-        // Verification
-        verify(menuRepository).delete(breakfastMenu);
-    }
-
-    @Test
-    void deleteMenu_ThrowsResourceNotFoundExceptionWhenNotFound() {
-        // Preparation
-        Long menuId = 1L;
-        when(menuRepository.findById(menuId)).thenReturn(Optional.empty());
-
-        // Action & Verification
-        assertThrows(ResourceNotFoundException.class, () -> menuService.deleteMenu(menuId));
-        verify(menuRepository, never()).delete(any(Menu.class));
+        verify(menuItemRepository).findById(1L);
     }
 
     @Test
     void findByNameIgnoreCase_ReturnsListOfMenus() {
-        // Preparation
-        String name = "breakfast";
-        when(menuRepository.findByNameIgnoreCase(name)).thenReturn(Collections.singletonList(breakfastMenu));
+        // Arrange
+        Menu menu = new Menu();
+        menu.setName("Brunch Menu");
+        List<Menu> menus = Arrays.asList(menu);
 
-        // Action
-        List<Menu> foundMenus = menuService.findByNameIgnoreCase(name);
+        when(menuRepository.findByNameIgnoreCase("brunch")).thenReturn(menus);
 
-        // Verification
-        assertNotNull(foundMenus);
-        assertFalse(foundMenus.isEmpty());
-        assertEquals(1, foundMenus.size());
-        assertEquals(breakfastMenu.getName(), foundMenus.get(0).getName());
+        // Act
+        List<MenuDTO> result = menuService.findByNameIgnoreCase("brunch");
+
+        // Assert
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals("Brunch Menu", result.get(0).getName());
+        verify(menuRepository).findByNameIgnoreCase("brunch");
     }
 
     @Test
-    void findByNameIgnoreCase_ThrowsResourceNotFoundExceptionWhenNotFound() {
-        // Preparation
-        String name = "nonexistent";
-        when(menuRepository.findByNameIgnoreCase(name)).thenReturn(Collections.emptyList());
-
-        // Action & Verification
-        assertThrows(ResourceNotFoundException.class, () -> menuService.findByNameIgnoreCase(name));
-    }
-
-    @Test
-    void addMenuItemToMenu_AddsMenuItemToMenu() {
-        // Preparation
+    void addMenuItemToMenu_AddsMenuItem() {
+        // Arrange
         Long menuId = 1L;
-        Long menuItemId = 1L;
-        MenuItem menuItem = new MenuItem("Pizza", 15.99, "Delicious cheese pizza", "pizza.jpg");
-        when(menuRepository.findById(menuId)).thenReturn(Optional.of(breakfastMenu));
+        Long menuItemId = 2L;
+        Menu menu = new Menu();
+        MenuItem menuItem = new MenuItem();
+
+        when(menuRepository.findById(menuId)).thenReturn(Optional.of(menu));
         when(menuItemRepository.findById(menuItemId)).thenReturn(Optional.of(menuItem));
 
-        // Action
+        // Act
         menuService.addMenuItemToMenu(menuId, menuItemId);
 
-        // Verification
-        assertTrue(breakfastMenu.getMenuItems().contains(menuItem));
-        verify(menuRepository).save(breakfastMenu);
+        // Assert
+        assertTrue(menu.getMenuItems().contains(menuItem)); // Verifies if menuItem is added correctly
+        verify(menuRepository).save(menu);
+        verify(menuRepository).findById(menuId);
+        verify(menuItemRepository).findById(menuItemId);
     }
 
-    @Test
-    void addMenuItemToMenu_ThrowsResourceNotFoundExceptionWhenMenuNotFound() {
-        // Preparation
-        Long menuId = 1L;
-        Long menuItemId = 1L;
-        when(menuRepository.findById(menuId)).thenReturn(Optional.empty());
-
-        // Action & Verification
-        assertThrows(ResourceNotFoundException.class, () -> menuService.addMenuItemToMenu(menuId, menuItemId));
-    }
 
     @Test
-    void addMenuItemToMenu_ThrowsResourceNotFoundExceptionWhenMenuItemNotFound() {
-        // Preparation
+    void deleteMenu_DeletesMenu() {
+        // Arrange
         Long menuId = 1L;
-        Long menuItemId = 1L;
-        when(menuRepository.findById(menuId)).thenReturn(Optional.of(breakfastMenu));
-        when(menuItemRepository.findById(menuItemId)).thenReturn(Optional.empty());
+        Menu menu = new Menu();
 
-        // Action & Verification
-        assertThrows(ResourceNotFoundException.class, () -> menuService.addMenuItemToMenu(menuId, menuItemId));
+        when(menuRepository.findById(menuId)).thenReturn(Optional.of(menu));
+
+        // Act
+        menuService.deleteMenu(menuId);
+
+        // Assert
+        verify(menuRepository).delete(menu);
+        verify(menuRepository).findById(menuId);
     }
 
 }

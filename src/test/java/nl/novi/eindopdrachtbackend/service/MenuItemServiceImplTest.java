@@ -108,20 +108,20 @@ public class MenuItemServiceImplTest {
         // Arrange
         Long menuItemId = 1L;
         MenuItem existingMenuItem = new MenuItem("Old Pizza", 10.99, "Old description", "old_pizza.jpg");
-        existingMenuItem.getIngredients().add(new Ingredient("Old Ingredient", 10)); // Bestaande ingredienten voor volledigheid
+        existingMenuItem.getIngredients().add(new Ingredient("Old Ingredient", 10));
 
         MenuItemInputDTO updateMenuItemDTO = new MenuItemInputDTO();
         updateMenuItemDTO.setName("Updated Pizza");
         updateMenuItemDTO.setPrice(11.99);
         updateMenuItemDTO.setDescription("Updated spicy pizza with extra cheese");
         updateMenuItemDTO.setImage("updated_spicy_pizza.jpg");
-        updateMenuItemDTO.setIngredientIds(Arrays.asList(3L));  // Nieuwe ingrediënt ID
+        updateMenuItemDTO.setIngredientIds(Arrays.asList(3L));
 
         Ingredient updatedIngredient = new Ingredient("Basil", 5);
 
         when(menuItemRepository.findById(menuItemId)).thenReturn(Optional.of(existingMenuItem));
         when(ingredientRepository.findById(3L)).thenReturn(Optional.of(updatedIngredient));
-        when(menuItemRepository.save(any(MenuItem.class))).thenReturn(existingMenuItem); // Geen ID manipulatie
+        when(menuItemRepository.save(any(MenuItem.class))).thenReturn(existingMenuItem);
 
         // Act
         MenuItemDTO updatedMenuItemDTO = menuItemService.updateMenuItem(menuItemId, updateMenuItemDTO);
@@ -130,7 +130,7 @@ public class MenuItemServiceImplTest {
         assertNotNull(updatedMenuItemDTO);
         assertEquals(updateMenuItemDTO.getName(), updatedMenuItemDTO.getName());
         assertEquals(updateMenuItemDTO.getPrice(), updatedMenuItemDTO.getPrice());
-        assertEquals(1, updatedMenuItemDTO.getIngredients().size()); // Controleer of één nieuw ingrediënt is toegevoegd
+        assertEquals(1, updatedMenuItemDTO.getIngredients().size());
         verify(menuItemRepository).findById(menuItemId);
         verify(menuItemRepository).save(any(MenuItem.class));
         verify(ingredientRepository).findById(3L);
