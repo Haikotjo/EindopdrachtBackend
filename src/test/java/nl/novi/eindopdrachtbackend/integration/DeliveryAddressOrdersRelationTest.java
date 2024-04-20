@@ -1,10 +1,7 @@
 package nl.novi.eindopdrachtbackend.integration;
 
 import jakarta.transaction.Transactional;
-import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
-import nl.novi.eindopdrachtbackend.model.Order;
-import nl.novi.eindopdrachtbackend.model.Restaurant;
-import nl.novi.eindopdrachtbackend.model.User;
+import nl.novi.eindopdrachtbackend.model.*;
 import nl.novi.eindopdrachtbackend.repository.DeliveryAddressRepository;
 import nl.novi.eindopdrachtbackend.repository.OrderRepository;
 import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
@@ -34,7 +31,7 @@ class DeliveryAddressOrdersRelationTest {
     @Transactional
     void testDeliveryAddressIsLinkedToOrdersCorrectly() {
         // Create and save a User
-        User user = new User("Eva Evers", "eva@example.com", "password123", User.Role.OWNER, "User Lane 2", "0698765432");
+        User user = new User("Eva Evers", "eva@example.com", "password123", UserRole.OWNER, "User Lane 2", "0698765432");
         user = userRepository.save(user);
 
         // Create and save a Restaurant

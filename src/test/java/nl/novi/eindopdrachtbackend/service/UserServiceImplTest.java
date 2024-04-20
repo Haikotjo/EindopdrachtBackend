@@ -2,6 +2,7 @@ package nl.novi.eindopdrachtbackend.service;
 
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.User;
+import nl.novi.eindopdrachtbackend.model.UserRole;
 import nl.novi.eindopdrachtbackend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,8 +31,8 @@ class UserServiceImplTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        johnDoe = new User("John Doe", "john.doe@example.com", "password123", User.Role.OWNER, "1234 Main St", "555-1234");
-        janeDoe = new User("Jane Doe", "jane.doe@example.com", "securePassword", User.Role.CUSTOMER, "5678 Market St", "555-5678");
+        johnDoe = new User("John Doe", "john.doe@example.com", "password123", UserRole.OWNER, "1234 Main St", "555-1234");
+        janeDoe = new User("Jane Doe", "jane.doe@example.com", "securePassword", UserRole.CUSTOMER, "5678 Market St", "555-5678");
     }
 
     @Test

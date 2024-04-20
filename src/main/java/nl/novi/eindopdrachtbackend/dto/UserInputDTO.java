@@ -1,14 +1,16 @@
 package nl.novi.eindopdrachtbackend.dto;
 
+import nl.novi.eindopdrachtbackend.model.UserRole;
+
 public class UserInputDTO {
     private String name;
     private String email;
     private String password;
-    private String role;
+    private UserRole role;
     private String address;
     private String phoneNumber;
 
-// Getters en setters
+    // Getters en setters
 
     public String getName() {
         return name;
@@ -34,11 +36,11 @@ public class UserInputDTO {
         this.password = password;
     }
 
-    public String getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 

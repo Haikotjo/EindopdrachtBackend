@@ -1,10 +1,7 @@
 package nl.novi.eindopdrachtbackend.integration;
 
 import jakarta.transaction.Transactional;
-import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
-import nl.novi.eindopdrachtbackend.model.Order;
-import nl.novi.eindopdrachtbackend.model.Restaurant;
-import nl.novi.eindopdrachtbackend.model.User;
+import nl.novi.eindopdrachtbackend.model.*;
 import nl.novi.eindopdrachtbackend.repository.DeliveryAddressRepository;
 import nl.novi.eindopdrachtbackend.repository.OrderRepository;
 import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
@@ -35,7 +32,7 @@ class RestaurantOrdersRelationTest {
         restaurant = restaurantRepository.save(restaurant);
 
         // Setup User
-        User user = new User("Jan Jansen", "jan@example.com", "password123", User.Role.OWNER, "Main Street 1", "0612345678");
+        User user = new User("Jan Jansen", "jan@example.com", "password123", UserRole.OWNER, "Main Street 1", "0612345678");
         user = userRepository.save(user);
 
         // Setup DeliveryAddress

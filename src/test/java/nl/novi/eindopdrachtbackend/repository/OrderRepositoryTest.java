@@ -1,9 +1,6 @@
 package nl.novi.eindopdrachtbackend.repository;
 
-import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
-import nl.novi.eindopdrachtbackend.model.Order;
-import nl.novi.eindopdrachtbackend.model.Restaurant;
-import nl.novi.eindopdrachtbackend.model.User;
+import nl.novi.eindopdrachtbackend.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +26,7 @@ public class OrderRepositoryTest {
     @BeforeEach
     void setUp() {
         // Setup data
-        user = new User("John Doe", "john@example.com", "password", User.Role.CUSTOMER, "123 Main St", "555-1234");
+        user = new User("John Doe", "john@example.com", "password", UserRole.CUSTOMER, "123 Main St", "555-1234");
         user = entityManager.persistAndFlush(user);
 
         restaurant = new Restaurant("The Good Food Place", "123 Main St", "555-1234");

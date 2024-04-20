@@ -2,8 +2,8 @@ package nl.novi.eindopdrachtbackend.model;
 
 import jakarta.persistence.*;
 
+import javax.management.relation.Role;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 @Entity
@@ -17,7 +17,7 @@ public class User {
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private UserRole role;
     private String address;
     private String phoneNumber;
 
@@ -25,32 +25,15 @@ public class User {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
-    public void addOrder(Order order) {
-        orders.add(order);
-        order.setCustomer(this);
-    }
-
-    public void removeOrder(Order order) {
-        orders.remove(order);
-        order.setCustomer(null);
-    }
-
     //Relation to DeliveryAddress
-
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private DeliveryAddress deliveryAddress;
 
-    //    constructors
-
-    public enum Role {
-        CUSTOMER,
-        OWNER
-    }
-
+    // Constructors
     public User() {
     }
 
-    public User(String name, String email, String password, Role role, String address, String phoneNumber) {
+    public User(String name, String email, String password, UserRole role, String address, String phoneNumber) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -59,7 +42,8 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public User(String name, String email, String password, Role role, String address, String phoneNumber, List<Order> orders, DeliveryAddress deliveryAddress) {
+
+    public User(String name, String email, String password, UserRole role, String address, String phoneNumber, List<Order> orders, DeliveryAddress deliveryAddress) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -70,9 +54,7 @@ public class User {
         this.deliveryAddress = deliveryAddress;
     }
 
-// getters and setters
-
-
+    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -101,11 +83,11 @@ public class User {
         this.password = password;
     }
 
-    public Role getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 
@@ -144,5 +126,3 @@ public class User {
         this.deliveryAddress = deliveryAddress;
     }
 }
-
-
