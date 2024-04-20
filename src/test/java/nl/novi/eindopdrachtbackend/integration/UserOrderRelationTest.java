@@ -11,6 +11,7 @@ import nl.novi.eindopdrachtbackend.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -30,35 +31,28 @@ class UserOrderRelationTest {
     private DeliveryAddressRepository deliveryAddressRepository;
 
     @Test
+    @Transactional
     public void testUserOrderRelation() {
         // Make User
-        User user = new User();
-        user.setName("Jan Jansen");
-        user.setEmail("jan@example.com");
-        user.setPassword("password123");
-        user.setRole(User.Role.CUSTOMER);
-        user.setAddress("Main Street 1");
-        user.setPhoneNumber("0612345678");
-        user = userRepository.save(user);
+        User user = new User("Jan Jansen", "jan@example.com", "password123", User.Role.CUSTOMER, "Main Street 1", "0612345678");
+        userRepository.saveAndFlush(user);
 
         // Make Restaurant
         Restaurant restaurant = new Restaurant("TestRestaurant", "Restaurant Street", "9876543210");
-        restaurant = restaurantRepository.save(restaurant);
+        restaurantRepository.saveAndFlush(restaurant);
 
         // Make DeliveryAddress
         DeliveryAddress deliveryAddress = new DeliveryAddress("Delivery Street", 1, "Delivery City", 1234, "1234AB", "Delivery Country");
-        deliveryAddress = deliveryAddressRepository.save(deliveryAddress);
+        deliveryAddress.setUser(user);
+        deliveryAddressRepository.saveAndFlush(deliveryAddress);
 
-        // Make order
+        // Make order and attach a User
         Order order = new Order(user, restaurant, deliveryAddress, true);
         user.addOrder(order);
+        orderRepository.saveAndFlush(order);
 
-        // Save order
-        order = orderRepository.save(order);
-        user = userRepository.save(user);
-
-        // Get saved User and verify relation
+        // verify order correctly attached to User
         User savedUser = userRepository.findById(user.getId()).orElseThrow();
-        assertTrue(savedUser.getOrders().contains(order), "The order is not linked to the user.");
+        assertTrue(savedUser.getOrders().contains(order), "De order is niet gekoppeld aan de gebruiker.");
     }
 }
