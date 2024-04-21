@@ -32,15 +32,16 @@ class OrderDeliveryAddressRelationTest {
     void testOrderIsLinkedToDeliveryAddressCorrectly() {
         // Create and save a User with the correct Role
         User user = new User("Jan Jansen", "jan@example.com", "securepassword", UserRole.CUSTOMER, "User Street 1", "0612345678");
-        user = userRepository.save(user);
+        user = userRepository.saveAndFlush(user); // Gebruik saveAndFlush om onmiddellijk te schrijven naar de database
+
+        // Create a DeliveryAddress
+        DeliveryAddress deliveryAddress = new DeliveryAddress("Delivery Street", 10, "Delivery City", 1000, "1000AB", "Delivery Country");
+        deliveryAddress.setUser(user); // Stel de gebruiker expliciet in op het adres
+        deliveryAddress = deliveryAddressRepository.saveAndFlush(deliveryAddress); // Sla het adres op
 
         // Create and save a Restaurant
         Restaurant restaurant = new Restaurant("The Good Food Place", "123 Main St", "555-1234");
         restaurant = restaurantRepository.save(restaurant);
-
-        // Create and save a DeliveryAddress
-        DeliveryAddress deliveryAddress = new DeliveryAddress("Delivery Street", 10, "Delivery City", 1000, "1000AB", "Delivery Country");
-        deliveryAddress = deliveryAddressRepository.save(deliveryAddress);
 
         // Create and save an Order
         Order order = new Order(user, restaurant, deliveryAddress, false);
