@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import jakarta.transaction.Transactional;
 import nl.novi.eindopdrachtbackend.dto.DeliveryAddressInputDTO;
 import nl.novi.eindopdrachtbackend.dto.DeliveryAddressMapper;
 import nl.novi.eindopdrachtbackend.dto.DeliveryAddressDTO;
@@ -78,35 +79,39 @@ class DeliveryAddressServiceImplTest {
     }
 
     @Test
-    void updateDeliveryAddress_ShouldUpdateAddress() {
+    void updateDeliveryAddress_ShouldUpdateAndReturnAddress() {
         // Arrange
         Long addressId = 1L;
         DeliveryAddress existingAddress = new DeliveryAddress();
-        ReflectionTestUtils.setField(existingAddress, "id", addressId); // Gebruik ReflectionTestUtils om de ID in te stellen
         existingAddress.setStreet("Old Street");
         existingAddress.setHouseNumber(123);
         existingAddress.setCity("Old City");
-        existingAddress.setPostcode("12345");
-        existingAddress.setCountry("USA");
+        existingAddress.setPostcode("Old Postcode");
+        existingAddress.setCountry("Old Country");
 
         DeliveryAddressInputDTO inputDTO = new DeliveryAddressInputDTO();
         inputDTO.setStreet("New Street");
         inputDTO.setHouseNumber(124);
         inputDTO.setCity("New City");
-        inputDTO.setPostcode("54321");
-        inputDTO.setCountry("USA");
+        inputDTO.setPostcode("New Postcode");
+        inputDTO.setCountry("New Country");
 
         when(deliveryAddressRepository.findById(addressId)).thenReturn(Optional.of(existingAddress));
+        when(deliveryAddressRepository.save(existingAddress)).thenReturn(existingAddress);
 
         // Act
         DeliveryAddressDTO result = deliveryAddressService.updateDeliveryAddress(addressId, inputDTO);
 
         // Assert
         assertNotNull(result);
-        assertEquals(inputDTO.getStreet(), result.getStreet());
+        assertEquals("New Street", result.getStreet());
+        assertEquals(124, result.getHouseNumber());
+        assertEquals("New City", result.getCity());
+        assertEquals("New Postcode", result.getPostcode());
+        assertEquals("New Country", result.getCountry());
+
         verify(deliveryAddressRepository).findById(addressId);
     }
-
 
     @Test
     void deleteDeliveryAddress_ShouldDeleteAddress() {
