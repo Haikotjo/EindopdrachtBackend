@@ -24,8 +24,8 @@ public class UserRepositoryTest {
     @BeforeEach
     void setUp() {
         // Preparation
-        User johnDoe = new User("John Doe", "johndoe@example.com", "password", UserRole.CUSTOMER, "123 Main St", "555-1234");
-        User janeDoe = new User("Jane Doe", "janedoe@example.com", "password", UserRole.CUSTOMER, "124 Main St", "555-5678");
+        User johnDoe = new User("John Doe", "johndoe@example.com", "password", UserRole.CUSTOMER, "555-1234");
+        User janeDoe = new User("Jane Doe", "janedoe@example.com", "password", UserRole.CUSTOMER, "555-5678");
         entityManager.persist(johnDoe);
         entityManager.persist(janeDoe);
         entityManager.flush();

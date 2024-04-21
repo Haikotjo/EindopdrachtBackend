@@ -25,7 +25,7 @@ public class DeliveryAddressRepositoryTest {
     @BeforeEach
     void setUp() {
         // Maak eerst een User aan, omdat DeliveryAddress een User nodig heeft
-        User user = new User("TestUser", "test@example.com", "testpass", UserRole.CUSTOMER, "123 Test St", "1234567890");
+        User user = new User("TestUser", "test@example.com", "testpass", UserRole.CUSTOMER, "1234567890");
         user = userRepository.save(user);  // Sla de User op om een ID te krijgen
 
         // Maak nu de DeliveryAddress aan met de opgeslagen User

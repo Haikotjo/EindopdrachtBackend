@@ -55,18 +55,15 @@ public class UserServiceImpl implements UserService {
         if (address == null) {
             address = new DeliveryAddress();
             user.setDeliveryAddress(address);
-            address.setUser(user);
         }
         address.setStreet(addressInputDTO.getStreet());
         address.setHouseNumber(addressInputDTO.getHouseNumber());
         address.setCity(addressInputDTO.getCity());
         address.setPostcode(addressInputDTO.getPostcode());
         address.setCountry(addressInputDTO.getCountry());
-
         userRepository.save(user);
         return UserMapper.toUserDTO(user);
     }
-
 
     @Override
     public List<UserDTO> getAllUsers() {

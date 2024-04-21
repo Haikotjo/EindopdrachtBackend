@@ -16,7 +16,6 @@ public class UserMapperTest {
         user.setEmail("john.doe@example.com");
         user.setPassword("password123");  // Normaal niet meegenomen in een DTO voor leesoperaties
         user.setRole(UserRole.CUSTOMER);
-        user.setAddress("123 Main St");
         user.setPhoneNumber("555-1234");
 
         // Act
@@ -26,7 +25,6 @@ public class UserMapperTest {
         assertEquals("John Doe", userDTO.getName());
         assertEquals("john.doe@example.com", userDTO.getEmail());
         assertEquals(UserRole.CUSTOMER, userDTO.getRole());
-        assertEquals("123 Main St", userDTO.getAddress());
         assertEquals("555-1234", userDTO.getPhoneNumber());
     }
 
@@ -38,7 +36,6 @@ public class UserMapperTest {
         userInputDTO.setEmail("jane.doe@example.com");
         userInputDTO.setPassword("securepassword");
         userInputDTO.setRole(UserRole.OWNER);
-        userInputDTO.setAddress("456 Elm St");
         userInputDTO.setPhoneNumber("555-6789");
 
         // Act
@@ -49,7 +46,6 @@ public class UserMapperTest {
         assertEquals("jane.doe@example.com", user.getEmail());
         assertEquals("securepassword", user.getPassword());
         assertEquals(UserRole.OWNER, user.getRole());
-        assertEquals("456 Elm St", user.getAddress());
         assertEquals("555-6789", user.getPhoneNumber());
     }
 }

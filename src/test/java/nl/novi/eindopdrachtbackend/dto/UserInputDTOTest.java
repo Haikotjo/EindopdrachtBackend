@@ -15,16 +15,14 @@ public class UserInputDTOTest {
         userInputDTO.setName("John Doe");
         userInputDTO.setEmail("john.doe@example.com");
         userInputDTO.setPassword("strongpassword");
-        userInputDTO.setRole(UserRole.CUSTOMER); // Use enum and convert to String for the role
-        userInputDTO.setAddress("123 Main St");
+        userInputDTO.setRole(UserRole.CUSTOMER);
         userInputDTO.setPhoneNumber("123-456-7890");
 
         // Assert the values using getters
         assertEquals("John Doe", userInputDTO.getName(), "Name did not match");
         assertEquals("john.doe@example.com", userInputDTO.getEmail(), "Email did not match");
         assertEquals("strongpassword", userInputDTO.getPassword(), "Password did not match");
-        assertEquals(UserRole.CUSTOMER, userInputDTO.getRole(), "Role did not match"); // Using toString to compare String representation
-        assertEquals("123 Main St", userInputDTO.getAddress(), "Address did not match");
+        assertEquals(UserRole.CUSTOMER, userInputDTO.getRole(), "Role did not match");
         assertEquals("123-456-7890", userInputDTO.getPhoneNumber(), "Phone number did not match");
     }
 }

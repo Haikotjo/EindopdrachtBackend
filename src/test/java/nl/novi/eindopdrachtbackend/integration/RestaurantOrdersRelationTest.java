@@ -32,7 +32,7 @@ class RestaurantOrdersRelationTest {
         restaurant = restaurantRepository.save(restaurant);
 
         // Setup User
-        User user = new User("Jan Jansen", "jan@example.com", "password123", UserRole.OWNER, "Main Street 1", "0612345678");
+        User user = new User("Jan Jansen", "jan@example.com", "password123", UserRole.OWNER, "0612345678");
         user = userRepository.save(user);
 
         // Setup DeliveryAddress

@@ -26,7 +26,7 @@ public class OrderRepositoryTest {
     @BeforeEach
     void setUp() {
         // Setup data
-        user = new User("John Doe", "john@example.com", "password", UserRole.CUSTOMER, "123 Main St", "555-1234");
+        user = new User("John Doe", "john@example.com", "password", UserRole.CUSTOMER, "555-1234");
         user = entityManager.persistAndFlush(user);
 
         restaurant = new Restaurant("The Good Food Place", "123 Main St", "555-1234");

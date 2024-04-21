@@ -31,7 +31,7 @@ class UserDeliveryAddressIntegrationTest {
     @Transactional
     void testOrderIsLinkedToDeliveryAddressCorrectly() {
         // Create and save a User with the correct Role
-        User user = new User("Jan Jansen", "jan@example.com", "securepassword", UserRole.CUSTOMER, "User Street 1", "0612345678");
+        User user = new User("Jan Jansen", "jan@example.com", "securepassword", UserRole.CUSTOMER, "0612345678");
         user = userRepository.save(user);
 
         // Create and save a Restaurant
