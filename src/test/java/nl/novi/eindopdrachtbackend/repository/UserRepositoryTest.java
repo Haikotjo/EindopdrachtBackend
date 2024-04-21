@@ -50,4 +50,15 @@ public class UserRepositoryTest {
         assertEquals(1, foundUsers.size());
         assertTrue(foundUsers.stream().anyMatch(user -> "Jane Doe".equals(user.getName())));
     }
+
+    @Test
+    void whenFindByRole_thenReturnUsersWithThatRole() {
+        // Action
+        List<User> foundUsers = userRepository.findByRole(UserRole.CUSTOMER);
+
+        // Verification
+        assertEquals(2, foundUsers.size(), "Should return 2 users with CUSTOMER role");
+        assertTrue(foundUsers.stream().allMatch(user -> user.getRole() == UserRole.CUSTOMER), "All users should have the CUSTOMER role");
+    }
+
 }

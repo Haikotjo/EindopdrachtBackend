@@ -7,18 +7,16 @@ public class UserDTO {
     private String name;
     private String email;
     private UserRole role;
-    private String address;
     private String phoneNumber;
 
     // Constructors
     public UserDTO() {}
 
-    public UserDTO(Long id, String name, String email, UserRole role, String address, String phoneNumber) {
+    public UserDTO(Long id, String name, String email, UserRole role, String phoneNumber) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
-        this.address = address;
         this.phoneNumber = phoneNumber;
     }
 
@@ -53,14 +51,6 @@ public class UserDTO {
 
     public void setRole(UserRole role) {
         this.role = role;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getPhoneNumber() {

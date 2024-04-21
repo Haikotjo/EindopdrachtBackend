@@ -87,6 +87,7 @@ public class MenuServiceImpl implements MenuService {
                 .orElseThrow(() -> new ResourceNotFoundException("Menu not found for this id :: " + id));
         menuRepository.delete(menu);
     }
+
     @Override
     public List<MenuDTO> findByNameIgnoreCase(String name) {
         List<Menu> menus = menuRepository.findByNameIgnoreCase(name);

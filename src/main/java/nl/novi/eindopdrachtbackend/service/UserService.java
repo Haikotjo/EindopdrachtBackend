@@ -1,13 +1,19 @@
 package nl.novi.eindopdrachtbackend.service;
 
-import nl.novi.eindopdrachtbackend.model.User;
+import nl.novi.eindopdrachtbackend.dto.MenuDTO;
+import nl.novi.eindopdrachtbackend.dto.UserDTO;
+import nl.novi.eindopdrachtbackend.dto.UserInputDTO;
+import nl.novi.eindopdrachtbackend.model.UserRole;
+
 import java.util.List;
 
 public interface UserService {
-    User createUser(User user);
-    User updateUser(Long id, User userDetails);
-    List<User> getAllUsers();
-    User getUserById(Long id);
+    UserDTO createUser(UserInputDTO userInputDTO);
+    UserDTO updateUser(Long id, UserInputDTO userInputDTO);
+    List<UserDTO> getAllUsers();
+    UserDTO getUserById(Long id);
     void deleteUser(Long id);
-    List<User> findByNameIgnoreCase(String name);
+    List<UserDTO> findByNameIgnoreCase(String name);
+    List<UserDTO> findByRole(UserRole role);
+
 }

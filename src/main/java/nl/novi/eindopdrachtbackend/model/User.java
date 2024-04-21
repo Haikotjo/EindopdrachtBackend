@@ -18,7 +18,6 @@ public class User {
     private String password;
     @Enumerated(EnumType.STRING)
     private UserRole role;
-    private String address;
     private String phoneNumber;
 
     //Relation to orders
@@ -26,29 +25,27 @@ public class User {
     private List<Order> orders = new ArrayList<>();
 
     //Relation to DeliveryAddress
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private DeliveryAddress deliveryAddress;
 
     // Constructors
     public User() {
     }
 
-    public User(String name, String email, String password, UserRole role, String address, String phoneNumber) {
+    public User(String name, String email, String password, UserRole role, String phoneNumber) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
-        this.address = address;
         this.phoneNumber = phoneNumber;
     }
 
 
-    public User(String name, String email, String password, UserRole role, String address, String phoneNumber, List<Order> orders, DeliveryAddress deliveryAddress) {
+    public User(String name, String email, String password, UserRole role, String phoneNumber, List<Order> orders, DeliveryAddress deliveryAddress) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
-        this.address = address;
         this.phoneNumber = phoneNumber;
         this.orders = orders;
         this.deliveryAddress = deliveryAddress;
@@ -89,14 +86,6 @@ public class User {
 
     public void setRole(UserRole role) {
         this.role = role;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getPhoneNumber() {

@@ -9,7 +9,6 @@ import java.util.List;
 @Table(name = "deliveryAddresses")
 public class DeliveryAddress {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String street;

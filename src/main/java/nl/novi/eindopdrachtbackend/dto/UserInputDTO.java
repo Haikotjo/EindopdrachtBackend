@@ -7,7 +7,6 @@ public class UserInputDTO {
     private String email;
     private String password;
     private UserRole role;
-    private String address;
     private String phoneNumber;
 
     // Getters en setters
@@ -42,14 +41,6 @@ public class UserInputDTO {
 
     public void setRole(UserRole role) {
         this.role = role;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getPhoneNumber() {
