@@ -1,6 +1,7 @@
 package nl.novi.eindopdrachtbackend.service;
 
 import nl.novi.eindopdrachtbackend.dto.*;
+import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
 import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.model.UserRole;
@@ -132,4 +133,46 @@ public class UserServiceImplTest {
         assertEquals(1, result.size());
         assertEquals("John Doe", result.get(0).getName());
     }
+    @Test
+    void getAddressByUserId_ShouldReturnAddress_WhenUserHasAddress() throws NoSuchFieldException, IllegalAccessException {
+        User user = new User("John Doe", "john@example.com", "password", UserRole.CUSTOMER, "555-1234");
+
+        Field idField = User.class.getDeclaredField("id");
+        idField.setAccessible(true);
+        idField.set(user, 1L);
+
+        DeliveryAddress address = new DeliveryAddress();
+        address.setStreet("123 Main St");
+        address.setCity("Anytown");
+        address.setCountry("USA");
+        address.setPostcode("12345");
+        address.setHouseNumber(456);
+
+        user.setDeliveryAddress(address);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        DeliveryAddressDTO result = userService.getAddressByUserId(1L);
+
+        assertNotNull(result, "Address should not be null");
+        assertEquals("123 Main St", result.getStreet());
+    }
+
+    @Test
+    void getAddressByUserId_ShouldThrowException_WhenUserHasNoAddress() throws NoSuchFieldException, IllegalAccessException {
+        User user = new User("John Doe", "john@example.com", "password", UserRole.CUSTOMER, "555-1234");
+
+        Field idField = User.class.getDeclaredField("id");
+        idField.setAccessible(true);
+        idField.set(user, 1L);
+
+        user.setDeliveryAddress(null);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        assertThrows(ResourceNotFoundException.class, () -> userService.getAddressByUserId(1L),
+                "Should throw exception when address is null");
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package nl.novi.eindopdrachtbackend.controller;
 
+import nl.novi.eindopdrachtbackend.dto.DeliveryAddressDTO;
 import nl.novi.eindopdrachtbackend.dto.UserDTO;
 import nl.novi.eindopdrachtbackend.dto.UserInputDTO;
 import nl.novi.eindopdrachtbackend.dto.DeliveryAddressInputDTO;
@@ -89,5 +90,24 @@ public class UserControllerTest {
 
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
+
+    @Test
+    void getAddressByUserId_ShouldReturnAddress() {
+        DeliveryAddressDTO expectedAddressDTO = new DeliveryAddressDTO();
+        expectedAddressDTO.setStreet("123 Main St");
+        expectedAddressDTO.setCity("Anytown");
+        expectedAddressDTO.setCountry("USA");
+        expectedAddressDTO.setPostcode("12345");
+        expectedAddressDTO.setHouseNumber(456);
+
+        when(userService.getAddressByUserId(1L)).thenReturn(expectedAddressDTO);
+
+        ResponseEntity<DeliveryAddressDTO> response = userController.getAddressByUserId(1L);
+
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("123 Main St", response.getBody().getStreet());
+    }
+
 
 }
