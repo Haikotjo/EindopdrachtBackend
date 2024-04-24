@@ -22,78 +22,73 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Override
-    public UserDTO createUser(UserInputDTO userInputDTO) {
-        User user = UserMapper.toUser(userInputDTO);
-        User savedUser = userRepository.save(user);
-        return UserMapper.toUserDTO(savedUser);
-    }
-
-    @Override
-    public UserDTO updateUser(Long id, UserInputDTO userInputDTO) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + id));
-        user.setName(userInputDTO.getName());
-        user.setEmail(userInputDTO.getEmail());
-        user.setPassword(userInputDTO.getPassword());
-        user.setRole(userInputDTO.getRole());
-        user.setPhoneNumber(userInputDTO.getPhoneNumber());
-        userRepository.save(user);
-        return UserMapper.toUserDTO(user);
-    }
-
-    @Transactional
-    @Override
-    public UserDTO updateUserAndAddress(Long userId, UserInputDTO userInputDTO, DeliveryAddressInputDTO addressInputDTO) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + userId));
-        user.setName(userInputDTO.getName());
-        user.setEmail(userInputDTO.getEmail());
-        user.setPassword(userInputDTO.getPassword());
-        user.setRole(userInputDTO.getRole());
-        user.setPhoneNumber(userInputDTO.getPhoneNumber());
-
-        DeliveryAddress address = user.getDeliveryAddress();
-        if (address == null) {
-            address = new DeliveryAddress();
-            user.setDeliveryAddress(address);
-        }
-        address.setStreet(addressInputDTO.getStreet());
-        address.setHouseNumber(addressInputDTO.getHouseNumber());
-        address.setCity(addressInputDTO.getCity());
-        address.setPostcode(addressInputDTO.getPostcode());
-        address.setCountry(addressInputDTO.getCountry());
-        userRepository.save(user);
-        return UserMapper.toUserDTO(user);
-    }
 
     @Override
     public List<UserDTO> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        return users.stream().map(UserMapper::toUserDTO).collect(Collectors.toList());
+        return userRepository.findAll().stream()
+                .map(UserMapper::toUserDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     public UserDTO getUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + id));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
         return UserMapper.toUserDTO(user);
     }
 
     @Override
+    public UserDTO createUser(UserInputDTO userInputDTO) {
+        User user = UserMapper.toUser(userInputDTO);
+        user = userRepository.save(user);
+        return UserMapper.toUserDTO(user);
+    }
+
+    @Override
+    public UserDTO updateUser(Long id, UserInputDTO userInputDTO) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        existingUser.setName(userInputDTO.getName());
+        existingUser.setEmail(userInputDTO.getEmail());
+        existingUser.setRole(userInputDTO.getRole());
+        existingUser.setPhoneNumber(userInputDTO.getPhoneNumber());
+        existingUser = userRepository.save(existingUser);
+        return UserMapper.toUserDTO(existingUser);
+    }
+
+    @Override
     public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        userRepository.delete(existingUser);
     }
 
     @Override
     public List<UserDTO> findByNameIgnoreCase(String name) {
-        List<User> users = userRepository.findByNameIgnoreCase(name);
-        return users.stream().map(UserMapper::toUserDTO).collect(Collectors.toList());
+        return userRepository.findByNameIgnoreCase(name).stream()
+                .map(UserMapper::toUserDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<UserDTO> findByRole(UserRole role) {
-        List<User> users = userRepository.findByRole(role);  // Aangepast om UserRole te gebruiken
-        if (users.isEmpty()) {
-            throw new ResourceNotFoundException("No users found with role: " + role);
-        }
-        return users.stream().map(UserMapper::toUserDTO).collect(Collectors.toList());
+        return userRepository.findByRole(role).stream()
+                .map(UserMapper::toUserDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public UserDTO updateUserDeliveryAddress(Long userId, DeliveryAddressInputDTO addressDTO) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+        DeliveryAddress address = user.getDeliveryAddress() != null ? user.getDeliveryAddress() : new DeliveryAddress();
+        address.setStreet(addressDTO.getStreet());
+        address.setHouseNumber(addressDTO.getHouseNumber());
+        address.setCity(addressDTO.getCity());
+        address.setPostcode(addressDTO.getPostcode());
+        address.setCountry(addressDTO.getCountry());
+        user.setDeliveryAddress(address);
+        userRepository.save(user);
+        return UserMapper.toUserDTO(user);
     }
 }
