@@ -23,13 +23,19 @@ public class UserRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        // Preparation
+        entityManager.getEntityManager().createQuery("DELETE FROM DeliveryAddress").executeUpdate();
+        entityManager.getEntityManager().createQuery("DELETE FROM Order").executeUpdate();
+
+        entityManager.getEntityManager().createQuery("DELETE FROM User").executeUpdate();
+        entityManager.clear();
+
         User johnDoe = new User("John Doe", "johndoe@example.com", "password", UserRole.CUSTOMER, "555-1234");
         User janeDoe = new User("Jane Doe", "janedoe@example.com", "password", UserRole.CUSTOMER, "555-5678");
         entityManager.persist(johnDoe);
         entityManager.persist(janeDoe);
         entityManager.flush();
     }
+
 
     @Test
     void whenFindByNameIgnoreCase_thenReturnUser() {

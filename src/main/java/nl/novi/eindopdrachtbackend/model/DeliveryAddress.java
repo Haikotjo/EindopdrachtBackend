@@ -25,6 +25,7 @@ public class DeliveryAddress {
 
     public DeliveryAddress() {
     }
+
     public DeliveryAddress(String street,int houseNumber, String city, int postcodeNumber, String postcode, String country) {
         this.street = street;
         this.houseNumber = houseNumber;
