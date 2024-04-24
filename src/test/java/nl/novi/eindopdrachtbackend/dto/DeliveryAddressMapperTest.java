@@ -53,4 +53,17 @@ public class DeliveryAddressMapperTest {
         assertEquals("12345", address.getPostcode());
         assertEquals("Freedonia", address.getCountry());
     }
+
+    @Test
+    public void toDeliveryAddressDTONullAddressTest() {
+        // Arrange
+        DeliveryAddress address = null;
+
+        // Act
+        DeliveryAddressDTO dto = DeliveryAddressMapper.toDeliveryAddressDTO(address);
+
+        // Assert
+        assertNull(dto, "DeliveryAddressDTO should be null when input address is null.");
+    }
+
 }

@@ -6,6 +6,9 @@ public class DeliveryAddressMapper {
 
     // Convert DeliveryAddress entity to DeliveryAddressDTO
     public static DeliveryAddressDTO toDeliveryAddressDTO(DeliveryAddress address) {
+        if (address == null) {
+            return null;
+        }
         DeliveryAddressDTO dto = new DeliveryAddressDTO();
         dto.setId(address.getId());
         dto.setStreet(address.getStreet());

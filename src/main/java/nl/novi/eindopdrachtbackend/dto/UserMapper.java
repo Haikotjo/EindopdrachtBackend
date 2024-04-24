@@ -1,5 +1,6 @@
 package nl.novi.eindopdrachtbackend.dto;
 
+import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
 import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.model.UserRole;
 
@@ -27,7 +28,16 @@ public class UserMapper {
         user.setRole(inputDTO.getRole());
         user.setPhoneNumber(inputDTO.getPhoneNumber());
         user.setPhoneNumber(inputDTO.getPhoneNumber());
-        user.setDeliveryAddress(DeliveryAddressMapper.toDeliveryAddress(inputDTO.getDeliveryAddress()));
+
+        if (inputDTO.getDeliveryAddress() != null) {
+            DeliveryAddress address = new DeliveryAddress();
+            address.setStreet(inputDTO.getDeliveryAddress().getStreet());
+            address.setHouseNumber(inputDTO.getDeliveryAddress().getHouseNumber());
+            address.setCity(inputDTO.getDeliveryAddress().getCity());
+            address.setPostcode(inputDTO.getDeliveryAddress().getPostcode());
+            address.setCountry(inputDTO.getDeliveryAddress().getCountry());
+            user.setDeliveryAddress(address);
+        }
         return user;
     }
 }

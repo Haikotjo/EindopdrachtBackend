@@ -69,4 +69,23 @@ public class UserMapperTest {
         assertEquals("Second Street 456", user.getDeliveryAddress().getStreet());
         assertEquals("Shelbyville", user.getDeliveryAddress().getCity());
     }
+
+    @Test
+    public void toUserDTONullAddressTest() {
+        // Arrange
+        User user = new User();
+        user.setName("John Doe");
+        user.setEmail("john.doe@example.com");
+        user.setPassword("password123");
+        user.setRole(UserRole.CUSTOMER);
+        user.setPhoneNumber("555-1234");
+        user.setDeliveryAddress(null);  // Geen adres ingesteld
+
+        // Act
+        UserDTO userDTO = UserMapper.toUserDTO(user);
+
+        // Assert
+        assertEquals("John Doe", userDTO.getName());
+        assertNull(userDTO.getDeliveryAddress(), "DeliveryAddress moet null zijn als de User geen adres heeft.");
+    }
 }

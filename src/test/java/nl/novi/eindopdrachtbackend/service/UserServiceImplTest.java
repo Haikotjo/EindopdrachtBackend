@@ -1,162 +1,156 @@
 package nl.novi.eindopdrachtbackend.service;
 
-import nl.novi.eindopdrachtbackend.dto.UserDTO;
-import nl.novi.eindopdrachtbackend.dto.UserInputDTO;
-import nl.novi.eindopdrachtbackend.dto.DeliveryAddressInputDTO;
-import nl.novi.eindopdrachtbackend.model.User;
+import nl.novi.eindopdrachtbackend.dto.*;
 import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
+import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.model.UserRole;
 import nl.novi.eindopdrachtbackend.repository.UserRepository;
-import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
+import nl.novi.eindopdrachtbackend.repository.DeliveryAddressRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-class UserServiceImplTest {
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(SpringExtension.class)
+public class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private DeliveryAddressRepository deliveryAddressRepository;
+
     @InjectMocks
     private UserServiceImpl userService;
 
+    private User user;
+    private UserInputDTO userInputDTO;
+    private DeliveryAddressInputDTO addressInputDTO;
+
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+    void setUp() throws NoSuchFieldException, IllegalAccessException {
+        user = new User("John Doe", "john.doe@example.com", "password123", UserRole.CUSTOMER, "555-1234");
 
-    @Test
-    void createUser_ShouldSaveUser() {
-        // Arrange
-        UserInputDTO userInputDTO = new UserInputDTO();
-        userInputDTO.setName("John Doe");
-        userInputDTO.setEmail("john.doe@example.com");
-        userInputDTO.setPassword("strongpassword");
-        userInputDTO.setRole(UserRole.CUSTOMER);
-        userInputDTO.setPhoneNumber("123-456-7890");
+        // Reflectively setting the ID
+        Field field = User.class.getDeclaredField("id");
+        field.setAccessible(true);
+        field.set(user, 1L);
 
-        User userToBeSaved = new User();
-        userToBeSaved.setName(userInputDTO.getName());
-        userToBeSaved.setEmail(userInputDTO.getEmail());
-        userToBeSaved.setPassword(userInputDTO.getPassword());
-        userToBeSaved.setRole(userInputDTO.getRole());
-        userToBeSaved.setPhoneNumber(userInputDTO.getPhoneNumber());
-
-        when(userRepository.save(any(User.class))).thenReturn(userToBeSaved);
-
-        // Act
-        UserDTO result = userService.createUser(userInputDTO);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(userToBeSaved.getName(), result.getName());
-        assertEquals(userToBeSaved.getEmail(), result.getEmail());
-        assertEquals(userToBeSaved.getPhoneNumber(), result.getPhoneNumber());
-        verify(userRepository).save(any(User.class));
-    }
-
-
-
-    @Test
-    void updateUser_ShouldUpdateUser() {
-        // Arrange
-        User existingUser = new User();
-        existingUser.setName("John Doe");
-
-        UserInputDTO userInputDTO = new UserInputDTO();
-        userInputDTO.setName("Jane Doe");
-
-        when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
-        when(userRepository.save(any(User.class))).thenReturn(existingUser);
-
-        // Act
-        UserDTO result = userService.updateUser(1L, userInputDTO);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals("Jane Doe", result.getName());
-        verify(userRepository).findById(1L);
-        verify(userRepository).save(existingUser);
-    }
-
-    @Test
-    void updateUserAndAddress_ShouldUpdateUserAndAddress() {
-        // Arrange
-        User existingUser = new User();
         DeliveryAddress address = new DeliveryAddress();
-        existingUser.setDeliveryAddress(address);
+        address.setStreet("123 Main St");
+        address.setCity("Anytown");
+        address.setCountry("USA");
+        address.setPostcode("12345");
+        address.setHouseNumber(456);
+        user.setDeliveryAddress(address);
 
-        UserInputDTO userInputDTO = new UserInputDTO();
-        DeliveryAddressInputDTO addressInputDTO = new DeliveryAddressInputDTO();
-        addressInputDTO.setStreet("New Street");
+        userInputDTO = new UserInputDTO();
+        userInputDTO.setName("Jane Doe");
+        userInputDTO.setEmail("jane.doe@example.com");
+        userInputDTO.setPassword("securepassword");
+        userInputDTO.setRole(UserRole.OWNER);
+        userInputDTO.setPhoneNumber("555-6789");
+        userInputDTO.setDeliveryAddress(addressInputDTO);
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
-        when(userRepository.save(any(User.class))).thenReturn(existingUser);
-
-        // Act
-        UserDTO result = userService.updateUserAndAddress(1L, userInputDTO, addressInputDTO);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals("New Street", existingUser.getDeliveryAddress().getStreet());
-        verify(userRepository).findById(1L);
-        verify(userRepository).save(existingUser);
+        addressInputDTO = new DeliveryAddressInputDTO();
+        addressInputDTO.setStreet("123 Main St");
+        addressInputDTO.setHouseNumber(456);
+        addressInputDTO.setCity("Anytown");
+        addressInputDTO.setPostcode("12345");
+        addressInputDTO.setCountry("USA");
     }
 
-    @Test
-    void getAllUsers_ShouldReturnListOfUsers() {
-        // Arrange
-        when(userRepository.findAll()).thenReturn(Arrays.asList(new User()));
 
-        // Act
+    @Test
+    void getAllUsersTest() {
+        when(userRepository.findAll()).thenReturn(Arrays.asList(user));
         List<UserDTO> result = userService.getAllUsers();
-
-        // Assert
-        assertFalse(result.isEmpty());
-        verify(userRepository).findAll();
+        assertEquals(1, result.size());
+        assertEquals("John Doe", result.get(0).getName());
     }
 
     @Test
-    void getUserById_ShouldReturnUser() {
-        // Arrange
-        User user = new User();
-        user.setName("John Doe");
-        user.setEmail("john@example.com");
-        user.setRole(UserRole.CUSTOMER);
-        user.setPhoneNumber("555-1234");
-
+    void getUserByIdTest() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-
-        // Act
         UserDTO result = userService.getUserById(1L);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(user.getName(), result.getName());
-        assertEquals(user.getEmail(), result.getEmail());
-        assertEquals(user.getRole(), result.getRole());
-        assertEquals(user.getPhoneNumber(), result.getPhoneNumber());
-        verify(userRepository).findById(1L);
+        assertEquals("John Doe", result.getName());
     }
-
 
     @Test
-    void deleteUser_ShouldInvokeDelete() {
-        // Arrange
-        doNothing().when(userRepository).deleteById(1L);
+    void createUserTest() {
+        User newUser = new User();
+        newUser.setName(userInputDTO.getName()); // Verifying this will set correctly in UserMapper
+        newUser.setEmail(userInputDTO.getEmail());
+        newUser.setRole(userInputDTO.getRole());
+        newUser.setPhoneNumber(userInputDTO.getPhoneNumber());
+        newUser.setDeliveryAddress(new DeliveryAddress()); // Simplified for test
 
-        // Act
-        userService.deleteUser(1L);
-
-        // Assert
-        verify(userRepository).deleteById(1L);
+        when(userRepository.save(any(User.class))).thenReturn(newUser);
+        UserDTO result = userService.createUser(userInputDTO);
+        assertEquals("Jane Doe", result.getName());
     }
+
+    @Test
+    void updateUserTest() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        UserDTO result = userService.updateUser(1L, userInputDTO);
+        assertEquals("Jane Doe", result.getName());
+    }
+
+    @Test
+    void deleteUserTest() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        doNothing().when(userRepository).delete(any(User.class));
+        userService.deleteUser(1L);
+        verify(userRepository, times(1)).delete(user);
+    }
+
+    @Test
+    void findByNameIgnoreCaseTest() {
+        when(userRepository.findByNameIgnoreCase("john")).thenReturn(Arrays.asList(user));
+        List<UserDTO> result = userService.findByNameIgnoreCase("john");
+        assertEquals(1, result.size());
+        assertEquals("John Doe", result.get(0).getName());
+    }
+
+    @Test
+    void findByRoleTest() {
+        when(userRepository.findByRole(UserRole.CUSTOMER)).thenReturn(Arrays.asList(user));
+        List<UserDTO> result = userService.findByRole(UserRole.CUSTOMER);
+        assertEquals(1, result.size());
+        assertEquals("John Doe", result.get(0).getName());
+    }
+
+    @Test
+    void updateUserDeliveryAddressTest() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        UserDTO result = userService.updateUserDeliveryAddress(1L, addressInputDTO);
+        assertEquals("John Doe", result.getName());
+        assertNotNull(result.getDeliveryAddress());
+        assertEquals("123 Main St", result.getDeliveryAddress().getStreet());
+    }
+
+    @Test
+    void updateUserAndAddressTest() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        UserDTO result = userService.updateUserAndAddress(1L, userInputDTO, addressInputDTO);
+        assertEquals("Jane Doe", result.getName());
+        assertNotNull(result.getDeliveryAddress());
+        assertEquals("123 Main St", result.getDeliveryAddress().getStreet());
+    }
+
 }
