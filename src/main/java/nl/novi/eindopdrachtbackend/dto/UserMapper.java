@@ -13,6 +13,8 @@ public class UserMapper {
         dto.setEmail(user.getEmail());
         dto.setRole(user.getRole());
         dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setDeliveryAddress(DeliveryAddressMapper.toDeliveryAddressDTO(user.getDeliveryAddress()));
+//        dto.setOrders(OrderMapper.toOrderDTOList(user.getOrders()));
         return dto;
     }
 
@@ -24,6 +26,8 @@ public class UserMapper {
         user.setPassword(inputDTO.getPassword());
         user.setRole(inputDTO.getRole());
         user.setPhoneNumber(inputDTO.getPhoneNumber());
+        user.setPhoneNumber(inputDTO.getPhoneNumber());
+        user.setDeliveryAddress(DeliveryAddressMapper.toDeliveryAddress(inputDTO.getDeliveryAddress()));
         return user;
     }
 }

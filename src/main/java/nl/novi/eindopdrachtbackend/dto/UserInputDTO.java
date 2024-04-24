@@ -8,6 +8,7 @@ public class UserInputDTO {
     private String password;
     private UserRole role;
     private String phoneNumber;
+    private DeliveryAddressInputDTO deliveryAddress;
 
     // Getters en setters
 
@@ -49,5 +50,13 @@ public class UserInputDTO {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public DeliveryAddressInputDTO getDeliveryAddress() {
+        return deliveryAddress;
+    }
+
+    public void setDeliveryAddress(DeliveryAddressInputDTO deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
     }
 }
