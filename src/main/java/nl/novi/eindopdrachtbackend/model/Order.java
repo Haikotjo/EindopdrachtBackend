@@ -26,8 +26,6 @@ public class Order {
     @JoinColumn(name = "delivery_address_id", nullable = false)
     private DeliveryAddress deliveryAddress;
 
-
-
     //    constructors
 
     public Order() {
