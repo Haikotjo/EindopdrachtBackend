@@ -1,5 +1,6 @@
 package nl.novi.eindopdrachtbackend.controller;
 
+import nl.novi.eindopdrachtbackend.dto.DeliveryAddressDTO;
 import nl.novi.eindopdrachtbackend.dto.UserDTO;
 import nl.novi.eindopdrachtbackend.dto.UserInputDTO;
 import nl.novi.eindopdrachtbackend.dto.DeliveryAddressInputDTO;
@@ -59,6 +60,12 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> getUsersByRole(@RequestParam UserRole role) {
         List<UserDTO> users = userService.findByRole(role);
         return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/{userId}/address")
+    public ResponseEntity<DeliveryAddressDTO> getAddressByUserId(@PathVariable Long userId) {
+        DeliveryAddressDTO addressDTO = userService.getAddressByUserId(userId);
+        return new ResponseEntity<>(addressDTO, HttpStatus.OK);
     }
 
 }

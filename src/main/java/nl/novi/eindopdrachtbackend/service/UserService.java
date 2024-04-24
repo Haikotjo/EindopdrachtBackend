@@ -1,5 +1,6 @@
 package nl.novi.eindopdrachtbackend.service;
 
+import nl.novi.eindopdrachtbackend.dto.DeliveryAddressDTO;
 import nl.novi.eindopdrachtbackend.dto.UserDTO;
 import nl.novi.eindopdrachtbackend.dto.UserInputDTO;
 import nl.novi.eindopdrachtbackend.dto.DeliveryAddressInputDTO;
@@ -15,5 +16,6 @@ public interface UserService {
     void deleteUser(Long id);
     List<UserDTO> findByNameIgnoreCase(String name);
     List<UserDTO> findByRole(UserRole role);
+    DeliveryAddressDTO getAddressByUserId(Long userId);
 }
 

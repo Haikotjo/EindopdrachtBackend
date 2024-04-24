@@ -1,9 +1,6 @@
 package nl.novi.eindopdrachtbackend.service;
 
-import nl.novi.eindopdrachtbackend.dto.UserDTO;
-import nl.novi.eindopdrachtbackend.dto.UserInputDTO;
-import nl.novi.eindopdrachtbackend.dto.DeliveryAddressInputDTO;
-import nl.novi.eindopdrachtbackend.dto.UserMapper;
+import nl.novi.eindopdrachtbackend.dto.*;
 import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
 import nl.novi.eindopdrachtbackend.model.UserRole;
@@ -77,4 +74,14 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public DeliveryAddressDTO getAddressByUserId(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+        DeliveryAddress address = user.getDeliveryAddress();
+        if (address == null) {
+            throw new ResourceNotFoundException("Address not found for user id: " + userId);
+        }
+        return DeliveryAddressMapper.toDeliveryAddressDTO(address);
+    }
 }
