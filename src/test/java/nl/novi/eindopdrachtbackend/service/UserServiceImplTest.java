@@ -143,14 +143,4 @@ public class UserServiceImplTest {
         assertEquals("123 Main St", result.getDeliveryAddress().getStreet());
     }
 
-    @Test
-    void updateUserAndAddressTest() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(userRepository.save(any(User.class))).thenReturn(user);
-        UserDTO result = userService.updateUserAndAddress(1L, userInputDTO, addressInputDTO);
-        assertEquals("Jane Doe", result.getName());
-        assertNotNull(result.getDeliveryAddress());
-        assertEquals("123 Main St", result.getDeliveryAddress().getStreet());
-    }
-
 }

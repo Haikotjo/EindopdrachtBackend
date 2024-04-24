@@ -16,6 +16,5 @@ public interface UserService {
     List<UserDTO> findByNameIgnoreCase(String name);
     List<UserDTO> findByRole(UserRole role);
     UserDTO updateUserDeliveryAddress(Long userId, DeliveryAddressInputDTO addressDTO);
-    UserDTO updateUserAndAddress(Long id, UserInputDTO userInputDTO, DeliveryAddressInputDTO addressDTO);
 }
 

@@ -91,26 +91,4 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return UserMapper.toUserDTO(user);
     }
-
-    @Override
-    public UserDTO updateUserAndAddress(Long id, UserInputDTO userInputDTO, DeliveryAddressInputDTO addressDTO) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
-        user.setName(userInputDTO.getName());
-        user.setEmail(userInputDTO.getEmail());
-        user.setRole(userInputDTO.getRole());
-        user.setPhoneNumber(userInputDTO.getPhoneNumber());
-
-        DeliveryAddress address = user.getDeliveryAddress() != null ? user.getDeliveryAddress() : new DeliveryAddress();
-        address.setStreet(addressDTO.getStreet());
-        address.setHouseNumber(addressDTO.getHouseNumber());
-        address.setCity(addressDTO.getCity());
-        address.setPostcode(addressDTO.getPostcode());
-        address.setCountry(addressDTO.getCountry());
-        user.setDeliveryAddress(address);
-
-        userRepository.save(user);
-        return UserMapper.toUserDTO(user);
-    }
-
 }
