@@ -7,7 +7,7 @@ public class DeliveryAddressDTO {
     private String city;
     private String postcode;
     private String country;
-    private Long userId; // Optioneel, afhankelijk van of je de gekoppelde gebruiker wilt identificeren
+    private Long userId;
 
     // Constructors
     public DeliveryAddressDTO() {}

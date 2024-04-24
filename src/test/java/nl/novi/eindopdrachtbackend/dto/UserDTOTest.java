@@ -8,8 +8,11 @@ class UserDTOTest {
 
     @Test
     void testUserDTOConstructorsAndSetters() {
+        DeliveryAddressDTO deliveryAddressDTO = new DeliveryAddressDTO();
+        deliveryAddressDTO.setStreet("1234 Main St");
+
         // Test constructor with arguments
-        UserDTO userDTO = new UserDTO(1L, "John Doe", "john.doe@example.com", UserRole.CUSTOMER, "555-1234");
+        UserDTO userDTO = new UserDTO(1L, "John Doe", "john.doe@example.com", UserRole.CUSTOMER, "555-1234", deliveryAddressDTO);
 
         // Test getters
         assertEquals(1L, userDTO.getId());
@@ -17,6 +20,7 @@ class UserDTOTest {
         assertEquals("john.doe@example.com", userDTO.getEmail());
         assertEquals(UserRole.CUSTOMER, userDTO.getRole());
         assertEquals("555-1234", userDTO.getPhoneNumber());
+        assertSame(deliveryAddressDTO, userDTO.getDeliveryAddress());
 
         // Test setters
         userDTO.setId(2L);
@@ -24,6 +28,9 @@ class UserDTOTest {
         userDTO.setEmail("jane.doe@example.com");
         userDTO.setRole(UserRole.OWNER);
         userDTO.setPhoneNumber("555-5678");
+        DeliveryAddressDTO newDeliveryAddressDTO = new DeliveryAddressDTO();
+        newDeliveryAddressDTO.setStreet("5678 Main St");
+        userDTO.setDeliveryAddress(newDeliveryAddressDTO);
 
         // Test updated values
         assertEquals(2L, userDTO.getId());
@@ -31,5 +38,6 @@ class UserDTOTest {
         assertEquals("jane.doe@example.com", userDTO.getEmail());
         assertEquals(UserRole.OWNER, userDTO.getRole());
         assertEquals("555-5678", userDTO.getPhoneNumber());
+        assertSame(newDeliveryAddressDTO, userDTO.getDeliveryAddress());
     }
 }

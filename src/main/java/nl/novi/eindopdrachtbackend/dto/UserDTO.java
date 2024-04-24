@@ -22,7 +22,7 @@ public class UserDTO {
         this.email = email;
         this.role = role;
         this.phoneNumber = phoneNumber;
-        this.deliveryAddress =deliveryAddress;
+        this.deliveryAddress = deliveryAddress;
     }
 
     // Getters en setters
@@ -57,7 +57,7 @@ public class UserDTO {
     public void setRole(UserRole role) {
         this.role = role;
     }
-s
+
     public String getPhoneNumber() {
         return phoneNumber;
     }
