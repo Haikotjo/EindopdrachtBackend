@@ -77,18 +77,4 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public UserDTO updateUserDeliveryAddress(Long userId, DeliveryAddressInputDTO addressDTO) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
-        DeliveryAddress address = user.getDeliveryAddress() != null ? user.getDeliveryAddress() : new DeliveryAddress();
-        address.setStreet(addressDTO.getStreet());
-        address.setHouseNumber(addressDTO.getHouseNumber());
-        address.setCity(addressDTO.getCity());
-        address.setPostcode(addressDTO.getPostcode());
-        address.setCountry(addressDTO.getCountry());
-        user.setDeliveryAddress(address);
-        userRepository.save(user);
-        return UserMapper.toUserDTO(user);
-    }
 }

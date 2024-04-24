@@ -61,10 +61,4 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}/address")
-    public ResponseEntity<UserDTO> updateUserDeliveryAddress(@PathVariable Long id, @RequestBody DeliveryAddressInputDTO addressDTO) {
-        UserDTO updatedUser = userService.updateUserDeliveryAddress(id, addressDTO);
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
-    }
-
 }

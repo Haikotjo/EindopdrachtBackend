@@ -132,15 +132,4 @@ public class UserServiceImplTest {
         assertEquals(1, result.size());
         assertEquals("John Doe", result.get(0).getName());
     }
-
-    @Test
-    void updateUserDeliveryAddressTest() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(userRepository.save(any(User.class))).thenReturn(user);
-        UserDTO result = userService.updateUserDeliveryAddress(1L, addressInputDTO);
-        assertEquals("John Doe", result.getName());
-        assertNotNull(result.getDeliveryAddress());
-        assertEquals("123 Main St", result.getDeliveryAddress().getStreet());
-    }
-
 }

@@ -90,15 +90,4 @@ public class UserControllerTest {
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
-    @Test
-    void updateUserDeliveryAddress_ShouldUpdateAddress() {
-        DeliveryAddressInputDTO addressDTO = new DeliveryAddressInputDTO();
-        UserDTO expectedUser = new UserDTO();
-        when(userService.updateUserDeliveryAddress(1L, addressDTO)).thenReturn(expectedUser);
-
-        ResponseEntity<UserDTO> response = userController.updateUserDeliveryAddress(1L, addressDTO);
-
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-    }
 }
