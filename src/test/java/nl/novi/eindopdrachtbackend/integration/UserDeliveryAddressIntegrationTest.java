@@ -39,7 +39,7 @@ class UserDeliveryAddressIntegrationTest {
         restaurant = restaurantRepository.save(restaurant);
 
         // Create and save a DeliveryAddress
-        DeliveryAddress deliveryAddress = new DeliveryAddress("Delivery Street", 10, "Delivery City", 1000, "1000AB", "Delivery Country");
+        DeliveryAddress deliveryAddress = new DeliveryAddress("Delivery Street", 10, "Delivery City", "1000AB", "Delivery Country");
         deliveryAddress.setUser(user);  // Link user to the delivery address
         deliveryAddress = deliveryAddressRepository.save(deliveryAddress);
 

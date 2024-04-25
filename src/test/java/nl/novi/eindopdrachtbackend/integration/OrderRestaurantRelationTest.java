@@ -39,7 +39,7 @@ class OrderRestaurantRelationTest {
         restaurant = restaurantRepository.save(restaurant);
 
         // Setup DeliveryAddress
-        DeliveryAddress deliveryAddress = new DeliveryAddress("Delivery Street", 1, "Delivery City", 1234, "1234AB", "Delivery Country");
+        DeliveryAddress deliveryAddress = new DeliveryAddress("Delivery Street", 1, "Delivery City", "1234AB", "Delivery Country");
         deliveryAddress.setUser(user);
         deliveryAddress = deliveryAddressRepository.save(deliveryAddress);
 

@@ -35,7 +35,7 @@ class OrderDeliveryAddressRelationTest {
         user = userRepository.saveAndFlush(user); // Gebruik saveAndFlush om onmiddellijk te schrijven naar de database
 
         // Create a DeliveryAddress
-        DeliveryAddress deliveryAddress = new DeliveryAddress("Delivery Street", 10, "Delivery City", 1000, "1000AB", "Delivery Country");
+        DeliveryAddress deliveryAddress = new DeliveryAddress("Delivery Street", 10, "Delivery City", "1000AB", "Delivery Country");
         deliveryAddress.setUser(user); // Stel de gebruiker expliciet in op het adres
         deliveryAddress = deliveryAddressRepository.saveAndFlush(deliveryAddress); // Sla het adres op
 

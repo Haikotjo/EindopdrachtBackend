@@ -32,7 +32,7 @@ public class OrderRepositoryTest {
         restaurant = new Restaurant("The Good Food Place", "123 Main St", "555-1234");
         restaurant = entityManager.persistAndFlush(restaurant);
 
-        DeliveryAddress deliveryAddress = new DeliveryAddress("Delivery Street", 1, "Delivery City", 1234, "1234AB", "Delivery Country");
+        DeliveryAddress deliveryAddress = new DeliveryAddress("Delivery Street", 1, "Delivery City", "1234AB", "Delivery Country");
         deliveryAddress.setUser(user);
         deliveryAddress = entityManager.persistAndFlush(deliveryAddress);
 

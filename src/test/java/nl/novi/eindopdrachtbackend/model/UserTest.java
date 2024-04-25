@@ -42,7 +42,7 @@ class UserTest {
 
     @Test
     void testUserDeliveryAddressAssociation() {
-        DeliveryAddress address = new DeliveryAddress("123 Main St", 10, "Anytown", 1234, "A1B2C3", "CountryLand");
+        DeliveryAddress address = new DeliveryAddress("123 Main St", 10, "Anytown", "A1B2C3", "CountryLand");
         user.setDeliveryAddress(address);
 
         assertEquals(address, user.getDeliveryAddress());

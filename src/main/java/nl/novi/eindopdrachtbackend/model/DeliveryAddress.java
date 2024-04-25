@@ -16,8 +16,6 @@ public class DeliveryAddress {
     private int houseNumber;
     private String city;
     private String postcode;
-
-    private int postcodeNumber;
     private String country;
 
 
@@ -26,11 +24,10 @@ public class DeliveryAddress {
     public DeliveryAddress() {
     }
 
-    public DeliveryAddress(String street,int houseNumber, String city, int postcodeNumber, String postcode, String country) {
+    public DeliveryAddress(String street,int houseNumber, String city, String postcode, String country) {
         this.street = street;
         this.houseNumber = houseNumber;
         this.city = city;
-        this.postcodeNumber = postcodeNumber;
         this.postcode = postcode;
         this.country = country;
     }
@@ -96,14 +93,6 @@ public class DeliveryAddress {
 
     public void setPostcode(String postcode) {
         this.postcode = postcode;
-    }
-
-    public int getPostcodeNumber() {
-        return postcodeNumber;
-    }
-
-    public void setPostcodeNumber(int postcodeNumber) {
-        this.postcodeNumber = postcodeNumber;
     }
 
     public String getCountry() {

@@ -29,7 +29,7 @@ public class DeliveryAddressRepositoryTest {
         user = userRepository.save(user);  // Sla de User op om een ID te krijgen
 
         // Maak nu de DeliveryAddress aan met de opgeslagen User
-        address = new DeliveryAddress("Example Street", 123, "Example City", 1234, "1234AB", "Example Country");
+        address = new DeliveryAddress("Example Street", 123, "Example City", "1234AB", "Example Country");
         address.setUser(user);  // Koppel de User aan de DeliveryAddress
         address = deliveryAddressRepository.save(address);  // Sla de DeliveryAddress op
     }
@@ -42,7 +42,6 @@ public class DeliveryAddressRepositoryTest {
         assertEquals(address.getHouseNumber(), foundAddress.getHouseNumber());
         assertEquals(address.getCity(), foundAddress.getCity());
         assertEquals(address.getPostcode(), foundAddress.getPostcode());
-        assertEquals(address.getPostcodeNumber(), foundAddress.getPostcodeNumber());
         assertEquals(address.getCountry(), foundAddress.getCountry());
     }
 }
