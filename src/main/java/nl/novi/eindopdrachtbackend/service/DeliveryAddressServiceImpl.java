@@ -3,63 +3,43 @@ package nl.novi.eindopdrachtbackend.service;
 import nl.novi.eindopdrachtbackend.dto.DeliveryAddressDTO;
 import nl.novi.eindopdrachtbackend.dto.DeliveryAddressInputDTO;
 import nl.novi.eindopdrachtbackend.dto.DeliveryAddressMapper;
-import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
+import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.repository.DeliveryAddressRepository;
+import nl.novi.eindopdrachtbackend.repository.UserRepository;
+import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class DeliveryAddressServiceImpl implements DeliveryAddressService {
 
-    private final DeliveryAddressRepository deliveryAddressRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    public DeliveryAddressServiceImpl(DeliveryAddressRepository deliveryAddressRepository) {
-        this.deliveryAddressRepository = deliveryAddressRepository;
-    }
+    @Autowired
+    private DeliveryAddressRepository deliveryAddressRepository;
 
     @Override
-    public DeliveryAddressDTO createDeliveryAddress(DeliveryAddressInputDTO addressInputDTO) {
-        DeliveryAddress address = DeliveryAddressMapper.toDeliveryAddress(addressInputDTO);
-        DeliveryAddress savedAddress = deliveryAddressRepository.save(address);
-        return DeliveryAddressMapper.toDeliveryAddressDTO(savedAddress);
-    }
-
     @Transactional
-    @Override
-    public DeliveryAddressDTO updateDeliveryAddress(Long id, DeliveryAddressInputDTO addressInputDTO) {
-        DeliveryAddress existingAddress = deliveryAddressRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Delivery address not found for this id :: " + id));
-        existingAddress.setStreet(addressInputDTO.getStreet());
-        existingAddress.setHouseNumber(addressInputDTO.getHouseNumber());
-        existingAddress.setCity(addressInputDTO.getCity());
-        existingAddress.setPostcode(addressInputDTO.getPostcode());
-        existingAddress.setCountry(addressInputDTO.getCountry());
-        return DeliveryAddressMapper.toDeliveryAddressDTO(existingAddress);
-    }
+    public DeliveryAddressDTO updateOrCreateDeliveryAddress(Long userId, DeliveryAddressInputDTO addressDTO) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
 
-    @Override
-    public void deleteDeliveryAddress(Long id) {
-        DeliveryAddress address = deliveryAddressRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Delivery address not found for this id :: " + id));
-        deliveryAddressRepository.delete(address);
-    }
+        DeliveryAddress address = user.getDeliveryAddress();
+        if (address == null) {
+            address = new DeliveryAddress();
+            user.setDeliveryAddress(address);
+        }
 
-    @Override
-    public DeliveryAddressDTO getDeliveryAddressById(Long id) {
-        DeliveryAddress address = deliveryAddressRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Delivery address not found for this id :: " + id));
+        address.setStreet(addressDTO.getStreet());
+        address.setHouseNumber(addressDTO.getHouseNumber());
+        address.setCity(addressDTO.getCity());
+        address.setPostcode(addressDTO.getPostcode());
+        address.setCountry(addressDTO.getCountry());
+
+        deliveryAddressRepository.save(address);
         return DeliveryAddressMapper.toDeliveryAddressDTO(address);
-    }
-
-    @Override
-    public List<DeliveryAddressDTO> getAllDeliveryAddresses() {
-        List<DeliveryAddress> addresses = deliveryAddressRepository.findAll();
-        return addresses.stream()
-                .map(DeliveryAddressMapper::toDeliveryAddressDTO)
-                .collect(Collectors.toList());
     }
 }
