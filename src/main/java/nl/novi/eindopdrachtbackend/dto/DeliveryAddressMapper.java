@@ -4,7 +4,6 @@ import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
 
 public class DeliveryAddressMapper {
 
-    // Convert DeliveryAddress entity to DeliveryAddressDTO
     public static DeliveryAddressDTO toDeliveryAddressDTO(DeliveryAddress address) {
         if (address == null) {
             return null;
@@ -20,8 +19,10 @@ public class DeliveryAddressMapper {
         return dto;
     }
 
-    // Convert DeliveryAddressInputDTO to DeliveryAddress entity
     public static DeliveryAddress toDeliveryAddress(DeliveryAddressInputDTO inputDTO) {
+        if (inputDTO == null) {
+            return null;
+        }
         DeliveryAddress address = new DeliveryAddress();
         address.setStreet(inputDTO.getStreet());
         address.setHouseNumber(inputDTO.getHouseNumber());
