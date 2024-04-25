@@ -31,6 +31,7 @@ public class DeliveryAddressServiceImpl implements DeliveryAddressService {
         if (address == null) {
             address = new DeliveryAddress();
             user.setDeliveryAddress(address);
+            address.setUser(user);
         }
 
         address.setStreet(addressDTO.getStreet());
