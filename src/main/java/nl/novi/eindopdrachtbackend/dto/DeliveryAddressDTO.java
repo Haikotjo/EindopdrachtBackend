@@ -7,7 +7,7 @@ public class DeliveryAddressDTO {
     private String city;
     private String postcode;
     private String country;
-    private Long userId;
+    private Long userId; // Deze veld wordt toegevoegd om te identificeren aan welke gebruiker dit adres is gekoppeld.
 
     // Constructors
     public DeliveryAddressDTO() {}

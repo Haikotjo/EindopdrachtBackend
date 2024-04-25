@@ -7,6 +7,17 @@ public class DeliveryAddressInputDTO {
     private String postcode;
     private String country;
 
+    // Constructors
+    public DeliveryAddressInputDTO() {}
+
+    public DeliveryAddressInputDTO(String street, int houseNumber, String city, String postcode, String country) {
+        this.street = street;
+        this.houseNumber = houseNumber;
+        this.city = city;
+        this.postcode = postcode;
+        this.country = country;
+    }
+
     // Getters en setters
     public String getStreet() {
         return street;
