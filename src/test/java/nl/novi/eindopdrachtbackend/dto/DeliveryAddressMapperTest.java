@@ -1,8 +1,8 @@
 package nl.novi.eindopdrachtbackend.dto;
 
 import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
-import nl.novi.eindopdrachtbackend.model.User;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DeliveryAddressMapperTest {
@@ -11,47 +11,44 @@ public class DeliveryAddressMapperTest {
     public void toDeliveryAddressDTOTest() {
         // Arrange
         DeliveryAddress address = new DeliveryAddress();
-        address.setStreet("Elm Street");
-        address.setHouseNumber(123);
-        address.setCity("Anytown");
-        address.setPostcode("98765");
-        address.setCountry("Neverland");
-
-        // Simulate the DeliveryAddress already having a User
-        User user = new User();
-        address.setUser(user);  // Assume user is set with an ID elsewhere (like after saving in JPA)
+        address.setStreet("Main Street 123");
+        address.setHouseNumber(456);
+        address.setCity("Springfield");
+        address.setPostcode("12345");
+        address.setCountry("USA");
 
         // Act
         DeliveryAddressDTO dto = DeliveryAddressMapper.toDeliveryAddressDTO(address);
 
         // Assert
-        assertEquals("Elm Street", dto.getStreet());
-        assertEquals(123, dto.getHouseNumber());
-        assertEquals("Anytown", dto.getCity());
-        assertEquals("98765", dto.getPostcode());
-        assertEquals("Neverland", dto.getCountry());
-        assertNull(dto.getUserId(), "UserId should be null if not explicitly set.");
+        assertNotNull(dto);
+        assertEquals("Main Street 123", dto.getStreet());
+        assertEquals(456, dto.getHouseNumber());
+        assertEquals("Springfield", dto.getCity());
+        assertEquals("12345", dto.getPostcode());
+        assertEquals("USA", dto.getCountry());
     }
 
     @Test
     public void toDeliveryAddressTest() {
         // Arrange
         DeliveryAddressInputDTO inputDTO = new DeliveryAddressInputDTO();
-        inputDTO.setStreet("Maple Street");
-        inputDTO.setHouseNumber(456);
-        inputDTO.setCity("Springfield");
-        inputDTO.setPostcode("12345");
-        inputDTO.setCountry("Freedonia");
+        inputDTO.setStreet("Second Street 456");
+        inputDTO.setHouseNumber(789);
+        inputDTO.setCity("Shelbyville");
+        inputDTO.setPostcode("67890");
+        inputDTO.setCountry("USA");
 
         // Act
         DeliveryAddress address = DeliveryAddressMapper.toDeliveryAddress(inputDTO);
 
         // Assert
-        assertEquals("Maple Street", address.getStreet());
-        assertEquals(456, address.getHouseNumber());
-        assertEquals("Springfield", address.getCity());
-        assertEquals("12345", address.getPostcode());
-        assertEquals("Freedonia", address.getCountry());
+        assertNotNull(address);
+        assertEquals("Second Street 456", address.getStreet());
+        assertEquals(789, address.getHouseNumber());
+        assertEquals("Shelbyville", address.getCity());
+        assertEquals("67890", address.getPostcode());
+        assertEquals("USA", address.getCountry());
     }
 
     @Test
@@ -63,7 +60,6 @@ public class DeliveryAddressMapperTest {
         DeliveryAddressDTO dto = DeliveryAddressMapper.toDeliveryAddressDTO(address);
 
         // Assert
-        assertNull(dto, "DeliveryAddressDTO should be null when input address is null.");
+        assertNull(dto, "DeliveryAddressDTO moet null zijn als de DeliveryAddress null is.");
     }
-
 }

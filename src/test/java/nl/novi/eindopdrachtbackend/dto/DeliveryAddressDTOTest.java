@@ -3,29 +3,38 @@ package nl.novi.eindopdrachtbackend.dto;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DeliveryAddressDTOTest {
+class DeliveryAddressDTOTest {
 
     @Test
-    public void testDeliveryAddressDTO() {
-        // Create an instance of DeliveryAddressDTO
-        DeliveryAddressDTO addressDTO = new DeliveryAddressDTO();
+    void testDeliveryAddressDTOConstructorsAndSetters() {
+        // Test constructor with arguments
+        DeliveryAddressDTO addressDTO = new DeliveryAddressDTO(1L, "1234 Main St", 123, "Anytown", "98765", "Countryland", 2L);
 
-        // Set values using setters
-        addressDTO.setId(1L);
-        addressDTO.setStreet("Main Street");
-        addressDTO.setHouseNumber(100);
+        // Test getters
+        assertEquals(1L, addressDTO.getId());
+        assertEquals("1234 Main St", addressDTO.getStreet());
+        assertEquals(123, addressDTO.getHouseNumber());
+        assertEquals("Anytown", addressDTO.getCity());
+        assertEquals("98765", addressDTO.getPostcode());
+        assertEquals("Countryland", addressDTO.getCountry());
+        assertEquals(2L, addressDTO.getUserId());
+
+        // Test setters
+        addressDTO.setId(3L);
+        addressDTO.setStreet("5678 Main St");
+        addressDTO.setHouseNumber(456);
         addressDTO.setCity("Springfield");
-        addressDTO.setPostcode("12345");
-        addressDTO.setCountry("USA");
-        addressDTO.setUserId(2L);
+        addressDTO.setPostcode("54321");
+        addressDTO.setCountry("Freedonia");
+        addressDTO.setUserId(1L);
 
-        // Assert the values using getters
-        assertEquals(1L, addressDTO.getId(), "ID did not match");
-        assertEquals("Main Street", addressDTO.getStreet(), "Street did not match");
-        assertEquals(100, addressDTO.getHouseNumber(), "House number did not match");
-        assertEquals("Springfield", addressDTO.getCity(), "City did not match");
-        assertEquals("12345", addressDTO.getPostcode(), "Postcode did not match");
-        assertEquals("USA", addressDTO.getCountry(), "Country did not match");
-        assertEquals(2L, addressDTO.getUserId(), "User ID did not match");
+        // Test updated values
+        assertEquals(3L, addressDTO.getId());
+        assertEquals("5678 Main St", addressDTO.getStreet());
+        assertEquals(456, addressDTO.getHouseNumber());
+        assertEquals("Springfield", addressDTO.getCity());
+        assertEquals("54321", addressDTO.getPostcode());
+        assertEquals("Freedonia", addressDTO.getCountry());
+        assertEquals(1L, addressDTO.getUserId());
     }
 }
