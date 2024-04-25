@@ -2,9 +2,7 @@ package nl.novi.eindopdrachtbackend.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
@@ -61,5 +59,17 @@ class UserTest {
 
         assertTrue(user.getOrders().contains(order));
         assertEquals(user, order.getCustomer());
+    }
+
+    @Test
+    void testUserRestaurantAssociation() {
+        Restaurant restaurant = new Restaurant("Gusto", "123 Food St", "123-456-7890");
+        user.setRestaurant(restaurant);
+
+        assertEquals(restaurant, user.getRestaurant());
+        assertNull(restaurant.getOwner()); // Controleer of de relatie aanvankelijk correct is ingesteld
+
+        restaurant.setOwner(user); // Stel de wederzijdse relatie expliciet in
+        assertEquals(user, restaurant.getOwner()); // Verifieer dat de relatie wederzijds correct is ingesteld
     }
 }

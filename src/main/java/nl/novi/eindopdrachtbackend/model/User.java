@@ -27,6 +27,10 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private DeliveryAddress deliveryAddress;
 
+    // Relatie toevoegen naar Restaurant
+    @OneToOne(mappedBy = "owner", optional = true)
+    private Restaurant restaurant;
+
     // Constructors
     public User() {
     }
@@ -48,6 +52,16 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.orders = orders;
         this.deliveryAddress = deliveryAddress;
+    }
+
+    public User(String name, String email, String password, UserRole role, String phoneNumber, List<Order> orders, Restaurant restaurant) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.phoneNumber = phoneNumber;
+        this.orders = orders;
+        this.restaurant = restaurant;
     }
 
     // Getters and setters
@@ -112,5 +126,13 @@ public class User {
 
     public void setDeliveryAddress(DeliveryAddress deliveryAddress) {
         this.deliveryAddress = deliveryAddress;
+    }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
     }
 }

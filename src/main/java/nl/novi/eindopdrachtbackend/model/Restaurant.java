@@ -18,6 +18,11 @@ public class Restaurant {
     private String address;
     private String phoneNumber;
 
+    //Relation to user owner of restaurant
+    @OneToOne(optional = true)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User owner;
+
     //Relation to Menu
     @OneToMany(mappedBy = "restaurant")
     private Set<Menu> menus;
@@ -53,14 +58,14 @@ public class Restaurant {
         this.phoneNumber = phoneNumber;
     }
 
-    public Restaurant(String name, String address, String phoneNumber, Set<Menu> menus, Set<Order> orders) {
+    public Restaurant(String name, String address, String phoneNumber, Set<Menu> menus, Set<Order> orders, User owner) {
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.menus = menus;
         this.orders = orders;
+        this.owner = owner;
     }
-
 
     // getters and setters
 
@@ -90,6 +95,14 @@ public class Restaurant {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 
     public Set<Menu> getMenus() {

@@ -2,6 +2,9 @@ package nl.novi.eindopdrachtbackend.model;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class RestaurantTest {
@@ -14,5 +17,21 @@ class RestaurantTest {
         assertEquals("The Fat Duck", restaurant.getName(), "The name does not match");
         assertEquals("High Street, Bray", restaurant.getAddress(), "The address does not match");
         assertEquals("0123456789", restaurant.getPhoneNumber(), "The phone number does not match");
+    }
+
+    @Test
+    public void testRestaurantFullConstructor() {
+        Set<Menu> menus = new HashSet<>();
+        Set<Order> orders = new HashSet<>();
+        User owner = new User("Owner Name", "owner@example.com", "pass123", UserRole.OWNER, "123456789");
+
+        Restaurant restaurant = new Restaurant("The Gourmet Spot", "Downtown Street, City", "0123456789", menus, orders, owner);
+
+        assertEquals("The Gourmet Spot", restaurant.getName());
+        assertEquals("Downtown Street, City", restaurant.getAddress());
+        assertEquals("0123456789", restaurant.getPhoneNumber());
+        assertSame(menus, restaurant.getMenus());
+        assertSame(orders, restaurant.getOrders());
+        assertSame(owner, restaurant.getOwner());
     }
 }
