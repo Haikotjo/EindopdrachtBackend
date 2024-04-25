@@ -1,173 +1,81 @@
 package nl.novi.eindopdrachtbackend.service;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-import jakarta.transaction.Transactional;
-import nl.novi.eindopdrachtbackend.dto.DeliveryAddressInputDTO;
-import nl.novi.eindopdrachtbackend.dto.DeliveryAddressMapper;
 import nl.novi.eindopdrachtbackend.dto.DeliveryAddressDTO;
+import nl.novi.eindopdrachtbackend.dto.DeliveryAddressInputDTO;
 import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
 import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.repository.DeliveryAddressRepository;
 import nl.novi.eindopdrachtbackend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.AdditionalAnswers;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import java.util.Arrays;
-import java.util.List;
+import org.mockito.junit.jupiter.MockitoExtension;
+import java.lang.reflect.Field;
 import java.util.Optional;
 
-class DeliveryAddressServiceImplTest {
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
+public class DeliveryAddressServiceImplTest {
+
+    @Mock
+    private UserRepository userRepository;
 
     @Mock
     private DeliveryAddressRepository deliveryAddressRepository;
-    @Mock
-    private UserRepository userRepository;
 
     @InjectMocks
     private DeliveryAddressServiceImpl deliveryAddressService;
 
+    private User user;
+    private DeliveryAddress address;
+    private DeliveryAddressInputDTO addressDTO;
+
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    void setUp() throws NoSuchFieldException, IllegalAccessException {
+        user = new User();
+        address = new DeliveryAddress();
+        addressDTO = new DeliveryAddressInputDTO();
+        addressDTO.setStreet("New Street");
+        addressDTO.setHouseNumber(123);
+        addressDTO.setCity("New City");
+        addressDTO.setPostcode("12345");
+        addressDTO.setCountry("Newland");
+
+        // Setting ID using reflection
+        Field userIdField = User.class.getDeclaredField("id");
+        userIdField.setAccessible(true);
+        userIdField.set(user, 1L);
+
+        user.setDeliveryAddress(address);
     }
 
     @Test
-    void createDeliveryAddress_ShouldSaveAddress() {
-        // Arrange
-        DeliveryAddressInputDTO inputDTO = new DeliveryAddressInputDTO();
-        inputDTO.setStreet("Main Street");
-        inputDTO.setHouseNumber(123);
-        inputDTO.setCity("Springfield");
-        inputDTO.setPostcode("12345");
-        inputDTO.setCountry("USA");
-
-        User user = new User();
-        ReflectionTestUtils.setField(user, "id", 1L); // Stel de ID van de gebruiker in
-
-        DeliveryAddress address = new DeliveryAddress();
-        ReflectionTestUtils.setField(address, "id", 1L); // Stel de ID van het adres in, gelijk aan de gebruiker ID
-        address.setUser(user); // De gebruiker koppelen aan het adres
-        address.setStreet(inputDTO.getStreet());
-        address.setHouseNumber(inputDTO.getHouseNumber());
-        address.setCity(inputDTO.getCity());
-        address.setPostcode(inputDTO.getPostcode());
-        address.setCountry(inputDTO.getCountry());
-
+    void updateOrCreateDeliveryAddress_WithExistingAddress_ShouldUpdate() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(deliveryAddressRepository.save(any(DeliveryAddress.class))).thenReturn(address);
 
-        // Act
-        DeliveryAddressDTO result = deliveryAddressService.createDeliveryAddress(inputDTO);
+        DeliveryAddressDTO result = deliveryAddressService.updateOrCreateDeliveryAddress(1L, addressDTO);
 
-        // Assert
-        assertNotNull(result);
-        assertEquals(1L, result.getId());
-        assertEquals("Main Street", result.getStreet());
-        assertEquals(123, result.getHouseNumber());
-        assertEquals("Springfield", result.getCity());
-        assertEquals("12345", result.getPostcode());
-        assertEquals("USA", result.getCountry());
-        verify(deliveryAddressRepository).save(any(DeliveryAddress.class));
-    }
-
-    @Test
-    void updateDeliveryAddress_ShouldUpdateAndReturnAddress() {
-        // Arrange
-        Long addressId = 1L;
-        DeliveryAddress existingAddress = new DeliveryAddress();
-        existingAddress.setStreet("Old Street");
-        existingAddress.setHouseNumber(123);
-        existingAddress.setCity("Old City");
-        existingAddress.setPostcode("Old Postcode");
-        existingAddress.setCountry("Old Country");
-
-        DeliveryAddressInputDTO inputDTO = new DeliveryAddressInputDTO();
-        inputDTO.setStreet("New Street");
-        inputDTO.setHouseNumber(124);
-        inputDTO.setCity("New City");
-        inputDTO.setPostcode("New Postcode");
-        inputDTO.setCountry("New Country");
-
-        when(deliveryAddressRepository.findById(addressId)).thenReturn(Optional.of(existingAddress));
-        when(deliveryAddressRepository.save(existingAddress)).thenReturn(existingAddress);
-
-        // Act
-        DeliveryAddressDTO result = deliveryAddressService.updateDeliveryAddress(addressId, inputDTO);
-
-        // Assert
         assertNotNull(result);
         assertEquals("New Street", result.getStreet());
-        assertEquals(124, result.getHouseNumber());
-        assertEquals("New City", result.getCity());
-        assertEquals("New Postcode", result.getPostcode());
-        assertEquals("New Country", result.getCountry());
-
-        verify(deliveryAddressRepository).findById(addressId);
+        verify(deliveryAddressRepository).save(address);
+        assertEquals("New City", address.getCity());
     }
 
     @Test
-    void deleteDeliveryAddress_ShouldDeleteAddress() {
-        // Arrange
-        Long id = 1L;
-        DeliveryAddress address = new DeliveryAddress();
-        ReflectionTestUtils.setField(address, "id", id);
+    void updateOrCreateDeliveryAddress_WithNoExistingAddress_ShouldCreate() {
+        user.setDeliveryAddress(null); // Setting no initial address
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(deliveryAddressRepository.save(any(DeliveryAddress.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        when(deliveryAddressRepository.findById(id)).thenReturn(Optional.of(address));
-        doNothing().when(deliveryAddressRepository).delete(address);
+        DeliveryAddressDTO result = deliveryAddressService.updateOrCreateDeliveryAddress(1L, addressDTO);
 
-        // Act
-        deliveryAddressService.deleteDeliveryAddress(id);
-
-        // Assert
-        verify(deliveryAddressRepository).findById(id);
-        verify(deliveryAddressRepository).delete(address);
-    }
-
-    @Test
-    void getDeliveryAddressById_ShouldReturnAddress() {
-        // Arrange
-        Long id = 1L;
-        DeliveryAddress address = new DeliveryAddress();
-        address.setStreet("Main Street");
-        address.setHouseNumber(123);
-        ReflectionTestUtils.setField(address, "id", id);
-
-        when(deliveryAddressRepository.findById(id)).thenReturn(Optional.of(address));
-
-        // Act
-        DeliveryAddressDTO result = deliveryAddressService.getDeliveryAddressById(id);
-
-        // Assert
         assertNotNull(result);
-        assertEquals("Main Street", result.getStreet());
-        assertEquals(123, result.getHouseNumber());
-        verify(deliveryAddressRepository).findById(id);
+        assertEquals("New Street", result.getStreet());
+        verify(deliveryAddressRepository).save(any(DeliveryAddress.class));
     }
-
-    @Test
-    void getAllDeliveryAddresses_ShouldReturnAllAddresses() {
-        // Arrange
-        DeliveryAddress address1 = new DeliveryAddress();
-        DeliveryAddress address2 = new DeliveryAddress();
-        List<DeliveryAddress> addresses = Arrays.asList(address1, address2);
-
-        when(deliveryAddressRepository.findAll()).thenReturn(addresses);
-
-        // Act
-        List<DeliveryAddressDTO> results = deliveryAddressService.getAllDeliveryAddresses();
-
-        // Assert
-        assertNotNull(results);
-        assertEquals(2, results.size());
-        verify(deliveryAddressRepository).findAll();
-    }
-
 }

@@ -28,8 +28,10 @@ INSERT INTO menu_menu_item (menu_id, menu_item_id) VALUES (2, 4); -- Vegetable L
 -- Insert users
 INSERT INTO users (name, email, password, role, phone_number) VALUES ('John Doe', 'john.doe@example.com', 'password123', 'CUSTOMER', '1234567890');
 INSERT INTO users (name, email, password, role, phone_number) VALUES ('Jane Smith', 'jane.smith@example.com', 'password456', 'CUSTOMER', '0987654321');
+-- Insert another user without a delivery address
+INSERT INTO users (name, email, password, role, phone_number) VALUES ('Alice Johnson', 'alice.johnson@example.com', 'password789', 'CUSTOMER', '1122334455');
 
--- Insert delivery addresses
-INSERT INTO delivery_addresses (street, house_number, city, postcode, postcode_number, country, user_id) VALUES ('Maple Street', 123, 'Springfield', '12345', 12345, 'USA', 1);
+-- Insert delivery addresses ensuring correct alignment with user IDs and table fields
+INSERT INTO delivery_addresses (street, house_number, city, postcode, country, user_id) VALUES ('Maple Street', 123, 'Springfield', '12345', 'USA', 1);
+INSERT INTO delivery_addresses (street, house_number, city, postcode, country, user_id) VALUES ('Elm Street', 456, 'Shelbyville', '67890', 'USA', 2);
 
-INSERT INTO delivery_addresses (street, house_number, city, postcode, postcode_number,country, user_id) VALUES ('Elm Street', 456, 'Shelbyville', '67890',23456, 'USA', 2);
