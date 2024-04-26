@@ -1,13 +1,17 @@
 package nl.novi.eindopdrachtbackend.service;
 
+import nl.novi.eindopdrachtbackend.dto.MenuDTO;
+import nl.novi.eindopdrachtbackend.dto.RestaurantDTO;
+import nl.novi.eindopdrachtbackend.dto.RestaurantInputDTO;
 import nl.novi.eindopdrachtbackend.model.Restaurant;
 import java.util.List;
 
 public interface RestaurantService {
-    Restaurant createRestaurant(Restaurant restaurant);
-    Restaurant updateRestaurant(Long id, Restaurant restaurantDetails);
-    List<Restaurant> getAllRestaurants();
-    Restaurant getRestaurantById(Long id);
+    List<RestaurantDTO> getAllRestaurants();
+    RestaurantDTO getRestaurantById(Long id);
+    RestaurantDTO createRestaurant(RestaurantInputDTO restaurantInputDTO);
+    RestaurantDTO updateRestaurant(Long id, RestaurantInputDTO restaurantInputDTO);
     void deleteRestaurant(Long id);
-    List<Restaurant> findByNameIgnoreCase(String name);
+    List<RestaurantDTO> findByNameIgnoreCase(String name);
+//    List<MenuDTO> getAllMenus();
 }

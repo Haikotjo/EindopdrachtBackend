@@ -1,10 +1,13 @@
 package nl.novi.eindopdrachtbackend.service;
 
+import nl.novi.eindopdrachtbackend.dto.*;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.Restaurant;
+import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RestaurantServiceImpl implements RestaurantService {
@@ -16,41 +19,48 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public Restaurant createRestaurant(Restaurant restaurant) {
-        return restaurantRepository.save(restaurant);
+    public List<RestaurantDTO> getAllRestaurants() {
+        return restaurantRepository.findAll().stream()
+                .map(RestaurantMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Restaurant updateRestaurant(Long id, Restaurant restaurantDetails) {
+    public RestaurantDTO getRestaurantById(Long id) {
         Restaurant restaurant = restaurantRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for this id :: " + id));
-
-        restaurant.setName(restaurantDetails.getName());
-        restaurant.setAddress(restaurantDetails.getAddress());
-        restaurant.setPhoneNumber(restaurantDetails.getPhoneNumber());
-
-        return restaurantRepository.save(restaurant);
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id: " + id));
+        return RestaurantMapper.toDTO(restaurant);
     }
 
     @Override
-    public List<Restaurant> getAllRestaurants() {
-        return restaurantRepository.findAll();
+    public RestaurantDTO createRestaurant(RestaurantInputDTO restaurantInputDTO) {
+        Restaurant restaurant = RestaurantMapper.fromInputDTO(restaurantInputDTO);
+        restaurant = restaurantRepository.save(restaurant);
+        return RestaurantMapper.toDTO(restaurant);
     }
 
     @Override
-    public Restaurant getRestaurantById(Long id) {
-        return restaurantRepository.findById(id)
+    public RestaurantDTO updateRestaurant(Long id, RestaurantInputDTO restaurantInputDTO) {
+        Restaurant existingRestaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for this id :: " + id));
+        existingRestaurant.setName(restaurantInputDTO.getName());
+        existingRestaurant.setAddress(restaurantInputDTO.getAddress());
+        existingRestaurant.setPhoneNumber(restaurantInputDTO.getPhoneNumber());
+        existingRestaurant = restaurantRepository.save(existingRestaurant);
+        return RestaurantMapper.toDTO(existingRestaurant);
     }
 
     @Override
     public void deleteRestaurant(Long id) {
-        Restaurant restaurant = getRestaurantById(id);
-        restaurantRepository.delete(restaurant);
+        Restaurant existingRestaurant = restaurantRepository.findById(id)
+                        .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id: " + id));
+        restaurantRepository.delete(existingRestaurant);
     }
 
     @Override
-    public List<Restaurant> findByNameIgnoreCase(String name) {
-        return restaurantRepository.findByNameIgnoreCase(name);
+    public List<RestaurantDTO> findByNameIgnoreCase(String name) {
+        return restaurantRepository.findByNameIgnoreCase(name).stream()
+                .map(RestaurantMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }
