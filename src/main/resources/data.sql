@@ -35,3 +35,12 @@ INSERT INTO users (name, email, password, role, phone_number) VALUES ('Alice Joh
 INSERT INTO delivery_addresses (street, house_number, city, postcode, country, user_id) VALUES ('Maple Street', 123, 'Springfield', '12345', 'USA', 1);
 INSERT INTO delivery_addresses (street, house_number, city, postcode, country, user_id) VALUES ('Elm Street', 456, 'Shelbyville', '67890', 'USA', 2);
 
+
+-- Insert restaurants
+INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Italian Bistro', '123 Main Street, Springfield', '555-1234', 1);
+INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Veggie Delight', '456 Oak Avenue, Shelbyville', '555-5678', 2);
+INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Sushi Place', '789 Maple Road, Capital City', '555-8765', NULL);
+
+-- Associate menus with restaurants
+UPDATE menus SET restaurant_id = 1 WHERE id = 1; -- Italian Specials hoort bij Italian Bistro
+UPDATE menus SET restaurant_id = 2 WHERE id = 2; -- Vegetarian Delights hoort bij Veggie Delight
