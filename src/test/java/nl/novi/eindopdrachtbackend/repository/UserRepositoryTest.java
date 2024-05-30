@@ -23,9 +23,14 @@ public class UserRepositoryTest {
 
     @BeforeEach
     void setUp() {
+        // Verwijder eerst de menu's die verwijzen naar restaurants
+        entityManager.getEntityManager().createQuery("DELETE FROM Menu").executeUpdate();
+        // Verwijder de restaurants die verwijzen naar users
+        entityManager.getEntityManager().createQuery("DELETE FROM Restaurant").executeUpdate();
+        // Verwijder delivery addresses en orders
         entityManager.getEntityManager().createQuery("DELETE FROM DeliveryAddress").executeUpdate();
         entityManager.getEntityManager().createQuery("DELETE FROM Order").executeUpdate();
-
+        // Verwijder vervolgens de users
         entityManager.getEntityManager().createQuery("DELETE FROM User").executeUpdate();
         entityManager.clear();
 
@@ -35,7 +40,6 @@ public class UserRepositoryTest {
         entityManager.persist(janeDoe);
         entityManager.flush();
     }
-
 
     @Test
     void whenFindByNameIgnoreCase_thenReturnUser() {
