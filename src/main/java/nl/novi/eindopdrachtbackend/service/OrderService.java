@@ -1,15 +1,16 @@
 package nl.novi.eindopdrachtbackend.service;
 
-import nl.novi.eindopdrachtbackend.model.Order;
+import nl.novi.eindopdrachtbackend.dto.OrderDTO;
+import nl.novi.eindopdrachtbackend.dto.OrderInputDTO;
 
 import java.util.List;
 
 public interface OrderService {
-    Order createOrder(Order order);
-    Order updateOrder(Long id, Order orderDetails);
-    List<Order> getAllOrders();
-    Order getOrderById(Long id);
+    OrderDTO createOrder(OrderInputDTO orderInputDTO);
+    OrderDTO updateOrder(Long id, OrderInputDTO orderInputDTO);
+    List<OrderDTO> getAllOrders();
+    OrderDTO getOrderById(Long id);
     void deleteOrder(Long id);
-    List<Order> findOrdersByCustomerId(Long customerId);
-    List<Order> findOrdersByRestaurantId(Long restaurantId);
+    List<OrderDTO> findOrdersByCustomerId(Long customerId);
+    List<OrderDTO> findOrdersByRestaurantId(Long restaurantId);
 }

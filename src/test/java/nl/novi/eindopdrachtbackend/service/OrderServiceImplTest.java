@@ -1,16 +1,27 @@
 package nl.novi.eindopdrachtbackend.service;
 
+import nl.novi.eindopdrachtbackend.dto.OrderDTO;
+import nl.novi.eindopdrachtbackend.dto.OrderInputDTO;
+import nl.novi.eindopdrachtbackend.dto.OrderMapper;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
+import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
 import nl.novi.eindopdrachtbackend.model.Order;
+import nl.novi.eindopdrachtbackend.model.Restaurant;
+import nl.novi.eindopdrachtbackend.model.User;
+import nl.novi.eindopdrachtbackend.repository.DeliveryAddressRepository;
 import nl.novi.eindopdrachtbackend.repository.OrderRepository;
+import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
+import nl.novi.eindopdrachtbackend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -19,20 +30,37 @@ class OrderServiceImplTest {
     @Mock
     private OrderRepository orderRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private RestaurantRepository restaurantRepository;
+
+    @Mock
+    private DeliveryAddressRepository deliveryAddressRepository;
+
     @InjectMocks
     private OrderServiceImpl orderService;
 
     private Order order1;
     private Order order2;
+    private User customer;
+    private Restaurant restaurant;
+    private DeliveryAddress deliveryAddress;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        order1 = new Order();
-        order1.setFulfilled(true);
+        customer = new User();
+        restaurant = new Restaurant();
+        deliveryAddress = new DeliveryAddress();
 
-        order2 = new Order();
-        order2.setFulfilled(false);
+        order1 = new Order(customer, restaurant, deliveryAddress, true);
+        order2 = new Order(customer, restaurant, deliveryAddress, false);
+
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(customer));
+        when(restaurantRepository.findById(anyLong())).thenReturn(Optional.of(restaurant));
+        when(deliveryAddressRepository.findById(anyLong())).thenReturn(Optional.of(deliveryAddress));
     }
 
     @Test
@@ -41,7 +69,7 @@ class OrderServiceImplTest {
         when(orderRepository.findAll()).thenReturn(Arrays.asList(order1, order2));
 
         // Action
-        List<Order> orders = orderService.getAllOrders();
+        List<OrderDTO> orders = orderService.getAllOrders();
 
         // Verification
         assertNotNull(orders);
@@ -55,7 +83,7 @@ class OrderServiceImplTest {
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order1));
 
         // Action
-        Order foundOrder = orderService.getOrderById(1L);
+        OrderDTO foundOrder = orderService.getOrderById(1L);
 
         // Verification
         assertNotNull(foundOrder);
@@ -76,41 +104,43 @@ class OrderServiceImplTest {
     @Test
     void createOrder_ReturnsCreatedOrder() {
         // Preparation
+        OrderInputDTO inputDTO = new OrderInputDTO(true, 1L, 1L, 1L);
         when(orderRepository.save(any(Order.class))).thenReturn(order1);
 
         // Action
-        Order createdOrder = orderService.createOrder(order1);
+        OrderDTO createdOrder = orderService.createOrder(inputDTO);
 
         // Verification
         assertNotNull(createdOrder);
-        assertEquals(order1.getId(), createdOrder.getId());
-        verify(orderRepository).save(order1);
+        assertTrue(createdOrder.isFulfilled());
+        verify(orderRepository).save(any(Order.class));
     }
 
     @Test
     void updateOrder_ReturnsUpdatedOrder() {
         // Preparation
+        OrderInputDTO inputDTO = new OrderInputDTO(false, 1L, 1L, 1L);
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order1));
         when(orderRepository.save(any(Order.class))).thenReturn(order1);
 
         // Action
-        order1.setFulfilled(false);
-        Order updatedOrder = orderService.updateOrder(1L, order1);
+        OrderDTO updatedOrder = orderService.updateOrder(1L, inputDTO);
 
         // Verification
         assertNotNull(updatedOrder);
         assertFalse(updatedOrder.isFulfilled());
-        verify(orderRepository).save(order1);
+        verify(orderRepository).save(any(Order.class));
         verify(orderRepository).findById(1L);
     }
 
     @Test
     void updateOrder_ThrowsResourceNotFoundException() {
         // Preparation
+        OrderInputDTO inputDTO = new OrderInputDTO(false, 1L, 1L, 1L);
         when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // Action & Verification
-        assertThrows(ResourceNotFoundException.class, () -> orderService.updateOrder(1L, new Order()));
+        assertThrows(ResourceNotFoundException.class, () -> orderService.updateOrder(1L, inputDTO));
         verify(orderRepository).findById(1L);
     }
 
@@ -142,7 +172,7 @@ class OrderServiceImplTest {
         when(orderRepository.findOrdersByCustomerId(anyLong())).thenReturn(Arrays.asList(order1));
 
         // Action
-        List<Order> orders = orderService.findOrdersByCustomerId(1L);
+        List<OrderDTO> orders = orderService.findOrdersByCustomerId(1L);
 
         // Verification
         assertNotNull(orders);
@@ -157,7 +187,7 @@ class OrderServiceImplTest {
         when(orderRepository.findOrdersByRestaurantId(anyLong())).thenReturn(Arrays.asList(order2));
 
         // Action
-        List<Order> orders = orderService.findOrdersByRestaurantId(1L);
+        List<OrderDTO> orders = orderService.findOrdersByRestaurantId(1L);
 
         // Verification
         assertNotNull(orders);
