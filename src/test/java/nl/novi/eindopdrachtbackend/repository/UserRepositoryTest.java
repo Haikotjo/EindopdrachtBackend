@@ -23,13 +23,14 @@ public class UserRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        // Verwijder eerst de menu's die verwijzen naar restaurants
+        // Verwijder eerst de orders die verwijzen naar restaurants en users
+        entityManager.getEntityManager().createQuery("DELETE FROM Order").executeUpdate();
+        // Verwijder de menu's die verwijzen naar restaurants
         entityManager.getEntityManager().createQuery("DELETE FROM Menu").executeUpdate();
         // Verwijder de restaurants die verwijzen naar users
         entityManager.getEntityManager().createQuery("DELETE FROM Restaurant").executeUpdate();
-        // Verwijder delivery addresses en orders
+        // Verwijder delivery addresses
         entityManager.getEntityManager().createQuery("DELETE FROM DeliveryAddress").executeUpdate();
-        entityManager.getEntityManager().createQuery("DELETE FROM Order").executeUpdate();
         // Verwijder vervolgens de users
         entityManager.getEntityManager().createQuery("DELETE FROM User").executeUpdate();
         entityManager.clear();

@@ -23,6 +23,11 @@ public class OrderMapperTest {
 
         DeliveryAddress deliveryAddress = new DeliveryAddress();
         setField(deliveryAddress, "id", 3L);
+        deliveryAddress.setStreet("Main Street");
+        deliveryAddress.setHouseNumber(123);
+        deliveryAddress.setCity("Springfield");
+        deliveryAddress.setPostcode("12345");
+        deliveryAddress.setCountry("USA");
 
         Order order = new Order(customer, restaurant, deliveryAddress, true);
         setField(order, "id", 1L);
@@ -35,7 +40,15 @@ public class OrderMapperTest {
         assertTrue(orderDTO.isFulfilled());
         assertEquals(1L, orderDTO.getCustomerId());
         assertEquals(2L, orderDTO.getRestaurantId());
-        assertEquals(3L, orderDTO.getDeliveryAddressId());
+
+        // Check DeliveryAddressDTO fields
+        assertNotNull(orderDTO.getDeliveryAddress());
+        assertEquals(3L, orderDTO.getDeliveryAddress().getId());
+        assertEquals("Main Street", orderDTO.getDeliveryAddress().getStreet());
+        assertEquals(123, orderDTO.getDeliveryAddress().getHouseNumber());
+        assertEquals("Springfield", orderDTO.getDeliveryAddress().getCity());
+        assertEquals("12345", orderDTO.getDeliveryAddress().getPostcode());
+        assertEquals("USA", orderDTO.getDeliveryAddress().getCountry());
     }
 
     @Test
@@ -51,6 +64,11 @@ public class OrderMapperTest {
 
         DeliveryAddress deliveryAddress = new DeliveryAddress();
         setField(deliveryAddress, "id", 3L);
+        deliveryAddress.setStreet("Main Street");
+        deliveryAddress.setHouseNumber(123);
+        deliveryAddress.setCity("Springfield");
+        deliveryAddress.setPostcode("12345");
+        deliveryAddress.setCountry("USA");
 
         // Act
         Order order = OrderMapper.fromInputDTO(orderInputDTO, customer, restaurant, deliveryAddress);

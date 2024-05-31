@@ -2,6 +2,7 @@ package nl.novi.eindopdrachtbackend.controller;
 
 import nl.novi.eindopdrachtbackend.dto.OrderDTO;
 import nl.novi.eindopdrachtbackend.dto.OrderInputDTO;
+import nl.novi.eindopdrachtbackend.dto.DeliveryAddressDTO;
 import nl.novi.eindopdrachtbackend.service.OrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,11 +31,13 @@ class OrderControllerTest {
     private OrderDTO order1;
     private OrderDTO order2;
     private OrderInputDTO orderInputDTO;
+    private DeliveryAddressDTO deliveryAddress;
 
     @BeforeEach
     void setUp() {
-        order1 = new OrderDTO(1L, true, 1L, 1L, 1L);
-        order2 = new OrderDTO(2L, false, 1L, 1L, 1L);
+        deliveryAddress = new DeliveryAddressDTO(1L, "Main Street", 123, "Springfield", "12345", "USA", 1L);
+        order1 = new OrderDTO(1L, true, 1L, 1L, deliveryAddress);
+        order2 = new OrderDTO(2L, false, 1L, 1L, deliveryAddress);
         orderInputDTO = new OrderInputDTO(true, 1L, 1L, 1L);
     }
 

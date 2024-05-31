@@ -8,13 +8,14 @@ import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
 public class OrderMapper {
 
     public static OrderDTO toDTO(Order order) {
-        OrderDTO dto = new OrderDTO();
-        dto.setId(order.getId());
-        dto.setFulfilled(order.isFulfilled());
-        dto.setCustomerId(order.getCustomer().getId());
-        dto.setRestaurantId(order.getRestaurant().getId());
-        dto.setDeliveryAddressId(order.getDeliveryAddress().getId());
-        return dto;
+        DeliveryAddressDTO deliveryAddressDTO = DeliveryAddressMapper.toDeliveryAddressDTO(order.getDeliveryAddress());
+        return new OrderDTO(
+                order.getId(),
+                order.isFulfilled(),
+                order.getCustomer().getId(),
+                order.getRestaurant().getId(),
+                deliveryAddressDTO
+        );
     }
 
     public static Order fromInputDTO(OrderInputDTO inputDTO, User customer, Restaurant restaurant, DeliveryAddress deliveryAddress) {
@@ -26,3 +27,4 @@ public class OrderMapper {
         return order;
     }
 }
+

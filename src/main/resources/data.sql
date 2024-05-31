@@ -44,3 +44,7 @@ INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Sushi Pl
 -- Associate menus with restaurants
 UPDATE menus SET restaurant_id = 1 WHERE id = 1; -- Italian Specials hoort bij Italian Bistro
 UPDATE menus SET restaurant_id = 2 WHERE id = 2; -- Vegetarian Delights hoort bij Veggie Delight
+
+-- Insert orders
+INSERT INTO orders (fulfilled, customer_id, restaurant_id, delivery_address_id) VALUES (true, 1, 1, 1); -- Order 1, fulfilled, by John Doe from Italian Bistro to Maple Street
+INSERT INTO orders (fulfilled, customer_id, restaurant_id, delivery_address_id) VALUES (false, 2, 2, 2); -- Order 2, not fulfilled, by Jane Smith from Veggie Delight to Elm Street

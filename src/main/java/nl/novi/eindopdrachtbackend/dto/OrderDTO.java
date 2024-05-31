@@ -5,18 +5,18 @@ public class OrderDTO {
     private boolean fulfilled;
     private Long customerId;
     private Long restaurantId;
-    private Long deliveryAddressId;
+    private DeliveryAddressDTO deliveryAddress;
 
     // Constructors
     public OrderDTO() {
     }
 
-    public OrderDTO(Long id, boolean fulfilled, Long customerId, Long restaurantId, Long deliveryAddressId) {
+    public OrderDTO(Long id, boolean fulfilled, Long customerId, Long restaurantId, DeliveryAddressDTO deliveryAddress) {
         this.id = id;
         this.fulfilled = fulfilled;
         this.customerId = customerId;
         this.restaurantId = restaurantId;
-        this.deliveryAddressId = deliveryAddressId;
+        this.deliveryAddress = deliveryAddress;
     }
 
     // Getters and Setters
@@ -52,11 +52,11 @@ public class OrderDTO {
         this.restaurantId = restaurantId;
     }
 
-    public Long getDeliveryAddressId() {
-        return deliveryAddressId;
+    public DeliveryAddressDTO getDeliveryAddress() {
+        return deliveryAddress;
     }
 
-    public void setDeliveryAddressId(Long deliveryAddressId) {
-        this.deliveryAddressId = deliveryAddressId;
+    public void setDeliveryAddress(DeliveryAddressDTO deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
     }
 }
