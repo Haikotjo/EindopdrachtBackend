@@ -21,9 +21,8 @@ public class RestaurantMapper {
         }
 
         dto.setMenus(restaurant.getMenus().stream().map(MenuMapper::toMenuDTO).collect(Collectors.toSet()));
+        dto.setOrders(restaurant.getOrders().stream().map(OrderMapper::toDTO).collect(Collectors.toSet()));
 
-        // Uitgecommentarieerd totdat OrderDTO en OrderMapper zijn geïmplementeerd
-        // dto.setOrders(restaurant.getOrders().stream().map(OrderMapper::toDTO).collect(Collectors.toSet()));
 
         return dto;
     }
