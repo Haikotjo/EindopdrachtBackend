@@ -35,7 +35,6 @@ INSERT INTO users (name, email, password, role, phone_number) VALUES ('Alice Joh
 INSERT INTO delivery_addresses (street, house_number, city, postcode, country, user_id) VALUES ('Maple Street', 123, 'Springfield', '12345', 'USA', 1);
 INSERT INTO delivery_addresses (street, house_number, city, postcode, country, user_id) VALUES ('Elm Street', 456, 'Shelbyville', '67890', 'USA', 2);
 
-
 -- Insert restaurants
 INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Italian Bistro', '123 Main Street, Springfield', '555-1234', 1);
 INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Veggie Delight', '456 Oak Avenue, Shelbyville', '555-5678', 2);
@@ -48,3 +47,9 @@ UPDATE menus SET restaurant_id = 2 WHERE id = 2; -- Vegetarian Delights hoort bi
 -- Insert orders
 INSERT INTO orders (fulfilled, customer_id, restaurant_id, delivery_address_id) VALUES (true, 1, 1, 1); -- Order 1, fulfilled, by John Doe from Italian Bistro to Maple Street
 INSERT INTO orders (fulfilled, customer_id, restaurant_id, delivery_address_id) VALUES (false, 2, 2, 2); -- Order 2, not fulfilled, by Jane Smith from Veggie Delight to Elm Street
+
+-- Associate menu_items with orders
+INSERT INTO order_menu_items (order_id, menu_item_id) VALUES (1, 1); -- Order 1 heeft Cheese Pizza
+INSERT INTO order_menu_items (order_id, menu_item_id) VALUES (1, 3); -- Order 1 heeft Spaghetti Bolognese
+INSERT INTO order_menu_items (order_id, menu_item_id) VALUES (2, 2); -- Order 2 heeft Veggie Pizza
+INSERT INTO order_menu_items (order_id, menu_item_id) VALUES (2, 4); -- Order 2 heeft Vegetable Lasagna
