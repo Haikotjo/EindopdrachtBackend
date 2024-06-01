@@ -10,19 +10,24 @@ import java.util.stream.Collectors;
 
 public class OrderMapper {
 
-    // Convert User entity to OrderDTO
+    // Convert Order entity to OrderDTO
     public static OrderDTO toDTO(Order order) {
         DeliveryAddressDTO deliveryAddressDTO = DeliveryAddressMapper.toDeliveryAddressDTO(order.getDeliveryAddress());
+        List<MenuItemDTO> menuItemDTOs = order.getMenuItems().stream()
+                .map(MenuItemMapper::toMenuItemDTO)
+                .collect(Collectors.toList());
+
         return new OrderDTO(
                 order.getId(),
                 order.isFulfilled(),
                 order.getCustomer().getId(),
                 order.getRestaurant().getId(),
-                deliveryAddressDTO
+                deliveryAddressDTO,
+                menuItemDTOs // Add this line
         );
     }
 
-    // Convert UserInputDTO to Order entity
+    // Convert OrderInputDTO to Order entity
     public static Order fromInputDTO(OrderInputDTO inputDTO, User customer, Restaurant restaurant, DeliveryAddress deliveryAddress) {
         Order order = new Order();
         order.setFulfilled(inputDTO.isFulfilled());
@@ -38,4 +43,3 @@ public class OrderMapper {
                 .collect(Collectors.toList());
     }
 }
-

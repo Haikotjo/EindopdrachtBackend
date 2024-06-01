@@ -1,6 +1,10 @@
 package nl.novi.eindopdrachtbackend.dto;
 
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrderDTOTest {
@@ -16,8 +20,12 @@ class OrderDTOTest {
         deliveryAddressDTO.setPostcode("12345");
         deliveryAddressDTO.setCountry("USA");
 
+        List<MenuItemDTO> menuItems = new ArrayList<>();
+        MenuItemDTO menuItemDTO = new MenuItemDTO(1L, "Pizza", 9.99, "Delicious pizza", "image.jpg", null);
+        menuItems.add(menuItemDTO);
+
         // Act
-        OrderDTO dto = new OrderDTO(1L, true, 100L, 200L, deliveryAddressDTO);
+        OrderDTO dto = new OrderDTO(1L, true, 100L, 200L, deliveryAddressDTO, menuItems);
 
         // Assert
         assertEquals(1L, dto.getId());
@@ -25,6 +33,7 @@ class OrderDTOTest {
         assertEquals(100L, dto.getCustomerId());
         assertEquals(200L, dto.getRestaurantId());
         assertEquals(deliveryAddressDTO, dto.getDeliveryAddress());
+        assertEquals(menuItems, dto.getMenuItems());
 
         // Act again
         dto.setId(2L);
@@ -40,7 +49,12 @@ class OrderDTOTest {
         newDeliveryAddressDTO.setPostcode("67890");
         newDeliveryAddressDTO.setCountry("USA");
 
+        List<MenuItemDTO> newMenuItems = new ArrayList<>();
+        MenuItemDTO newMenuItemDTO = new MenuItemDTO(2L, "Burger", 12.99, "Tasty burger", "image2.jpg", null);
+        newMenuItems.add(newMenuItemDTO);
+
         dto.setDeliveryAddress(newDeliveryAddressDTO);
+        dto.setMenuItems(newMenuItems);
 
         // Assert updated values
         assertEquals(2L, dto.getId());
@@ -48,6 +62,7 @@ class OrderDTOTest {
         assertEquals(101L, dto.getCustomerId());
         assertEquals(201L, dto.getRestaurantId());
         assertEquals(newDeliveryAddressDTO, dto.getDeliveryAddress());
+        assertEquals(newMenuItems, dto.getMenuItems());
     }
 
     @Test
