@@ -20,6 +20,7 @@ public class OrderDTO {
         this.customerId = customerId;
         this.restaurantId = restaurantId;
         this.deliveryAddress = deliveryAddress;
+        this.menuItems = menuItems;
     }
 
     // Getters and Setters

@@ -33,7 +33,7 @@ class OrderDTOTest {
         assertEquals(100L, dto.getCustomerId());
         assertEquals(200L, dto.getRestaurantId());
         assertEquals(deliveryAddressDTO, dto.getDeliveryAddress());
-        assertEquals(menuItems, dto.getMenuItems());
+        assertEquals(menuItems, dto.getMenuItems()); // Assert that menuItems are correctly set
 
         // Act again
         dto.setId(2L);
@@ -62,7 +62,7 @@ class OrderDTOTest {
         assertEquals(101L, dto.getCustomerId());
         assertEquals(201L, dto.getRestaurantId());
         assertEquals(newDeliveryAddressDTO, dto.getDeliveryAddress());
-        assertEquals(newMenuItems, dto.getMenuItems());
+        assertEquals(newMenuItems, dto.getMenuItems()); // Assert that menuItems are correctly updated
     }
 
     @Test
