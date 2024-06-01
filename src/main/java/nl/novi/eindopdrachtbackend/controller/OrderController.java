@@ -1,7 +1,6 @@
 package nl.novi.eindopdrachtbackend.controller;
 
-import nl.novi.eindopdrachtbackend.dto.OrderDTO;
-import nl.novi.eindopdrachtbackend.dto.OrderInputDTO;
+import nl.novi.eindopdrachtbackend.dto.*;
 import nl.novi.eindopdrachtbackend.service.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +32,8 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderInputDTO orderInputDTO) {
-        OrderDTO newOrder = orderService.createOrder(orderInputDTO);
-        return new ResponseEntity<>(newOrder, HttpStatus.CREATED);
+        OrderDTO createdOrder = orderService.createOrder(orderInputDTO);
+        return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

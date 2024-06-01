@@ -5,16 +5,20 @@ import nl.novi.eindopdrachtbackend.dto.OrderInputDTO;
 import nl.novi.eindopdrachtbackend.dto.OrderMapper;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
+import nl.novi.eindopdrachtbackend.model.MenuItem;
 import nl.novi.eindopdrachtbackend.model.Order;
 import nl.novi.eindopdrachtbackend.model.Restaurant;
 import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.repository.DeliveryAddressRepository;
+import nl.novi.eindopdrachtbackend.repository.MenuItemRepository;
 import nl.novi.eindopdrachtbackend.repository.OrderRepository;
 import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
 import nl.novi.eindopdrachtbackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,13 +28,16 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
     private final DeliveryAddressRepository deliveryAddressRepository;
+    private final MenuItemRepository menuItemRepository;
 
     public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository,
-                            RestaurantRepository restaurantRepository, DeliveryAddressRepository deliveryAddressRepository) {
+                            RestaurantRepository restaurantRepository, DeliveryAddressRepository deliveryAddressRepository,
+                            MenuItemRepository menuItemRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.restaurantRepository = restaurantRepository;
         this.deliveryAddressRepository = deliveryAddressRepository;
+        this.menuItemRepository = menuItemRepository;
     }
 
     @Override
@@ -44,7 +51,14 @@ public class OrderServiceImpl implements OrderService {
         DeliveryAddress deliveryAddress = deliveryAddressRepository.findById(orderInputDTO.getDeliveryAddressId())
                 .orElseThrow(() -> new ResourceNotFoundException("DeliveryAddress not found for this id :: " + orderInputDTO.getDeliveryAddressId()));
 
-        Order order = OrderMapper.fromInputDTO(orderInputDTO, customer, restaurant, deliveryAddress);
+        Set<MenuItem> menuItems = new HashSet<>();
+        for (Long menuItemId : orderInputDTO.getMenuItemIds()) {
+            MenuItem menuItem = menuItemRepository.findById(menuItemId)
+                    .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found for this id :: " + menuItemId));
+            menuItems.add(menuItem);
+        }
+
+        Order order = OrderMapper.fromInputDTO(orderInputDTO, customer, restaurant, deliveryAddress, menuItems);
         order = orderRepository.save(order);
         return OrderMapper.toDTO(order);
     }
@@ -63,10 +77,18 @@ public class OrderServiceImpl implements OrderService {
         DeliveryAddress deliveryAddress = deliveryAddressRepository.findById(orderInputDTO.getDeliveryAddressId())
                 .orElseThrow(() -> new ResourceNotFoundException("DeliveryAddress not found for this id :: " + orderInputDTO.getDeliveryAddressId()));
 
+        Set<MenuItem> menuItems = new HashSet<>();
+        for (Long menuItemId : orderInputDTO.getMenuItemIds()) {
+            MenuItem menuItem = menuItemRepository.findById(menuItemId)
+                    .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found for this id :: " + menuItemId));
+            menuItems.add(menuItem);
+        }
+
         order.setFulfilled(orderInputDTO.isFulfilled());
         order.setCustomer(customer);
         order.setRestaurant(restaurant);
         order.setDeliveryAddress(deliveryAddress);
+        order.setMenuItems(menuItems);
 
         order = orderRepository.save(order);
         return OrderMapper.toDTO(order);

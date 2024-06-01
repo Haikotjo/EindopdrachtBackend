@@ -79,7 +79,8 @@ public class OrderMapperTest {
     @Test
     public void fromInputDTOTest() throws NoSuchFieldException, IllegalAccessException {
         // Arrange
-        OrderInputDTO orderInputDTO = new OrderInputDTO(true, 1L, 2L, 3L);
+        List<Long> menuItemIds = List.of(4L);
+        OrderInputDTO orderInputDTO = new OrderInputDTO(true, 1L, 2L, 3L, menuItemIds);
 
         User customer = new User();
         setField(customer, "id", 1L);
@@ -95,14 +96,25 @@ public class OrderMapperTest {
         deliveryAddress.setPostcode("12345");
         deliveryAddress.setCountry("USA");
 
+        MenuItem menuItem = new MenuItem();
+        setField(menuItem, "id", 4L);
+        menuItem.setName("Pizza");
+        menuItem.setPrice(9.99);
+
         // Act
-        Order order = OrderMapper.fromInputDTO(orderInputDTO, customer, restaurant, deliveryAddress);
+        Order order = OrderMapper.fromInputDTO(orderInputDTO, customer, restaurant, deliveryAddress, Set.of(menuItem));
 
         // Assert
         assertTrue(order.isFulfilled());
         assertEquals(customer, order.getCustomer());
         assertEquals(restaurant, order.getRestaurant());
         assertEquals(deliveryAddress, order.getDeliveryAddress());
+        assertNotNull(order.getMenuItems());
+        assertEquals(1, order.getMenuItems().size());
+        MenuItem addedMenuItem = order.getMenuItems().iterator().next();
+        assertEquals(4L, addedMenuItem.getId());
+        assertEquals("Pizza", addedMenuItem.getName());
+        assertEquals(9.99, addedMenuItem.getPrice());
     }
 
     @Test

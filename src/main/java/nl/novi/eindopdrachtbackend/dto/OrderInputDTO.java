@@ -1,20 +1,24 @@
 package nl.novi.eindopdrachtbackend.dto;
 
+import java.util.List;
+
 public class OrderInputDTO {
     private boolean fulfilled;
     private Long customerId;
     private Long restaurantId;
     private Long deliveryAddressId;
+    private List<Long> menuItemIds;
 
     // Constructors
     public OrderInputDTO() {
     }
 
-    public OrderInputDTO(boolean fulfilled, Long customerId, Long restaurantId, Long deliveryAddressId) {
+    public OrderInputDTO(boolean fulfilled, Long customerId, Long restaurantId, Long deliveryAddressId, List<Long> menuItemIds) {
         this.fulfilled = fulfilled;
         this.customerId = customerId;
         this.restaurantId = restaurantId;
         this.deliveryAddressId = deliveryAddressId;
+        this.menuItemIds = menuItemIds;
     }
 
     // Getters and Setters
@@ -48,5 +52,13 @@ public class OrderInputDTO {
 
     public void setDeliveryAddressId(Long deliveryAddressId) {
         this.deliveryAddressId = deliveryAddressId;
+    }
+
+    public List<Long> getMenuItemIds() {
+        return menuItemIds;
+    }
+
+    public void setMenuItemIds(List<Long> menuItemIds) {
+        this.menuItemIds = menuItemIds;
     }
 }

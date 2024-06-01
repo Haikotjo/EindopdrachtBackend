@@ -1,10 +1,8 @@
 package nl.novi.eindopdrachtbackend.dto;
 
 import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrderDTOTest {
@@ -33,8 +31,8 @@ class OrderDTOTest {
         assertEquals(100L, dto.getCustomerId());
         assertEquals(200L, dto.getRestaurantId());
         assertEquals(deliveryAddressDTO, dto.getDeliveryAddress());
-        assertEquals(menuItems, dto.getMenuItems()); // Assert that menuItems are correctly set
-        assertEquals(9.99, dto.getTotalPrice(), 0.001); // Assert total price is correct
+        assertEquals(menuItems, dto.getMenuItems());
+        assertEquals(9.99, dto.getTotalPrice(), 0.001);
 
         // Act again
         dto.setId(2L);
@@ -64,20 +62,25 @@ class OrderDTOTest {
         assertEquals(101L, dto.getCustomerId());
         assertEquals(201L, dto.getRestaurantId());
         assertEquals(newDeliveryAddressDTO, dto.getDeliveryAddress());
-        assertEquals(newMenuItems, dto.getMenuItems()); // Assert that menuItems are correctly updated
-        assertEquals(12.99, dto.getTotalPrice(), 0.001); // Assert updated total price is correct
+        assertEquals(newMenuItems, dto.getMenuItems());
+        assertEquals(12.99, dto.getTotalPrice(), 0.001);
     }
 
     @Test
     void testOrderInputDTOConstructorsAndSetters() {
+        // Arrange
+        List<Long> menuItemIds = new ArrayList<>();
+        menuItemIds.add(1L);
+
         // Act
-        OrderInputDTO inputDto = new OrderInputDTO(true, 100L, 200L, 300L);
+        OrderInputDTO inputDto = new OrderInputDTO(true, 100L, 200L, 300L, menuItemIds);
 
         // Assert
         assertTrue(inputDto.isFulfilled());
         assertEquals(100L, inputDto.getCustomerId());
         assertEquals(200L, inputDto.getRestaurantId());
         assertEquals(300L, inputDto.getDeliveryAddressId());
+        assertEquals(menuItemIds, inputDto.getMenuItemIds());
 
         // Act again
         inputDto.setFulfilled(false);
@@ -85,10 +88,15 @@ class OrderDTOTest {
         inputDto.setRestaurantId(201L);
         inputDto.setDeliveryAddressId(301L);
 
+        List<Long> newMenuItemIds = new ArrayList<>();
+        newMenuItemIds.add(2L);
+        inputDto.setMenuItemIds(newMenuItemIds);
+
         // Assert updated values
         assertFalse(inputDto.isFulfilled());
         assertEquals(101L, inputDto.getCustomerId());
         assertEquals(201L, inputDto.getRestaurantId());
         assertEquals(301L, inputDto.getDeliveryAddressId());
+        assertEquals(newMenuItemIds, inputDto.getMenuItemIds());
     }
 }

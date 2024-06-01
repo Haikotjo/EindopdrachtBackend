@@ -4,14 +4,8 @@ import nl.novi.eindopdrachtbackend.dto.OrderDTO;
 import nl.novi.eindopdrachtbackend.dto.OrderInputDTO;
 import nl.novi.eindopdrachtbackend.dto.OrderMapper;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
-import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
-import nl.novi.eindopdrachtbackend.model.Order;
-import nl.novi.eindopdrachtbackend.model.Restaurant;
-import nl.novi.eindopdrachtbackend.model.User;
-import nl.novi.eindopdrachtbackend.repository.DeliveryAddressRepository;
-import nl.novi.eindopdrachtbackend.repository.OrderRepository;
-import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
-import nl.novi.eindopdrachtbackend.repository.UserRepository;
+import nl.novi.eindopdrachtbackend.model.*;
+import nl.novi.eindopdrachtbackend.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,6 +15,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -39,6 +35,9 @@ class OrderServiceImplTest {
     @Mock
     private DeliveryAddressRepository deliveryAddressRepository;
 
+    @Mock
+    private MenuItemRepository menuItemRepository;
+
     @InjectMocks
     private OrderServiceImpl orderService;
 
@@ -47,6 +46,7 @@ class OrderServiceImplTest {
     private User customer;
     private Restaurant restaurant;
     private DeliveryAddress deliveryAddress;
+    private MenuItem menuItem;
 
     @BeforeEach
     void setUp() {
@@ -55,12 +55,20 @@ class OrderServiceImplTest {
         restaurant = new Restaurant();
         deliveryAddress = new DeliveryAddress();
 
+        menuItem = new MenuItem();
+        Set<MenuItem> menuItems = new HashSet<>();
+        menuItems.add(menuItem);
+
         order1 = new Order(customer, restaurant, deliveryAddress, true);
+        order1.setMenuItems(menuItems);
+
         order2 = new Order(customer, restaurant, deliveryAddress, false);
+        order2.setMenuItems(menuItems);
 
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(customer));
         when(restaurantRepository.findById(anyLong())).thenReturn(Optional.of(restaurant));
         when(deliveryAddressRepository.findById(anyLong())).thenReturn(Optional.of(deliveryAddress));
+        when(menuItemRepository.findById(anyLong())).thenReturn(Optional.of(menuItem));
     }
 
     @Test
@@ -104,7 +112,7 @@ class OrderServiceImplTest {
     @Test
     void createOrder_ReturnsCreatedOrder() {
         // Preparation
-        OrderInputDTO inputDTO = new OrderInputDTO(true, 1L, 1L, 1L);
+        OrderInputDTO inputDTO = new OrderInputDTO(true, 1L, 1L, 1L, Arrays.asList(1L));
         when(orderRepository.save(any(Order.class))).thenReturn(order1);
 
         // Action
@@ -119,7 +127,7 @@ class OrderServiceImplTest {
     @Test
     void updateOrder_ReturnsUpdatedOrder() {
         // Preparation
-        OrderInputDTO inputDTO = new OrderInputDTO(false, 1L, 1L, 1L);
+        OrderInputDTO inputDTO = new OrderInputDTO(false, 1L, 1L, 1L, Arrays.asList(1L));
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order1));
         when(orderRepository.save(any(Order.class))).thenReturn(order1);
 
@@ -136,7 +144,7 @@ class OrderServiceImplTest {
     @Test
     void updateOrder_ThrowsResourceNotFoundException() {
         // Preparation
-        OrderInputDTO inputDTO = new OrderInputDTO(false, 1L, 1L, 1L);
+        OrderInputDTO inputDTO = new OrderInputDTO(false, 1L, 1L, 1L, Arrays.asList(1L));
         when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // Action & Verification

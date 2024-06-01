@@ -4,8 +4,10 @@ import nl.novi.eindopdrachtbackend.model.Order;
 import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.model.Restaurant;
 import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
+import nl.novi.eindopdrachtbackend.model.MenuItem;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class OrderMapper {
@@ -31,12 +33,13 @@ public class OrderMapper {
     }
 
     // Convert OrderInputDTO to Order entity
-    public static Order fromInputDTO(OrderInputDTO inputDTO, User customer, Restaurant restaurant, DeliveryAddress deliveryAddress) {
+    public static Order fromInputDTO(OrderInputDTO inputDTO, User customer, Restaurant restaurant, DeliveryAddress deliveryAddress, Set<MenuItem> menuItems) {
         Order order = new Order();
         order.setFulfilled(inputDTO.isFulfilled());
         order.setCustomer(customer);
         order.setRestaurant(restaurant);
         order.setDeliveryAddress(deliveryAddress);
+        order.setMenuItems(menuItems);
         return order;
     }
 

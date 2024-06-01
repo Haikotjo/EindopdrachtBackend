@@ -41,7 +41,10 @@ class OrderControllerTest {
 
         order1 = new OrderDTO(1L, true, 1L, 1L, deliveryAddress, menuItems, 9.99);
         order2 = new OrderDTO(2L, false, 1L, 1L, deliveryAddress, menuItems, 9.99);
-        orderInputDTO = new OrderInputDTO(true, 1L, 1L, 1L);
+
+        List<Long> menuItemIds = new ArrayList<>();
+        menuItemIds.add(1L);
+        orderInputDTO = new OrderInputDTO(true, 1L, 1L, 1L, menuItemIds);
     }
 
     @Test
