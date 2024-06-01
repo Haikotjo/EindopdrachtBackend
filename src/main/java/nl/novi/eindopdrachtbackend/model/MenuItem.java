@@ -31,6 +31,11 @@ public class MenuItem {
     @ManyToMany(mappedBy = "menuItems")
     private Set<Menu> menus;
 
+    // Relation to Orders
+    @ManyToMany(mappedBy = "menuItems")
+    private Set<Order> orders = new HashSet<>();
+
+
     public void addIngredient(Ingredient ingredient) {
         this.getIngredients().add(ingredient);
         ingredient.getMenuItems().add(this);
@@ -117,6 +122,17 @@ public class MenuItem {
 
     public void setMenus(Set<Menu> menus) {
         this.menus = menus;
+    }
+
+    public Set<Order> getOrders() {
+        if (orders == null){
+            orders = new HashSet<>();
+        }
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
     }
 }
 

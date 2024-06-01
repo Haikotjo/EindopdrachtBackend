@@ -2,6 +2,9 @@ package nl.novi.eindopdrachtbackend.model;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -25,6 +28,15 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "delivery_address_id", nullable = false)
     private DeliveryAddress deliveryAddress;
+
+    // Relation to MenuItems
+    @ManyToMany
+    @JoinTable(
+            name = "order_menu_items",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "menu_item_id")
+    )
+    private Set<MenuItem> menuItems = new HashSet<>();
 
     //    constructors
 
@@ -75,6 +87,14 @@ public class Order {
 
     public void setDeliveryAddress(DeliveryAddress deliveryAddress) {
         this.deliveryAddress = deliveryAddress;
+    }
+
+    public Set<MenuItem> getMenuItems() {
+        return menuItems;
+    }
+
+    public void setMenuItems(Set<MenuItem> menuItems) {
+        this.menuItems = menuItems;
     }
 }
 
