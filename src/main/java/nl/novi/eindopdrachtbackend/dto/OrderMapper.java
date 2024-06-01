@@ -17,13 +17,16 @@ public class OrderMapper {
                 .map(MenuItemMapper::toMenuItemDTO)
                 .collect(Collectors.toList());
 
+        double totalPrice = order.getTotalPrice();
+
         return new OrderDTO(
                 order.getId(),
                 order.isFulfilled(),
                 order.getCustomer().getId(),
                 order.getRestaurant().getId(),
                 deliveryAddressDTO,
-                menuItemDTOs // Add this line
+                menuItemDTOs,
+                totalPrice
         );
     }
 

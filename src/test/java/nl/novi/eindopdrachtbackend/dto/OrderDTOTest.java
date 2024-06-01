@@ -25,7 +25,7 @@ class OrderDTOTest {
         menuItems.add(menuItemDTO);
 
         // Act
-        OrderDTO dto = new OrderDTO(1L, true, 100L, 200L, deliveryAddressDTO, menuItems);
+        OrderDTO dto = new OrderDTO(1L, true, 100L, 200L, deliveryAddressDTO, menuItems, 9.99);
 
         // Assert
         assertEquals(1L, dto.getId());
@@ -34,6 +34,7 @@ class OrderDTOTest {
         assertEquals(200L, dto.getRestaurantId());
         assertEquals(deliveryAddressDTO, dto.getDeliveryAddress());
         assertEquals(menuItems, dto.getMenuItems()); // Assert that menuItems are correctly set
+        assertEquals(9.99, dto.getTotalPrice(), 0.001); // Assert total price is correct
 
         // Act again
         dto.setId(2L);
@@ -55,6 +56,7 @@ class OrderDTOTest {
 
         dto.setDeliveryAddress(newDeliveryAddressDTO);
         dto.setMenuItems(newMenuItems);
+        dto.setTotalPrice(12.99);
 
         // Assert updated values
         assertEquals(2L, dto.getId());
@@ -63,6 +65,7 @@ class OrderDTOTest {
         assertEquals(201L, dto.getRestaurantId());
         assertEquals(newDeliveryAddressDTO, dto.getDeliveryAddress());
         assertEquals(newMenuItems, dto.getMenuItems()); // Assert that menuItems are correctly updated
+        assertEquals(12.99, dto.getTotalPrice(), 0.001); // Assert updated total price is correct
     }
 
     @Test

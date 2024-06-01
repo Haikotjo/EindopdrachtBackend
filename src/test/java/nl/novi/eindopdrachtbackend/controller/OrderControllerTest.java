@@ -1,9 +1,6 @@
 package nl.novi.eindopdrachtbackend.controller;
 
-import nl.novi.eindopdrachtbackend.dto.OrderDTO;
-import nl.novi.eindopdrachtbackend.dto.OrderInputDTO;
-import nl.novi.eindopdrachtbackend.dto.DeliveryAddressDTO;
-import nl.novi.eindopdrachtbackend.dto.MenuItemDTO;
+import nl.novi.eindopdrachtbackend.dto.*;
 import nl.novi.eindopdrachtbackend.service.OrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,18 +30,17 @@ class OrderControllerTest {
     private OrderDTO order2;
     private OrderInputDTO orderInputDTO;
     private DeliveryAddressDTO deliveryAddress;
-    private List<MenuItemDTO> menuItems;
 
     @BeforeEach
     void setUp() {
         deliveryAddress = new DeliveryAddressDTO(1L, "Main Street", 123, "Springfield", "12345", "USA", 1L);
 
-        menuItems = new ArrayList<>();
+        List<MenuItemDTO> menuItems = new ArrayList<>();
         MenuItemDTO menuItemDTO = new MenuItemDTO(1L, "Pizza", 9.99, "Delicious pizza", "image.jpg", null);
         menuItems.add(menuItemDTO);
 
-        order1 = new OrderDTO(1L, true, 1L, 1L, deliveryAddress, menuItems);
-        order2 = new OrderDTO(2L, false, 1L, 1L, deliveryAddress, menuItems);
+        order1 = new OrderDTO(1L, true, 1L, 1L, deliveryAddress, menuItems, 9.99);
+        order2 = new OrderDTO(2L, false, 1L, 1L, deliveryAddress, menuItems, 9.99);
         orderInputDTO = new OrderInputDTO(true, 1L, 1L, 1L);
     }
 

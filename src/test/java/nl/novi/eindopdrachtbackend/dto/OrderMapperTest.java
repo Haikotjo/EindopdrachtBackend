@@ -71,6 +71,9 @@ public class OrderMapperTest {
         assertEquals(4L, menuItemDTO.getId());
         assertEquals("Pizza", menuItemDTO.getName());
         assertEquals(9.99, menuItemDTO.getPrice());
+
+        // Check totalPrice
+        assertEquals(9.99, orderDTO.getTotalPrice(), 0.001);
     }
 
     @Test
@@ -159,6 +162,7 @@ public class OrderMapperTest {
         assertEquals(4L, menuItemDTO1.getId());
         assertEquals("Pizza", menuItemDTO1.getName());
         assertEquals(9.99, menuItemDTO1.getPrice());
+        assertEquals(9.99, orderDTO1.getTotalPrice(), 0.001);
 
         OrderDTO orderDTO2 = orderDTOList.get(1);
         assertEquals(2L, orderDTO2.getId());
@@ -173,6 +177,7 @@ public class OrderMapperTest {
         assertEquals(4L, menuItemDTO2.getId());
         assertEquals("Pizza", menuItemDTO2.getName());
         assertEquals(9.99, menuItemDTO2.getPrice());
+        assertEquals(9.99, orderDTO2.getTotalPrice(), 0.001);
     }
 
     private void setField(Object targetObject, String fieldName, Object value) throws NoSuchFieldException, IllegalAccessException {

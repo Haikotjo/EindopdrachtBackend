@@ -38,6 +38,7 @@ public class Order {
     )
     private Set<MenuItem> menuItems = new HashSet<>();
 
+
     //    constructors
 
     public Order() {
@@ -95,6 +96,12 @@ public class Order {
 
     public void setMenuItems(Set<MenuItem> menuItems) {
         this.menuItems = menuItems;
+    }
+
+    public double getTotalPrice() {
+        return menuItems.stream()
+                .mapToDouble(MenuItem::getPrice)
+                .sum();
     }
 }
 

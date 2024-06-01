@@ -9,18 +9,20 @@ public class OrderDTO {
     private Long restaurantId;
     private DeliveryAddressDTO deliveryAddress;
     private List<MenuItemDTO> menuItems;
+    private double totalPrice;
 
     // Constructors
     public OrderDTO() {
     }
 
-    public OrderDTO(Long id, boolean fulfilled, Long customerId, Long restaurantId, DeliveryAddressDTO deliveryAddress, List<MenuItemDTO> menuItems) {
+    public OrderDTO(Long id, boolean fulfilled, Long customerId, Long restaurantId, DeliveryAddressDTO deliveryAddress, List<MenuItemDTO> menuItems, double totalPrice) {
         this.id = id;
         this.fulfilled = fulfilled;
         this.customerId = customerId;
         this.restaurantId = restaurantId;
         this.deliveryAddress = deliveryAddress;
         this.menuItems = menuItems;
+        this.totalPrice = totalPrice;
     }
 
     // Getters and Setters
@@ -70,5 +72,13 @@ public class OrderDTO {
 
     public void setMenuItems(List<MenuItemDTO> menuItems) {
         this.menuItems = menuItems;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }
