@@ -42,11 +42,11 @@ public class OrderTest {
 
         // Act
         order.getMenuItems().add(menuItem);
-        menuItem.getOrders().add(order);
 
         // Assert
         assertEquals(1, order.getMenuItems().size(), "The menu item was not added to the order");
-        assertEquals(order, menuItem.getOrders().iterator().next(), "The order was not added to the menu item");
+        assertEquals(menuItem, order.getMenuItems().iterator().next(), "The menu item was not correctly added to the order");
+        assertEquals(9.99, order.getTotalPrice(), 0.001, "The total price does not match the price of the menu item");
     }
 
     private void setIdUsingReflection(Object obj, Long idValue) throws NoSuchFieldException, IllegalAccessException {
