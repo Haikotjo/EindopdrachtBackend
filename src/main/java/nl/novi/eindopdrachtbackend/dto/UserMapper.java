@@ -4,6 +4,8 @@ import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
 import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.model.UserRole;
 
+import java.util.stream.Collectors;
+
 public class UserMapper {
 
     // Convert User entity to UserDTO
@@ -15,7 +17,7 @@ public class UserMapper {
         dto.setRole(user.getRole());
         dto.setPhoneNumber(user.getPhoneNumber());
         dto.setDeliveryAddress(DeliveryAddressMapper.toDeliveryAddressDTO(user.getDeliveryAddress()));
-//        dto.setOrders(OrderMapper.toOrderDTOList(user.getOrders()));
+        dto.setOrders(user.getOrders().stream().map(OrderMapper::toDTO).collect(Collectors.toList()));
         return dto;
     }
 

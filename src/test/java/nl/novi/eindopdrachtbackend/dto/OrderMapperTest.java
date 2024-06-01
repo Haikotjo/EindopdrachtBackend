@@ -7,6 +7,8 @@ import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -78,6 +80,57 @@ public class OrderMapperTest {
         assertEquals(customer, order.getCustomer());
         assertEquals(restaurant, order.getRestaurant());
         assertEquals(deliveryAddress, order.getDeliveryAddress());
+    }
+
+    @Test
+    public void toOrderDTOListTest() throws NoSuchFieldException, IllegalAccessException {
+        // Arrange
+        User customer = new User();
+        setField(customer, "id", 1L);
+
+        Restaurant restaurant = new Restaurant();
+        setField(restaurant, "id", 2L);
+
+        DeliveryAddress deliveryAddress = new DeliveryAddress();
+        setField(deliveryAddress, "id", 3L);
+        deliveryAddress.setStreet("Main Street");
+        deliveryAddress.setHouseNumber(123);
+        deliveryAddress.setCity("Springfield");
+        deliveryAddress.setPostcode("12345");
+        deliveryAddress.setCountry("USA");
+
+        Order order1 = new Order(customer, restaurant, deliveryAddress, true);
+        setField(order1, "id", 1L);
+
+        Order order2 = new Order(customer, restaurant, deliveryAddress, false);
+        setField(order2, "id", 2L);
+
+        List<Order> orders = new ArrayList<>();
+        orders.add(order1);
+        orders.add(order2);
+
+        // Act
+        List<OrderDTO> orderDTOList = OrderMapper.toOrderDTOList(orders);
+
+        // Assert
+        assertNotNull(orderDTOList);
+        assertEquals(2, orderDTOList.size());
+
+        OrderDTO orderDTO1 = orderDTOList.get(0);
+        assertEquals(1L, orderDTO1.getId());
+        assertTrue(orderDTO1.isFulfilled());
+        assertEquals(1L, orderDTO1.getCustomerId());
+        assertEquals(2L, orderDTO1.getRestaurantId());
+        assertNotNull(orderDTO1.getDeliveryAddress());
+        assertEquals(3L, orderDTO1.getDeliveryAddress().getId());
+
+        OrderDTO orderDTO2 = orderDTOList.get(1);
+        assertEquals(2L, orderDTO2.getId());
+        assertFalse(orderDTO2.isFulfilled());
+        assertEquals(1L, orderDTO2.getCustomerId());
+        assertEquals(2L, orderDTO2.getRestaurantId());
+        assertNotNull(orderDTO2.getDeliveryAddress());
+        assertEquals(3L, orderDTO2.getDeliveryAddress().getId());
     }
 
     private void setField(Object targetObject, String fieldName, Object value) throws NoSuchFieldException, IllegalAccessException {

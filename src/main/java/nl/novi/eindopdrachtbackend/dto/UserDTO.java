@@ -16,13 +16,14 @@ public class UserDTO {
     // Constructors
     public UserDTO() {}
 
-    public UserDTO(Long id, String name, String email, UserRole role, String phoneNumber, DeliveryAddressDTO deliveryAddress) {
+    public UserDTO(Long id, String name, String email, UserRole role, String phoneNumber, DeliveryAddressDTO deliveryAddress, List<OrderDTO> orders) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
         this.phoneNumber = phoneNumber;
         this.deliveryAddress = deliveryAddress;
+        this.orders = orders;
     }
 
     // Getters en setters

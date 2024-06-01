@@ -1,21 +1,28 @@
 package nl.novi.eindopdrachtbackend.dto;
 
+import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
+import nl.novi.eindopdrachtbackend.model.Order;
 import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.model.UserRole;
-import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
+import nl.novi.eindopdrachtbackend.model.Restaurant;
 import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserMapperTest {
 
     @Test
-    public void toUserDTOTest() {
+    public void toUserDTOTest() throws NoSuchFieldException, IllegalAccessException {
         // Arrange
         User user = new User();
+        setField(user, "id", 1L);
         user.setName("John Doe");
         user.setEmail("john.doe@example.com");
-        user.setPassword("password123");  // Normaal niet meegenomen in een DTO voor leesoperaties
+        user.setPassword("password123");
         user.setRole(UserRole.CUSTOMER);
         user.setPhoneNumber("555-1234");
 
@@ -24,7 +31,22 @@ public class UserMapperTest {
         address.setCity("Springfield");
         address.setPostcode("12345");
         address.setCountry("USA");
-        user.setDeliveryAddress(address);  // Setting the address for the user
+        setField(address, "id", 1L);
+        user.setDeliveryAddress(address);
+
+        Restaurant restaurant = new Restaurant();
+        setField(restaurant, "id", 1L);
+        restaurant.setName("Test Restaurant");
+        restaurant.setAddress("123 Test St");
+        restaurant.setPhoneNumber("555-6789");
+
+        List<Order> orders = new ArrayList<>();
+        Order order1 = new Order();
+        setField(order1, "id", 1L);
+        order1.setCustomer(user); // Voeg de klant toe aan de bestelling
+        order1.setRestaurant(restaurant); // Voeg het restaurant toe aan de bestelling
+        orders.add(order1);
+        user.setOrders(orders);
 
         // Act
         UserDTO userDTO = UserMapper.toUserDTO(user);
@@ -37,6 +59,11 @@ public class UserMapperTest {
         assertNotNull(userDTO.getDeliveryAddress());
         assertEquals("Main Street 123", userDTO.getDeliveryAddress().getStreet());
         assertEquals("Springfield", userDTO.getDeliveryAddress().getCity());
+
+        // Check orders
+        assertNotNull(userDTO.getOrders());
+        assertEquals(1, userDTO.getOrders().size());
+        assertEquals(1L, userDTO.getOrders().get(0).getId());
     }
 
     @Test
@@ -54,7 +81,7 @@ public class UserMapperTest {
         addressInputDTO.setCity("Shelbyville");
         addressInputDTO.setPostcode("67890");
         addressInputDTO.setCountry("USA");
-        userInputDTO.setDeliveryAddress(addressInputDTO);  // Setting the input address for the user
+        userInputDTO.setDeliveryAddress(addressInputDTO);
 
         // Act
         User user = UserMapper.toUser(userInputDTO);
@@ -71,15 +98,30 @@ public class UserMapperTest {
     }
 
     @Test
-    public void toUserDTONullAddressTest() {
+    public void toUserDTONullAddressTest() throws NoSuchFieldException, IllegalAccessException {
         // Arrange
         User user = new User();
+        setField(user, "id", 1L);
         user.setName("John Doe");
         user.setEmail("john.doe@example.com");
         user.setPassword("password123");
         user.setRole(UserRole.CUSTOMER);
         user.setPhoneNumber("555-1234");
-        user.setDeliveryAddress(null);  // Geen adres ingesteld
+        user.setDeliveryAddress(null);
+
+        Restaurant restaurant = new Restaurant();
+        setField(restaurant, "id", 1L);
+        restaurant.setName("Test Restaurant");
+        restaurant.setAddress("123 Test St");
+        restaurant.setPhoneNumber("555-6789");
+
+        List<Order> orders = new ArrayList<>();
+        Order order1 = new Order();
+        setField(order1, "id", 1L);
+        order1.setCustomer(user); // Voeg de klant toe aan de bestelling
+        order1.setRestaurant(restaurant); // Voeg het restaurant toe aan de bestelling
+        orders.add(order1);
+        user.setOrders(orders);
 
         // Act
         UserDTO userDTO = UserMapper.toUserDTO(user);
@@ -87,5 +129,16 @@ public class UserMapperTest {
         // Assert
         assertEquals("John Doe", userDTO.getName());
         assertNull(userDTO.getDeliveryAddress(), "DeliveryAddress moet null zijn als de User geen adres heeft.");
+
+        // Check orders
+        assertNotNull(userDTO.getOrders());
+        assertEquals(1, userDTO.getOrders().size());
+        assertEquals(1L, userDTO.getOrders().get(0).getId());
+    }
+
+    private void setField(Object targetObject, String fieldName, Object value) throws NoSuchFieldException, IllegalAccessException {
+        Field field = targetObject.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(targetObject, value);
     }
 }
