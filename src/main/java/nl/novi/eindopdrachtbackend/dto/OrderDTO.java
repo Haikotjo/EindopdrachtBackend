@@ -11,7 +11,7 @@ public class OrderDTO {
     private DeliveryAddressDTO deliveryAddress;
     private List<MenuItemDTO> menuItems;
     private double totalPrice;
-    private LocalDateTime orderDateTime; // Nieuw veld toegevoegd
+    private LocalDateTime orderDateTime;
 
     // Constructors
     public OrderDTO() {
@@ -25,7 +25,7 @@ public class OrderDTO {
         this.deliveryAddress = deliveryAddress;
         this.menuItems = menuItems;
         this.totalPrice = totalPrice;
-        this.orderDateTime = orderDateTime; // Initialiseer het nieuwe veld
+        this.orderDateTime = orderDateTime;
     }
 
     // Getters and Setters

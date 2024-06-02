@@ -16,6 +16,8 @@ import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
 import nl.novi.eindopdrachtbackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -129,6 +131,18 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
     }
 
+    //Find by date
+    @Override
+    public List<OrderDTO> findOrdersByDate(LocalDateTime date) {
+        LocalDateTime startOfDay = date.toLocalDate().atStartOfDay();
+        LocalDateTime endOfDay = date.toLocalDate().atTime(23, 59, 59);
+
+        return orderRepository.findAll().stream()
+                .filter(order -> order.getOrderDateTime().isAfter(startOfDay) && order.getOrderDateTime().isBefore(endOfDay))
+                .map(OrderMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
     // Create print
     @Override
     public String getUserNameById(Long userId) {
@@ -145,7 +159,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String generatePrintableOrder(Long orderId) {
+    public String generatePrintableOrder(Long orderId, LocalDateTime date) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found for this id :: " + orderId));
         User customer = userRepository.findById(order.getCustomer().getId())
@@ -163,7 +177,9 @@ public class OrderServiceImpl implements OrderService {
         }
 
         printableOrder.append("Totaal: €").append(order.getTotalPrice()).append("\n");
+        printableOrder.append("Datum en tijd: ").append(order.getOrderDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))).append("\n");
 
         return printableOrder.toString();
     }
+
 }

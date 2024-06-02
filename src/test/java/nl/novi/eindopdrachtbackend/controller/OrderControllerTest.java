@@ -132,12 +132,35 @@ class OrderControllerTest {
                 "Totaal: €9.99\n" +
                 "Besteld op: " + orderDateTime + "\n"; // Include order date and time
 
-        when(orderService.generatePrintableOrder(1L)).thenReturn(expectedPrint);
+        lenient().when(orderService.generatePrintableOrder(eq(1L), any(LocalDateTime.class))).thenReturn(expectedPrint);
 
         ResponseEntity<String> response = orderController.printOrder(1L);
 
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedPrint, response.getBody());
+    }
+
+    @Test
+    void printOrdersByDate_ShouldReturnPrintableOrders() {
+        List<OrderDTO> expectedOrders = new ArrayList<>();
+        expectedOrders.add(order1);
+        when(orderService.findOrdersByDate(orderDateTime)).thenReturn(expectedOrders);
+
+        String expectedPrint = "Beste John Doe,\n" +
+                "Bedankt voor uw bestelling bij Italian Bistro.\n" +
+                "Uw bestelling:\n" +
+                "Pizza - €9.99\n" +
+                "Totaal: €9.99\n" +
+                "Besteld op: " + orderDateTime + "\n"; // Include order date and time
+
+        lenient().when(orderService.generatePrintableOrder(eq(1L), any(LocalDateTime.class))).thenReturn(expectedPrint);
+
+        ResponseEntity<List<String>> response = orderController.printOrdersByDate(orderDateTime);
+
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, response.getBody().size());
+        assertEquals(expectedPrint, response.getBody().get(0));
     }
 }

@@ -12,7 +12,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private LocalDateTime orderDateTime;
     private boolean fulfilled;
 
     //Relation to users
@@ -38,10 +38,6 @@ public class Order {
             inverseJoinColumns = @JoinColumn(name = "menu_item_id")
     )
     private Set<MenuItem> menuItems = new HashSet<>();
-
-    @Column(name = "order_date_time", nullable = false)
-    private LocalDateTime orderDateTime;
-
 
     //    constructors
 

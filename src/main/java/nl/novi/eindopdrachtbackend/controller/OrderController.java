@@ -6,7 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/orders")
@@ -59,10 +61,21 @@ public class OrderController {
         List<OrderDTO> orders = orderService.findOrdersByRestaurantId(restaurantId);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
-    @GetMapping("/{id}/print")
+    @GetMapping("/print")
+    public ResponseEntity<List<String>> printOrdersByDate(@RequestParam LocalDateTime date) {
+        List<OrderDTO> orders = orderService.findOrdersByDate(date);
+        List<String> printableOrders = orders.stream()
+                .map(order -> orderService.generatePrintableOrder(order.getId(), date))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(printableOrders, HttpStatus.OK);
+    }
+    // In OrderController.java
+    @GetMapping("/orders/{id}/print")
     public ResponseEntity<String> printOrder(@PathVariable Long id) {
-        String printableOrder = orderService.generatePrintableOrder(id);
+        LocalDateTime now = LocalDateTime.now();
+        String printableOrder = orderService.generatePrintableOrder(id, now);
         return new ResponseEntity<>(printableOrder, HttpStatus.OK);
     }
+
 
 }
