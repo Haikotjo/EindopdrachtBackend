@@ -2,6 +2,7 @@ package nl.novi.eindopdrachtbackend.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,6 +39,9 @@ public class Order {
     )
     private Set<MenuItem> menuItems = new HashSet<>();
 
+    @Column(name = "order_date_time", nullable = false)
+    private LocalDateTime orderDateTime;
+
 
     //    constructors
 
@@ -49,6 +53,7 @@ public class Order {
         this.restaurant = restaurant;
         this.deliveryAddress = deliveryAddress;
         this.fulfilled = fulfilled;
+        this.orderDateTime = LocalDateTime.now();
     }
 
 // getters and setters
@@ -102,6 +107,14 @@ public class Order {
         return menuItems.stream()
                 .mapToDouble(MenuItem::getPrice)
                 .sum();
+    }
+
+    public LocalDateTime getOrderDateTime() {
+        return orderDateTime;
+    }
+
+    public void setOrderDateTime(LocalDateTime orderDateTime) {
+        this.orderDateTime = orderDateTime;
     }
 }
 

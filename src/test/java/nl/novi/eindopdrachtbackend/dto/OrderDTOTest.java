@@ -1,6 +1,7 @@
 package nl.novi.eindopdrachtbackend.dto;
 
 import org.junit.jupiter.api.Test;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,8 +23,10 @@ class OrderDTOTest {
         MenuItemDTO menuItemDTO = new MenuItemDTO(1L, "Pizza", 9.99, "Delicious pizza", "image.jpg", null);
         menuItems.add(menuItemDTO);
 
+        LocalDateTime orderDateTime = LocalDateTime.now();
+
         // Act
-        OrderDTO dto = new OrderDTO(1L, true, 100L, 200L, deliveryAddressDTO, menuItems, 9.99);
+        OrderDTO dto = new OrderDTO(1L, true, 100L, 200L, deliveryAddressDTO, menuItems, 9.99, orderDateTime);
 
         // Assert
         assertEquals(1L, dto.getId());
@@ -33,6 +36,7 @@ class OrderDTOTest {
         assertEquals(deliveryAddressDTO, dto.getDeliveryAddress());
         assertEquals(menuItems, dto.getMenuItems());
         assertEquals(9.99, dto.getTotalPrice(), 0.001);
+        assertEquals(orderDateTime, dto.getOrderDateTime());
 
         // Act again
         dto.setId(2L);
@@ -52,9 +56,12 @@ class OrderDTOTest {
         MenuItemDTO newMenuItemDTO = new MenuItemDTO(2L, "Burger", 12.99, "Tasty burger", "image2.jpg", null);
         newMenuItems.add(newMenuItemDTO);
 
+        LocalDateTime newOrderDateTime = LocalDateTime.now();
+
         dto.setDeliveryAddress(newDeliveryAddressDTO);
         dto.setMenuItems(newMenuItems);
         dto.setTotalPrice(12.99);
+        dto.setOrderDateTime(newOrderDateTime);
 
         // Assert updated values
         assertEquals(2L, dto.getId());
@@ -64,6 +71,7 @@ class OrderDTOTest {
         assertEquals(newDeliveryAddressDTO, dto.getDeliveryAddress());
         assertEquals(newMenuItems, dto.getMenuItems());
         assertEquals(12.99, dto.getTotalPrice(), 0.001);
+        assertEquals(newOrderDateTime, dto.getOrderDateTime());
     }
 
     @Test

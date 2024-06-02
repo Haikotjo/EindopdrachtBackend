@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,14 +31,16 @@ class OrderControllerTest {
     private OrderDTO order1;
     private OrderDTO order2;
     private OrderInputDTO orderInputDTO;
+    private LocalDateTime orderDateTime;
 
     @BeforeEach
     void setUp() {
         List<Long> menuItemIds = new ArrayList<>();
         menuItemIds.add(1L);
 
-        order1 = new OrderDTO(1L, true, 1L, 1L, null, new ArrayList<>(), 9.99);
-        order2 = new OrderDTO(2L, false, 1L, 1L, null, new ArrayList<>(), 9.99);
+        orderDateTime = LocalDateTime.now();
+        order1 = new OrderDTO(1L, true, 1L, 1L, null, new ArrayList<>(), 9.99, orderDateTime);
+        order2 = new OrderDTO(2L, false, 1L, 1L, null, new ArrayList<>(), 9.99, orderDateTime);
         orderInputDTO = new OrderInputDTO(true, 1L, 1L, 1L, menuItemIds);
     }
 
@@ -126,7 +129,8 @@ class OrderControllerTest {
                 "Bedankt voor uw bestelling bij Italian Bistro.\n" +
                 "Uw bestelling:\n" +
                 "Pizza - €9.99\n" +
-                "Totaal: €9.99\n";
+                "Totaal: €9.99\n" +
+                "Besteld op: " + orderDateTime + "\n"; // Include order date and time
 
         when(orderService.generatePrintableOrder(1L)).thenReturn(expectedPrint);
 

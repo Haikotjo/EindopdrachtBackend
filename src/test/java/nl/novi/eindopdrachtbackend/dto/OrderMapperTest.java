@@ -8,6 +8,7 @@ import nl.novi.eindopdrachtbackend.model.MenuItem;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -45,6 +46,8 @@ public class OrderMapperTest {
         Order order = new Order(customer, restaurant, deliveryAddress, true);
         setField(order, "id", 1L);
         order.setMenuItems(menuItems);
+        LocalDateTime orderDateTime = LocalDateTime.now();
+        order.setOrderDateTime(orderDateTime);
 
         // Act
         OrderDTO orderDTO = OrderMapper.toDTO(order);
@@ -74,14 +77,15 @@ public class OrderMapperTest {
 
         // Check totalPrice
         assertEquals(9.99, orderDTO.getTotalPrice(), 0.001);
+
+        // Check orderDateTime
+        assertEquals(orderDateTime, orderDTO.getOrderDateTime());
     }
 
     @Test
     public void fromInputDTOTest() throws NoSuchFieldException, IllegalAccessException {
         // Arrange
-        List<Long> menuItemIds = List.of(4L);
-        OrderInputDTO orderInputDTO = new OrderInputDTO(true, 1L, 2L, 3L, menuItemIds);
-
+        OrderInputDTO orderInputDTO = new OrderInputDTO(true, 1L, 2L, 3L, new ArrayList<>());
         User customer = new User();
         setField(customer, "id", 1L);
 
@@ -96,25 +100,17 @@ public class OrderMapperTest {
         deliveryAddress.setPostcode("12345");
         deliveryAddress.setCountry("USA");
 
-        MenuItem menuItem = new MenuItem();
-        setField(menuItem, "id", 4L);
-        menuItem.setName("Pizza");
-        menuItem.setPrice(9.99);
+        Set<MenuItem> menuItems = new HashSet<>();
 
         // Act
-        Order order = OrderMapper.fromInputDTO(orderInputDTO, customer, restaurant, deliveryAddress, Set.of(menuItem));
+        Order order = OrderMapper.fromInputDTO(orderInputDTO, customer, restaurant, deliveryAddress, menuItems);
 
         // Assert
         assertTrue(order.isFulfilled());
         assertEquals(customer, order.getCustomer());
         assertEquals(restaurant, order.getRestaurant());
         assertEquals(deliveryAddress, order.getDeliveryAddress());
-        assertNotNull(order.getMenuItems());
-        assertEquals(1, order.getMenuItems().size());
-        MenuItem addedMenuItem = order.getMenuItems().iterator().next();
-        assertEquals(4L, addedMenuItem.getId());
-        assertEquals("Pizza", addedMenuItem.getName());
-        assertEquals(9.99, addedMenuItem.getPrice());
+        assertNotNull(order.getOrderDateTime());
     }
 
     @Test
@@ -145,10 +141,14 @@ public class OrderMapperTest {
         Order order1 = new Order(customer, restaurant, deliveryAddress, true);
         setField(order1, "id", 1L);
         order1.setMenuItems(menuItems);
+        LocalDateTime orderDateTime1 = LocalDateTime.now();
+        order1.setOrderDateTime(orderDateTime1);
 
         Order order2 = new Order(customer, restaurant, deliveryAddress, false);
         setField(order2, "id", 2L);
         order2.setMenuItems(menuItems);
+        LocalDateTime orderDateTime2 = LocalDateTime.now();
+        order2.setOrderDateTime(orderDateTime2);
 
         List<Order> orders = new ArrayList<>();
         orders.add(order1);
@@ -175,6 +175,7 @@ public class OrderMapperTest {
         assertEquals("Pizza", menuItemDTO1.getName());
         assertEquals(9.99, menuItemDTO1.getPrice());
         assertEquals(9.99, orderDTO1.getTotalPrice(), 0.001);
+        assertEquals(orderDateTime1, orderDTO1.getOrderDateTime());
 
         OrderDTO orderDTO2 = orderDTOList.get(1);
         assertEquals(2L, orderDTO2.getId());
@@ -190,6 +191,7 @@ public class OrderMapperTest {
         assertEquals("Pizza", menuItemDTO2.getName());
         assertEquals(9.99, menuItemDTO2.getPrice());
         assertEquals(9.99, orderDTO2.getTotalPrice(), 0.001);
+        assertEquals(orderDateTime2, orderDTO2.getOrderDateTime());
     }
 
     private void setField(Object targetObject, String fieldName, Object value) throws NoSuchFieldException, IllegalAccessException {

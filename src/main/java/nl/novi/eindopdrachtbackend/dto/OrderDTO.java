@@ -1,5 +1,6 @@
 package nl.novi.eindopdrachtbackend.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class OrderDTO {
@@ -10,12 +11,13 @@ public class OrderDTO {
     private DeliveryAddressDTO deliveryAddress;
     private List<MenuItemDTO> menuItems;
     private double totalPrice;
+    private LocalDateTime orderDateTime; // Nieuw veld toegevoegd
 
     // Constructors
     public OrderDTO() {
     }
 
-    public OrderDTO(Long id, boolean fulfilled, Long customerId, Long restaurantId, DeliveryAddressDTO deliveryAddress, List<MenuItemDTO> menuItems, double totalPrice) {
+    public OrderDTO(Long id, boolean fulfilled, Long customerId, Long restaurantId, DeliveryAddressDTO deliveryAddress, List<MenuItemDTO> menuItems, double totalPrice, LocalDateTime orderDateTime) {
         this.id = id;
         this.fulfilled = fulfilled;
         this.customerId = customerId;
@@ -23,6 +25,7 @@ public class OrderDTO {
         this.deliveryAddress = deliveryAddress;
         this.menuItems = menuItems;
         this.totalPrice = totalPrice;
+        this.orderDateTime = orderDateTime; // Initialiseer het nieuwe veld
     }
 
     // Getters and Setters
@@ -80,5 +83,13 @@ public class OrderDTO {
 
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public LocalDateTime getOrderDateTime() {
+        return orderDateTime;
+    }
+
+    public void setOrderDateTime(LocalDateTime orderDateTime) {
+        this.orderDateTime = orderDateTime;
     }
 }

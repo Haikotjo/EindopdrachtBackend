@@ -6,6 +6,7 @@ import nl.novi.eindopdrachtbackend.model.Restaurant;
 import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
 import nl.novi.eindopdrachtbackend.model.MenuItem;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -28,7 +29,8 @@ public class OrderMapper {
                 order.getRestaurant().getId(),
                 deliveryAddressDTO,
                 menuItemDTOs,
-                totalPrice
+                totalPrice,
+                order.getOrderDateTime()
         );
     }
 
@@ -40,6 +42,7 @@ public class OrderMapper {
         order.setRestaurant(restaurant);
         order.setDeliveryAddress(deliveryAddress);
         order.setMenuItems(menuItems);
+        order.setOrderDateTime(LocalDateTime.now());
         return order;
     }
 
