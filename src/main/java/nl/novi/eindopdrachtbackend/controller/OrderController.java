@@ -59,4 +59,10 @@ public class OrderController {
         List<OrderDTO> orders = orderService.findOrdersByRestaurantId(restaurantId);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
+    @GetMapping("/{id}/print")
+    public ResponseEntity<String> printOrder(@PathVariable Long id) {
+        String printableOrder = orderService.generatePrintableOrder(id);
+        return new ResponseEntity<>(printableOrder, HttpStatus.OK);
+    }
+
 }

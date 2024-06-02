@@ -13,4 +13,10 @@ public interface OrderService {
     void deleteOrder(Long id);
     List<OrderDTO> findOrdersByCustomerId(Long customerId);
     List<OrderDTO> findOrdersByRestaurantId(Long restaurantId);
+
+    String getUserNameById(Long userId);
+
+    String getRestaurantNameById(Long restaurantId);
+
+    String generatePrintableOrder(Long orderId);
 }

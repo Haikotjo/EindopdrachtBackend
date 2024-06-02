@@ -128,4 +128,42 @@ public class OrderServiceImpl implements OrderService {
                 .map(OrderMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
+    // Create print
+    @Override
+    public String getUserNameById(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + userId));
+        return user.getName();
+    }
+
+    @Override
+    public String getRestaurantNameById(Long restaurantId) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for this id :: " + restaurantId));
+        return restaurant.getName();
+    }
+
+    @Override
+    public String generatePrintableOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found for this id :: " + orderId));
+        User customer = userRepository.findById(order.getCustomer().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + order.getCustomer().getId()));
+        Restaurant restaurant = restaurantRepository.findById(order.getRestaurant().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for this id :: " + order.getRestaurant().getId()));
+
+        StringBuilder printableOrder = new StringBuilder();
+        printableOrder.append("Beste ").append(customer.getName()).append(",\n");
+        printableOrder.append("Bedankt voor uw bestelling bij ").append(restaurant.getName()).append(".\n");
+        printableOrder.append("Uw bestelling:\n");
+
+        for (MenuItem item : order.getMenuItems()) {
+            printableOrder.append(item.getName()).append(" - €").append(item.getPrice()).append("\n");
+        }
+
+        printableOrder.append("Totaal: €").append(order.getTotalPrice()).append("\n");
+
+        return printableOrder.toString();
+    }
 }
