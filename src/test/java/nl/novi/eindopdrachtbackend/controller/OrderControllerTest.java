@@ -1,6 +1,7 @@
 package nl.novi.eindopdrachtbackend.controller;
 
-import nl.novi.eindopdrachtbackend.dto.*;
+import nl.novi.eindopdrachtbackend.dto.OrderDTO;
+import nl.novi.eindopdrachtbackend.dto.OrderInputDTO;
 import nl.novi.eindopdrachtbackend.service.OrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,8 +15,8 @@ import org.springframework.http.ResponseEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class OrderControllerTest {
@@ -29,21 +30,14 @@ class OrderControllerTest {
     private OrderDTO order1;
     private OrderDTO order2;
     private OrderInputDTO orderInputDTO;
-    private DeliveryAddressDTO deliveryAddress;
 
     @BeforeEach
     void setUp() {
-        deliveryAddress = new DeliveryAddressDTO(1L, "Main Street", 123, "Springfield", "12345", "USA", 1L);
-
-        List<MenuItemDTO> menuItems = new ArrayList<>();
-        MenuItemDTO menuItemDTO = new MenuItemDTO(1L, "Pizza", 9.99, "Delicious pizza", "image.jpg", null);
-        menuItems.add(menuItemDTO);
-
-        order1 = new OrderDTO(1L, true, 1L, 1L, deliveryAddress, menuItems, 9.99);
-        order2 = new OrderDTO(2L, false, 1L, 1L, deliveryAddress, menuItems, 9.99);
-
         List<Long> menuItemIds = new ArrayList<>();
         menuItemIds.add(1L);
+
+        order1 = new OrderDTO(1L, true, 1L, 1L, null, new ArrayList<>(), 9.99);
+        order2 = new OrderDTO(2L, false, 1L, 1L, null, new ArrayList<>(), 9.99);
         orderInputDTO = new OrderInputDTO(true, 1L, 1L, 1L, menuItemIds);
     }
 
@@ -124,5 +118,22 @@ class OrderControllerTest {
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
+    }
+
+    @Test
+    void printOrder_ShouldReturnPrintableOrder() {
+        String expectedPrint = "Beste John Doe,\n" +
+                "Bedankt voor uw bestelling bij Italian Bistro.\n" +
+                "Uw bestelling:\n" +
+                "Pizza - €9.99\n" +
+                "Totaal: €9.99\n";
+
+        when(orderService.generatePrintableOrder(1L)).thenReturn(expectedPrint);
+
+        ResponseEntity<String> response = orderController.printOrder(1L);
+
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(expectedPrint, response.getBody());
     }
 }

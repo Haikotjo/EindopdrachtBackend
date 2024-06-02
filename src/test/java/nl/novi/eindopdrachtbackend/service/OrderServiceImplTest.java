@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -49,20 +50,33 @@ class OrderServiceImplTest {
     private MenuItem menuItem;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws NoSuchFieldException, IllegalAccessException {
         MockitoAnnotations.openMocks(this);
         customer = new User();
+        setIdUsingReflection(customer, 1L);
+        customer.setName("John Doe");
+
         restaurant = new Restaurant();
+        setIdUsingReflection(restaurant, 1L);
+        restaurant.setName("Italian Bistro");
+
         deliveryAddress = new DeliveryAddress();
+        setIdUsingReflection(deliveryAddress, 1L);
 
         menuItem = new MenuItem();
+        setIdUsingReflection(menuItem, 1L);
+        menuItem.setName("Pizza");
+        menuItem.setPrice(9.99);
+
         Set<MenuItem> menuItems = new HashSet<>();
         menuItems.add(menuItem);
 
         order1 = new Order(customer, restaurant, deliveryAddress, true);
+        setIdUsingReflection(order1, 1L);
         order1.setMenuItems(menuItems);
 
         order2 = new Order(customer, restaurant, deliveryAddress, false);
+        setIdUsingReflection(order2, 2L);
         order2.setMenuItems(menuItems);
 
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(customer));
@@ -71,15 +85,18 @@ class OrderServiceImplTest {
         when(menuItemRepository.findById(anyLong())).thenReturn(Optional.of(menuItem));
     }
 
+    private void setIdUsingReflection(Object obj, Long idValue) throws NoSuchFieldException, IllegalAccessException {
+        Field idField = obj.getClass().getDeclaredField("id");
+        idField.setAccessible(true);
+        idField.set(obj, idValue);
+    }
+
     @Test
     void getAllOrders_ReturnsListOfOrders() {
-        // Preparation
         when(orderRepository.findAll()).thenReturn(Arrays.asList(order1, order2));
 
-        // Action
         List<OrderDTO> orders = orderService.getAllOrders();
 
-        // Verification
         assertNotNull(orders);
         assertEquals(2, orders.size());
         verify(orderRepository).findAll();
@@ -87,13 +104,10 @@ class OrderServiceImplTest {
 
     @Test
     void getOrderById_ReturnsOrder() {
-        // Preparation
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order1));
 
-        // Action
         OrderDTO foundOrder = orderService.getOrderById(1L);
 
-        // Verification
         assertNotNull(foundOrder);
         assertTrue(foundOrder.isFulfilled());
         verify(orderRepository).findById(1L);
@@ -101,24 +115,19 @@ class OrderServiceImplTest {
 
     @Test
     void getOrderById_ThrowsResourceNotFoundException() {
-        // Preparation
         when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // Action & Verification
         assertThrows(ResourceNotFoundException.class, () -> orderService.getOrderById(1L));
         verify(orderRepository).findById(1L);
     }
 
     @Test
     void createOrder_ReturnsCreatedOrder() {
-        // Preparation
         OrderInputDTO inputDTO = new OrderInputDTO(true, 1L, 1L, 1L, Arrays.asList(1L));
         when(orderRepository.save(any(Order.class))).thenReturn(order1);
 
-        // Action
         OrderDTO createdOrder = orderService.createOrder(inputDTO);
 
-        // Verification
         assertNotNull(createdOrder);
         assertTrue(createdOrder.isFulfilled());
         verify(orderRepository).save(any(Order.class));
@@ -126,15 +135,12 @@ class OrderServiceImplTest {
 
     @Test
     void updateOrder_ReturnsUpdatedOrder() {
-        // Preparation
         OrderInputDTO inputDTO = new OrderInputDTO(false, 1L, 1L, 1L, Arrays.asList(1L));
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order1));
         when(orderRepository.save(any(Order.class))).thenReturn(order1);
 
-        // Action
         OrderDTO updatedOrder = orderService.updateOrder(1L, inputDTO);
 
-        // Verification
         assertNotNull(updatedOrder);
         assertFalse(updatedOrder.isFulfilled());
         verify(orderRepository).save(any(Order.class));
@@ -143,46 +149,36 @@ class OrderServiceImplTest {
 
     @Test
     void updateOrder_ThrowsResourceNotFoundException() {
-        // Preparation
         OrderInputDTO inputDTO = new OrderInputDTO(false, 1L, 1L, 1L, Arrays.asList(1L));
         when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // Action & Verification
         assertThrows(ResourceNotFoundException.class, () -> orderService.updateOrder(1L, inputDTO));
         verify(orderRepository).findById(1L);
     }
 
     @Test
     void deleteOrder_DeletesOrder() {
-        // Preparation
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order1));
 
-        // Action
         orderService.deleteOrder(1L);
 
-        // Verification
         verify(orderRepository).delete(order1);
     }
 
     @Test
     void deleteOrder_ThrowsResourceNotFoundException() {
-        // Preparation
         when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // Action & Verification
         assertThrows(ResourceNotFoundException.class, () -> orderService.deleteOrder(1L));
         verify(orderRepository).findById(1L);
     }
 
     @Test
     void findOrdersByCustomerId_ReturnsOrders() {
-        // Preparation
         when(orderRepository.findOrdersByCustomerId(anyLong())).thenReturn(Arrays.asList(order1));
 
-        // Action
         List<OrderDTO> orders = orderService.findOrdersByCustomerId(1L);
 
-        // Verification
         assertNotNull(orders);
         assertFalse(orders.isEmpty());
         assertEquals(1, orders.size());
@@ -191,16 +187,28 @@ class OrderServiceImplTest {
 
     @Test
     void findOrdersByRestaurantId_ReturnsOrders() {
-        // Preparation
         when(orderRepository.findOrdersByRestaurantId(anyLong())).thenReturn(Arrays.asList(order2));
 
-        // Action
         List<OrderDTO> orders = orderService.findOrdersByRestaurantId(1L);
 
-        // Verification
         assertNotNull(orders);
         assertFalse(orders.isEmpty());
         assertEquals(1, orders.size());
         verify(orderRepository).findOrdersByRestaurantId(1L);
+    }
+
+    @Test
+    void generatePrintableOrder_ReturnsCorrectString() {
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(order1));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(customer));
+        when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
+
+        String printableOrder = orderService.generatePrintableOrder(1L);
+
+        assertNotNull(printableOrder);
+        assertTrue(printableOrder.contains("Beste John Doe"));
+        assertTrue(printableOrder.contains("Bedankt voor uw bestelling bij Italian Bistro"));
+        assertTrue(printableOrder.contains("Pizza - €9.99"));
+        assertTrue(printableOrder.contains("Totaal: €9.99"));
     }
 }
