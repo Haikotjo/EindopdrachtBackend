@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,9 +131,9 @@ class OrderControllerTest {
                 "Uw bestelling:\n" +
                 "Pizza - €9.99\n" +
                 "Totaal: €9.99\n" +
-                "Besteld op: " + orderDateTime + "\n"; // Include order date and time
+                "Datum en tijd: " + orderDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + "\n";
 
-        lenient().when(orderService.generatePrintableOrder(eq(1L), any(LocalDateTime.class))).thenReturn(expectedPrint);
+        when(orderService.generatePrintableOrder(eq(1L), any(LocalDateTime.class))).thenReturn(expectedPrint);
 
         ResponseEntity<String> response = orderController.printOrder(1L);
 
@@ -142,25 +143,20 @@ class OrderControllerTest {
     }
 
     @Test
-    void printOrdersByDate_ShouldReturnPrintableOrders() {
-        List<OrderDTO> expectedOrders = new ArrayList<>();
-        expectedOrders.add(order1);
-        when(orderService.findOrdersByDate(orderDateTime)).thenReturn(expectedOrders);
-
-        String expectedPrint = "Beste John Doe,\n" +
-                "Bedankt voor uw bestelling bij Italian Bistro.\n" +
-                "Uw bestelling:\n" +
+    void printOrdersByRestaurantAndDate_ShouldReturnPrintableSummary() {
+        String expectedSummary = "Orders van 2024-06-02 bij restaurant ID 1:\n\n" +
+                "Order ID: 1\n" +
                 "Pizza - €9.99\n" +
-                "Totaal: €9.99\n" +
-                "Besteld op: " + orderDateTime + "\n"; // Include order date and time
+                "Totaal voor deze order: €9.99\n\n" +
+                "Totaal omzet van de dag: €9.99\n";
 
-        lenient().when(orderService.generatePrintableOrder(eq(1L), any(LocalDateTime.class))).thenReturn(expectedPrint);
+        when(orderService.generatePrintableDailySummary(eq(1L), any(LocalDateTime.class))).thenReturn(expectedSummary);
 
-        ResponseEntity<List<String>> response = orderController.printOrdersByDate(orderDateTime);
+        String date = "2024-06-02";
+        ResponseEntity<String> response = orderController.printOrdersByRestaurantAndDate(1L, date);
 
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().size());
-        assertEquals(expectedPrint, response.getBody().get(0));
+        assertEquals(expectedSummary, response.getBody());
     }
 }

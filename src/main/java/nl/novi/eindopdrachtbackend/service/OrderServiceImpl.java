@@ -1,5 +1,6 @@
 package nl.novi.eindopdrachtbackend.service;
 
+import nl.novi.eindopdrachtbackend.dto.MenuItemDTO;
 import nl.novi.eindopdrachtbackend.dto.OrderDTO;
 import nl.novi.eindopdrachtbackend.dto.OrderInputDTO;
 import nl.novi.eindopdrachtbackend.dto.OrderMapper;
@@ -131,7 +132,6 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
     }
 
-    //Find by date
     @Override
     public List<OrderDTO> findOrdersByDate(LocalDateTime date) {
         LocalDateTime startOfDay = date.toLocalDate().atStartOfDay();
@@ -143,7 +143,18 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
     }
 
-    // Create print
+    @Override
+    public List<OrderDTO> findOrdersByRestaurantAndDate(Long restaurantId, LocalDateTime date) {
+        LocalDateTime startOfDay = date.toLocalDate().atStartOfDay();
+        LocalDateTime endOfDay = date.toLocalDate().atTime(23, 59, 59);
+
+        return orderRepository.findAll().stream()
+                .filter(order -> order.getRestaurant().getId().equals(restaurantId) &&
+                        order.getOrderDateTime().isAfter(startOfDay) && order.getOrderDateTime().isBefore(endOfDay))
+                .map(OrderMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
     @Override
     public String getUserNameById(Long userId) {
         User user = userRepository.findById(userId)
@@ -182,4 +193,25 @@ public class OrderServiceImpl implements OrderService {
         return printableOrder.toString();
     }
 
+    @Override
+    public String generatePrintableDailySummary(Long restaurantId, LocalDateTime date) {
+        List<OrderDTO> orders = findOrdersByRestaurantAndDate(restaurantId, date);
+
+        StringBuilder summary = new StringBuilder();
+        summary.append("Orders van ").append(date.toLocalDate()).append(" bij restaurant ID ").append(restaurantId).append(":\n\n");
+
+        double totalDayRevenue = 0.0;
+        for (OrderDTO order : orders) {
+            summary.append("Order ID: ").append(order.getId()).append("\n");
+            for (MenuItemDTO item : order.getMenuItems()) {
+                summary.append(item.getName()).append(" - €").append(item.getPrice()).append("\n");
+            }
+            summary.append("Totaal voor deze order: €").append(order.getTotalPrice()).append("\n\n");
+            totalDayRevenue += order.getTotalPrice();
+        }
+
+        summary.append("Totaal omzet van de dag: €").append(totalDayRevenue).append("\n");
+
+        return summary.toString();
+    }
 }

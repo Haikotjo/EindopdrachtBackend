@@ -21,4 +21,7 @@ public interface OrderService {
     String getRestaurantNameById(Long restaurantId);
 
     String generatePrintableOrder(Long orderId, LocalDateTime date);
-}
+    List<OrderDTO> findOrdersByRestaurantAndDate(Long restaurantId, LocalDateTime date);
+
+    String generatePrintableDailySummary(Long restaurantId, LocalDateTime date);}
+

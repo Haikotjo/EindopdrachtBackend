@@ -1,8 +1,8 @@
 package nl.novi.eindopdrachtbackend.service;
 
+import nl.novi.eindopdrachtbackend.dto.MenuItemDTO;
 import nl.novi.eindopdrachtbackend.dto.OrderDTO;
 import nl.novi.eindopdrachtbackend.dto.OrderInputDTO;
-import nl.novi.eindopdrachtbackend.dto.OrderMapper;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.*;
 import nl.novi.eindopdrachtbackend.repository.*;
@@ -96,13 +96,8 @@ class OrderServiceImplTest {
 
     @Test
     void getAllOrders_ReturnsListOfOrders() {
-        // Preparation
         when(orderRepository.findAll()).thenReturn(Arrays.asList(order1, order2));
-
-        // Action
         List<OrderDTO> orders = orderService.getAllOrders();
-
-        // Verification
         assertNotNull(orders);
         assertEquals(2, orders.size());
         verify(orderRepository).findAll();
@@ -110,13 +105,8 @@ class OrderServiceImplTest {
 
     @Test
     void getOrderById_ReturnsOrder() {
-        // Preparation
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order1));
-
-        // Action
         OrderDTO foundOrder = orderService.getOrderById(1L);
-
-        // Verification
         assertNotNull(foundOrder);
         assertTrue(foundOrder.isFulfilled());
         verify(orderRepository).findById(1L);
@@ -124,24 +114,16 @@ class OrderServiceImplTest {
 
     @Test
     void getOrderById_ThrowsResourceNotFoundException() {
-        // Preparation
         when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-        // Action & Verification
         assertThrows(ResourceNotFoundException.class, () -> orderService.getOrderById(1L));
         verify(orderRepository).findById(1L);
     }
 
     @Test
     void createOrder_ReturnsCreatedOrder() {
-        // Preparation
         OrderInputDTO inputDTO = new OrderInputDTO(true, 1L, 1L, 1L, Arrays.asList(1L));
         when(orderRepository.save(any(Order.class))).thenReturn(order1);
-
-        // Action
         OrderDTO createdOrder = orderService.createOrder(inputDTO);
-
-        // Verification
         assertNotNull(createdOrder);
         assertTrue(createdOrder.isFulfilled());
         verify(orderRepository).save(any(Order.class));
@@ -149,15 +131,10 @@ class OrderServiceImplTest {
 
     @Test
     void updateOrder_ReturnsUpdatedOrder() {
-        // Preparation
         OrderInputDTO inputDTO = new OrderInputDTO(false, 1L, 1L, 1L, Arrays.asList(1L));
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order1));
         when(orderRepository.save(any(Order.class))).thenReturn(order1);
-
-        // Action
         OrderDTO updatedOrder = orderService.updateOrder(1L, inputDTO);
-
-        // Verification
         assertNotNull(updatedOrder);
         assertFalse(updatedOrder.isFulfilled());
         verify(orderRepository).save(any(Order.class));
@@ -166,46 +143,30 @@ class OrderServiceImplTest {
 
     @Test
     void updateOrder_ThrowsResourceNotFoundException() {
-        // Preparation
         OrderInputDTO inputDTO = new OrderInputDTO(false, 1L, 1L, 1L, Arrays.asList(1L));
         when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-        // Action & Verification
         assertThrows(ResourceNotFoundException.class, () -> orderService.updateOrder(1L, inputDTO));
         verify(orderRepository).findById(1L);
     }
 
     @Test
     void deleteOrder_DeletesOrder() {
-        // Preparation
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order1));
-
-        // Action
         orderService.deleteOrder(1L);
-
-        // Verification
         verify(orderRepository).delete(order1);
     }
 
     @Test
     void deleteOrder_ThrowsResourceNotFoundException() {
-        // Preparation
         when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-        // Action & Verification
         assertThrows(ResourceNotFoundException.class, () -> orderService.deleteOrder(1L));
         verify(orderRepository).findById(1L);
     }
 
     @Test
     void findOrdersByCustomerId_ReturnsOrders() {
-        // Preparation
         when(orderRepository.findOrdersByCustomerId(anyLong())).thenReturn(Arrays.asList(order1));
-
-        // Action
         List<OrderDTO> orders = orderService.findOrdersByCustomerId(1L);
-
-        // Verification
         assertNotNull(orders);
         assertFalse(orders.isEmpty());
         assertEquals(1, orders.size());
@@ -214,13 +175,8 @@ class OrderServiceImplTest {
 
     @Test
     void findOrdersByRestaurantId_ReturnsOrders() {
-        // Preparation
         when(orderRepository.findOrdersByRestaurantId(anyLong())).thenReturn(Arrays.asList(order2));
-
-        // Action
         List<OrderDTO> orders = orderService.findOrdersByRestaurantId(1L);
-
-        // Verification
         assertNotNull(orders);
         assertFalse(orders.isEmpty());
         assertEquals(1, orders.size());
@@ -229,14 +185,20 @@ class OrderServiceImplTest {
 
     @Test
     void findOrdersByDate_ReturnsOrders() {
-        // Preparation
         LocalDateTime date = LocalDateTime.now();
         when(orderRepository.findAll()).thenReturn(Arrays.asList(order1, order2));
-
-        // Action
         List<OrderDTO> orders = orderService.findOrdersByDate(date);
+        assertNotNull(orders);
+        assertFalse(orders.isEmpty());
+        assertEquals(1, orders.size()); // Alleen order1 zou moeten matchen
+        verify(orderRepository).findAll();
+    }
 
-        // Verification
+    @Test
+    void findOrdersByRestaurantAndDate_ReturnsOrders() {
+        LocalDateTime date = LocalDateTime.now();
+        when(orderRepository.findAll()).thenReturn(Arrays.asList(order1, order2));
+        List<OrderDTO> orders = orderService.findOrdersByRestaurantAndDate(1L, date);
         assertNotNull(orders);
         assertFalse(orders.isEmpty());
         assertEquals(1, orders.size()); // Alleen order1 zou moeten matchen
@@ -263,4 +225,28 @@ class OrderServiceImplTest {
         assertEquals(expectedPrint, printableOrder, "Expected printable order does not match the actual printable order.");
     }
 
+    @Test
+    void generatePrintableDailySummary_ReturnsCorrectSummary() {
+        LocalDateTime date = LocalDateTime.now();
+        when(orderRepository.findAll()).thenReturn(Arrays.asList(order1));
+        List<OrderDTO> orders = orderService.findOrdersByRestaurantAndDate(1L, date);
+
+        StringBuilder expectedSummary = new StringBuilder();
+        expectedSummary.append("Orders van ").append(date.toLocalDate()).append(" bij restaurant ID 1:\n\n");
+        double totalDayRevenue = 0.0;
+        for (OrderDTO order : orders) {
+            expectedSummary.append("Order ID: ").append(order.getId()).append("\n");
+            for (MenuItemDTO item : order.getMenuItems()) {
+                expectedSummary.append(item.getName()).append(" - €").append(item.getPrice()).append("\n");
+            }
+            expectedSummary.append("Totaal voor deze order: €").append(order.getTotalPrice()).append("\n\n");
+            totalDayRevenue += order.getTotalPrice();
+        }
+        expectedSummary.append("Totaal omzet van de dag: €").append(totalDayRevenue).append("\n");
+
+        String actualSummary = orderService.generatePrintableDailySummary(1L, date);
+
+        assertNotNull(actualSummary);
+        assertEquals(expectedSummary.toString(), actualSummary);
+    }
 }

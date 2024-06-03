@@ -2,10 +2,12 @@ package nl.novi.eindopdrachtbackend.controller;
 
 import nl.novi.eindopdrachtbackend.dto.*;
 import nl.novi.eindopdrachtbackend.service.OrderService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,21 +63,20 @@ public class OrderController {
         List<OrderDTO> orders = orderService.findOrdersByRestaurantId(restaurantId);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
-    @GetMapping("/print")
-    public ResponseEntity<List<String>> printOrdersByDate(@RequestParam LocalDateTime date) {
-        List<OrderDTO> orders = orderService.findOrdersByDate(date);
-        List<String> printableOrders = orders.stream()
-                .map(order -> orderService.generatePrintableOrder(order.getId(), date))
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(printableOrders, HttpStatus.OK);
-    }
-    // In OrderController.java
-    @GetMapping("/orders/{id}/print")
-    public ResponseEntity<String> printOrder(@PathVariable Long id) {
-        LocalDateTime now = LocalDateTime.now();
-        String printableOrder = orderService.generatePrintableOrder(id, now);
-        return new ResponseEntity<>(printableOrder, HttpStatus.OK);
+    @GetMapping("/restaurant/{restaurantId}/print")
+    public ResponseEntity<String> printOrdersByRestaurantAndDate(@PathVariable Long restaurantId, @RequestParam String date) {
+        LocalDateTime localDate = LocalDateTime.parse(date + "T00:00:00");
+        String summary = orderService.generatePrintableDailySummary(restaurantId, localDate);
+        return new ResponseEntity<>(summary, HttpStatus.OK);
     }
 
+    @GetMapping("/{id}/print")
+    public ResponseEntity<String> printOrder(@PathVariable Long id) {
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println("Received request to print order with id: " + id);
+        String printableOrder = orderService.generatePrintableOrder(id, now);
+        System.out.println("Generated printable order: " + printableOrder);
+        return new ResponseEntity<>(printableOrder, HttpStatus.OK);
+    }
 
 }
