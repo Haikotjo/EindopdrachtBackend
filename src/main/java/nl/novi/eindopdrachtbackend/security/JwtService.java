@@ -1,4 +1,4 @@
-package nl.novi.les16jwt.security;
+package nl.novi.eindopdrachtbackend.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

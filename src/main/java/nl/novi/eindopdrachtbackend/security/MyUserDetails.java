@@ -1,4 +1,4 @@
-package nl.novi.les16jwt.security;
+package nl.novi.eindopdrachtbackend.security;
 
 import nl.novi.les16jwt.model.Role;
 import nl.novi.les16jwt.model.User;

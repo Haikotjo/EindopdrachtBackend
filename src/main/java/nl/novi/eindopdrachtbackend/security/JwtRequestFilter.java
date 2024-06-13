@@ -1,4 +1,4 @@
-package nl.novi.les16jwt.security;
+package nl.novi.eindopdrachtbackend.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
