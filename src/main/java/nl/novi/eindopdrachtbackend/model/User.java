@@ -1,9 +1,8 @@
 package nl.novi.eindopdrachtbackend.model;
 
 import jakarta.persistence.*;
-
-import javax.management.relation.Role;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -13,10 +12,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Column(unique = true)
     private String email;
     private String password;
-    @Enumerated(EnumType.STRING)
-    private UserRole role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Collection<Role> roles;
     private String phoneNumber;
 
     //Relation to orders
@@ -35,30 +35,30 @@ public class User {
     public User() {
     }
 
-    public User(String name, String email, String password, UserRole role, String phoneNumber) {
+    public User(String name, String email, String password, Collection<Role> roles, String phoneNumber) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.role = role;
+        this.roles = roles;
         this.phoneNumber = phoneNumber;
     }
 
 
-    public User(String name, String email, String password, UserRole role, String phoneNumber, List<Order> orders, DeliveryAddress deliveryAddress) {
+    public User(String name, String email, String password, Collection<Role> roles, String phoneNumber, List<Order> orders, DeliveryAddress deliveryAddress) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.role = role;
+        this.roles = roles;
         this.phoneNumber = phoneNumber;
         this.orders = orders;
         this.deliveryAddress = deliveryAddress;
     }
 
-    public User(String name, String email, String password, UserRole role, String phoneNumber, List<Order> orders, Restaurant restaurant) {
+    public User(String name, String email, String password, Collection<Role> roles, String phoneNumber, List<Order> orders, Restaurant restaurant) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.role = role;
+        this.roles = roles;
         this.phoneNumber = phoneNumber;
         this.orders = orders;
         this.restaurant = restaurant;
@@ -93,12 +93,12 @@ public class User {
         this.password = password;
     }
 
-    public UserRole getRole() {
-        return role;
+    public Collection<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(UserRole role) {
-        this.role = role;
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
     }
 
     public String getPhoneNumber() {
