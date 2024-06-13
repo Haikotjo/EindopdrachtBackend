@@ -1,10 +1,13 @@
 package nl.novi.eindopdrachtbackend.dto;
 
 import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
+import nl.novi.eindopdrachtbackend.model.Role;
 import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.model.UserRole;
 
 import java.util.stream.Collectors;
+import java.util.List;
+import java.util.ArrayList;
 
 public class UserMapper {
 
@@ -14,7 +17,7 @@ public class UserMapper {
         dto.setId(user.getId());
         dto.setName(user.getName());
         dto.setEmail(user.getEmail());
-        dto.setRole(user.getRole());
+        dto.setRoles(user.getRoles().stream().map(role -> role.getRolename().name()).collect(Collectors.toList()));
         dto.setPhoneNumber(user.getPhoneNumber());
         dto.setDeliveryAddress(DeliveryAddressMapper.toDeliveryAddressDTO(user.getDeliveryAddress()));
         dto.setOrders(user.getOrders().stream().map(OrderMapper::toDTO).collect(Collectors.toList()));
@@ -27,8 +30,6 @@ public class UserMapper {
         user.setName(inputDTO.getName());
         user.setEmail(inputDTO.getEmail());
         user.setPassword(inputDTO.getPassword());
-        user.setRole(inputDTO.getRole());
-        user.setPhoneNumber(inputDTO.getPhoneNumber());
         user.setPhoneNumber(inputDTO.getPhoneNumber());
 
         if (inputDTO.getDeliveryAddress() != null) {
@@ -40,6 +41,15 @@ public class UserMapper {
             address.setCountry(inputDTO.getDeliveryAddress().getCountry());
             user.setDeliveryAddress(address);
         }
+
+        List<Role> roles = new ArrayList<>();
+        if (inputDTO.getRoles() != null) {
+            for (String roleName : inputDTO.getRoles()) {
+                Role role = new Role(UserRole.valueOf(roleName));
+                roles.add(role);
+            }
+        }
+        user.setRoles(roles);
         return user;
     }
 }

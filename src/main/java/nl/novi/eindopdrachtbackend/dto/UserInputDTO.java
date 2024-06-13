@@ -2,11 +2,13 @@ package nl.novi.eindopdrachtbackend.dto;
 
 import nl.novi.eindopdrachtbackend.model.UserRole;
 
+import java.util.List;
+
 public class UserInputDTO {
     private String name;
     private String email;
     private String password;
-    private UserRole role;
+    private List<String> roles;
     private String phoneNumber;
     private DeliveryAddressInputDTO deliveryAddress;
 
@@ -36,12 +38,12 @@ public class UserInputDTO {
         this.password = password;
     }
 
-    public UserRole getRole() {
-        return role;
+    public List<String> getRoles() {
+        return roles;
     }
 
-    public void setRole(UserRole role) {
-        this.role = role;
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 
     public String getPhoneNumber() {

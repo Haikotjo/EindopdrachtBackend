@@ -14,6 +14,15 @@ public class Role {
     @ManyToMany(mappedBy = "roles")
     private Collection<User> users;
 
+    // Constructor
+
+    public Role() {
+    }
+
+    public Role(UserRole rolename) {
+        this.rolename = rolename;
+    }
+
     // Getters and Setters
 
     public UserRole getRolename() {

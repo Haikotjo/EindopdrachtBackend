@@ -1,7 +1,8 @@
 package nl.novi.eindopdrachtbackend.dto;
 
-import nl.novi.eindopdrachtbackend.model.UserRole;
 import org.junit.jupiter.api.Test;
+import java.util.ArrayList;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserInputDTOTest {
@@ -19,11 +20,16 @@ class UserInputDTOTest {
         addressDTO.setPostcode("67890");
         addressDTO.setCountry("USA");
 
+        // Create roles list
+        List<String> roles = new ArrayList<>();
+        roles.add("OWNER");
+        roles.add("ADMIN");
+
         // Set values using setters
         userInputDTO.setName("Jane Doe");
         userInputDTO.setEmail("jane.doe@example.com");
         userInputDTO.setPassword("securepassword");
-        userInputDTO.setRole(UserRole.OWNER);
+        userInputDTO.setRoles(roles);
         userInputDTO.setPhoneNumber("555-6789");
         userInputDTO.setDeliveryAddress(addressDTO);
 
@@ -31,7 +37,7 @@ class UserInputDTOTest {
         assertEquals("Jane Doe", userInputDTO.getName());
         assertEquals("jane.doe@example.com", userInputDTO.getEmail());
         assertEquals("securepassword", userInputDTO.getPassword());
-        assertEquals(UserRole.OWNER, userInputDTO.getRole());
+        assertEquals(roles, userInputDTO.getRoles());
         assertEquals("555-6789", userInputDTO.getPhoneNumber());
         assertNotNull(userInputDTO.getDeliveryAddress());
         assertEquals("Second Street 456", userInputDTO.getDeliveryAddress().getStreet());

@@ -1,15 +1,12 @@
 package nl.novi.eindopdrachtbackend.dto;
 
-import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
-import nl.novi.eindopdrachtbackend.model.Order;
-import nl.novi.eindopdrachtbackend.model.User;
-import nl.novi.eindopdrachtbackend.model.UserRole;
-import nl.novi.eindopdrachtbackend.model.Restaurant;
+import nl.novi.eindopdrachtbackend.model.*;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,7 +20,6 @@ public class UserMapperTest {
         user.setName("John Doe");
         user.setEmail("john.doe@example.com");
         user.setPassword("password123");
-        user.setRole(UserRole.CUSTOMER);
         user.setPhoneNumber("555-1234");
 
         DeliveryAddress address = new DeliveryAddress();
@@ -48,13 +44,18 @@ public class UserMapperTest {
         orders.add(order1);
         user.setOrders(orders);
 
+        Role role = new Role(UserRole.CUSTOMER);
+        List<Role> roles = new ArrayList<>();
+        roles.add(role);
+        user.setRoles(roles);
+
         // Act
         UserDTO userDTO = UserMapper.toUserDTO(user);
 
         // Assert
         assertEquals("John Doe", userDTO.getName());
         assertEquals("john.doe@example.com", userDTO.getEmail());
-        assertEquals(UserRole.CUSTOMER, userDTO.getRole());
+        assertEquals(List.of("CUSTOMER"), userDTO.getRoles());
         assertEquals("555-1234", userDTO.getPhoneNumber());
         assertNotNull(userDTO.getDeliveryAddress());
         assertEquals("Main Street 123", userDTO.getDeliveryAddress().getStreet());
@@ -73,8 +74,8 @@ public class UserMapperTest {
         userInputDTO.setName("Jane Doe");
         userInputDTO.setEmail("jane.doe@example.com");
         userInputDTO.setPassword("securepassword");
-        userInputDTO.setRole(UserRole.OWNER);
         userInputDTO.setPhoneNumber("555-6789");
+        userInputDTO.setRoles(List.of("OWNER"));
 
         DeliveryAddressInputDTO addressInputDTO = new DeliveryAddressInputDTO();
         addressInputDTO.setStreet("Second Street 456");
@@ -90,7 +91,8 @@ public class UserMapperTest {
         assertEquals("Jane Doe", user.getName());
         assertEquals("jane.doe@example.com", user.getEmail());
         assertEquals("securepassword", user.getPassword());
-        assertEquals(UserRole.OWNER, user.getRole());
+        assertEquals(1, user.getRoles().size());
+        assertEquals(UserRole.OWNER, user.getRoles().iterator().next().getRolename());
         assertEquals("555-6789", user.getPhoneNumber());
         assertNotNull(user.getDeliveryAddress());
         assertEquals("Second Street 456", user.getDeliveryAddress().getStreet());
@@ -105,7 +107,6 @@ public class UserMapperTest {
         user.setName("John Doe");
         user.setEmail("john.doe@example.com");
         user.setPassword("password123");
-        user.setRole(UserRole.CUSTOMER);
         user.setPhoneNumber("555-1234");
         user.setDeliveryAddress(null);
 
@@ -123,12 +124,18 @@ public class UserMapperTest {
         orders.add(order1);
         user.setOrders(orders);
 
+        Role role = new Role(UserRole.CUSTOMER);
+        List<Role> roles = new ArrayList<>();
+        roles.add(role);
+        user.setRoles(roles);
+
         // Act
         UserDTO userDTO = UserMapper.toUserDTO(user);
 
         // Assert
         assertEquals("John Doe", userDTO.getName());
         assertNull(userDTO.getDeliveryAddress(), "DeliveryAddress moet null zijn als de User geen adres heeft.");
+        assertEquals(List.of("CUSTOMER"), userDTO.getRoles());
 
         // Check orders
         assertNotNull(userDTO.getOrders());

@@ -2,16 +2,24 @@ package nl.novi.eindopdrachtbackend.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
 
     private User user;
+    private Role role;
 
     @BeforeEach
     void setUp() {
-        user = new User("John Doe", "johndoe@example.com", "password123", UserRole.CUSTOMER, "555-1234");
+        role = new Role(UserRole.CUSTOMER);
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+        user = new User("John Doe", "johndoe@example.com", "password123", roles, "555-1234");
     }
 
     @Test
@@ -20,21 +28,24 @@ class UserTest {
         assertEquals("John Doe", user.getName());
         assertEquals("johndoe@example.com", user.getEmail());
         assertEquals("password123", user.getPassword());
-        assertEquals(UserRole.CUSTOMER, user.getRole());
+        assertTrue(user.getRoles().contains(role));
         assertEquals("555-1234", user.getPhoneNumber());
 
         // Test setters
+        Role newRole = new Role(UserRole.OWNER);
+        Set<Role> newRoles = new HashSet<>();
+        newRoles.add(newRole);
         user.setName("Jane Doe");
         user.setEmail("janedoe@example.com");
         user.setPassword("newPassword");
-        user.setRole(UserRole.OWNER);
+        user.setRoles(newRoles);
         user.setPhoneNumber("555-5678");
 
         // Test updated values
         assertEquals("Jane Doe", user.getName());
         assertEquals("janedoe@example.com", user.getEmail());
         assertEquals("newPassword", user.getPassword());
-        assertEquals(UserRole.OWNER, user.getRole());
+        assertTrue(user.getRoles().contains(newRole));
         assertEquals("555-5678", user.getPhoneNumber());
     }
 

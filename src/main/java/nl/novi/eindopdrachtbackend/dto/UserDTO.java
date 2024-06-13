@@ -8,7 +8,7 @@ public class UserDTO {
     private Long id;
     private String name;
     private String email;
-    private UserRole role;
+    private List<String> roles;
     private String phoneNumber;
     private DeliveryAddressDTO deliveryAddress;
     private List<OrderDTO> orders;
@@ -16,11 +16,11 @@ public class UserDTO {
     // Constructors
     public UserDTO() {}
 
-    public UserDTO(Long id, String name, String email, UserRole role, String phoneNumber, DeliveryAddressDTO deliveryAddress, List<OrderDTO> orders) {
+    public UserDTO(Long id, String name, String email, List<String> roles, String phoneNumber, DeliveryAddressDTO deliveryAddress, List<OrderDTO> orders) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.role = role;
+        this.roles = roles;
         this.phoneNumber = phoneNumber;
         this.deliveryAddress = deliveryAddress;
         this.orders = orders;
@@ -51,12 +51,12 @@ public class UserDTO {
         this.email = email;
     }
 
-    public UserRole getRole() {
-        return role;
+    public List<String> getRoles() {
+        return roles;
     }
 
-    public void setRole(UserRole role) {
-        this.role = role;
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 
     public String getPhoneNumber() {
