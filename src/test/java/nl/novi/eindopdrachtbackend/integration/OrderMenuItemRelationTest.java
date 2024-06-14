@@ -2,11 +2,7 @@ package nl.novi.eindopdrachtbackend.integration;
 
 import jakarta.transaction.Transactional;
 import nl.novi.eindopdrachtbackend.model.*;
-import nl.novi.eindopdrachtbackend.repository.DeliveryAddressRepository;
-import nl.novi.eindopdrachtbackend.repository.MenuItemRepository;
-import nl.novi.eindopdrachtbackend.repository.OrderRepository;
-import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
-import nl.novi.eindopdrachtbackend.repository.UserRepository;
+import nl.novi.eindopdrachtbackend.repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,11 +33,18 @@ class OrderMenuItemRelationTest {
     @Autowired
     private DeliveryAddressRepository deliveryAddressRepository;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     @Test
     @Transactional
     void testOrderMenuItemAssociation() {
+        // Create and save a Role
+        Role customerRole = new Role(UserRole.CUSTOMER);
+        roleRepository.save(customerRole);
+
         // Create and save a User
-        User user = new User("Eva Evers", "eva@example.com", "password123", UserRole.CUSTOMER, "0698765432");
+        User user = new User("Eva Evers", "eva@example.com", "password123", Collections.singletonList(customerRole), "0698765432");
         user = userRepository.save(user);
 
         // Create and save a Restaurant

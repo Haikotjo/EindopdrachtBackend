@@ -25,11 +25,21 @@ INSERT INTO menu_menu_item (menu_id, menu_item_id) VALUES (1, 3); -- Spaghetti B
 INSERT INTO menu_menu_item (menu_id, menu_item_id) VALUES (2, 2); -- Veggie Pizza in Vegetarian Delights
 INSERT INTO menu_menu_item (menu_id, menu_item_id) VALUES (2, 4); -- Vegetable Lasagna in Vegetarian Delights
 
--- Insert users
-INSERT INTO users (name, email, password, role, phone_number) VALUES ('John Doe', 'john.doe@example.com', 'password123', 'CUSTOMER', '1234567890');
-INSERT INTO users (name, email, password, role, phone_number) VALUES ('Jane Smith', 'jane.smith@example.com', 'password456', 'CUSTOMER', '0987654321');
+-- Insert roles
+INSERT INTO roles (rolename) VALUES ('CUSTOMER');
+INSERT INTO roles (rolename) VALUES ('OWNER');
+INSERT INTO roles (rolename) VALUES ('ADMIN');
+
+-- Insert users without roles
+INSERT INTO users (name, email, password, phone_number) VALUES ('John Doe', 'john.doe@example.com', 'password123', '1234567890');
+INSERT INTO users (name, email, password, phone_number) VALUES ('Jane Smith', 'jane.smith@example.com', 'password456', '0987654321');
 -- Insert another user without a delivery address
-INSERT INTO users (name, email, password, role, phone_number) VALUES ('Alice Johnson', 'alice.johnson@example.com', 'password789', 'CUSTOMER', '1122334455');
+INSERT INTO users (name, email, password, phone_number) VALUES ('Alice Johnson', 'alice.johnson@example.com', 'password789', '1122334455');
+
+-- Associate users with roles
+INSERT INTO user_roles (user_id, role_id) VALUES ((SELECT id FROM users WHERE email='john.doe@example.com'), (SELECT id FROM roles WHERE rolename='CUSTOMER'));
+INSERT INTO user_roles (user_id, role_id) VALUES ((SELECT id FROM users WHERE email='jane.smith@example.com'), (SELECT id FROM roles WHERE rolename='CUSTOMER'));
+INSERT INTO user_roles (user_id, role_id) VALUES ((SELECT id FROM users WHERE email='alice.johnson@example.com'), (SELECT id FROM roles WHERE rolename='CUSTOMER'));
 
 -- Insert delivery addresses ensuring correct alignment with user IDs and table fields
 INSERT INTO delivery_addresses (street, house_number, city, postcode, country, user_id) VALUES ('Maple Street', 123, 'Springfield', '12345', 'USA', 1);

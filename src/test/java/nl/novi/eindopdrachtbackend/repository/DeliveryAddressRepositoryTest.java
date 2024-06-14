@@ -1,12 +1,16 @@
 package nl.novi.eindopdrachtbackend.repository;
 
 import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
+import nl.novi.eindopdrachtbackend.model.Role;
 import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.model.UserRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -25,7 +29,11 @@ public class DeliveryAddressRepositoryTest {
     @BeforeEach
     void setUp() {
         // Maak eerst een User aan, omdat DeliveryAddress een User nodig heeft
-        User user = new User("TestUser", "test@example.com", "testpass", UserRole.CUSTOMER, "1234567890");
+        Role customerRole = new Role(UserRole.CUSTOMER);
+        Set<Role> roles = new HashSet<>();
+        roles.add(customerRole);
+
+        User user = new User("TestUser", "test@example.com", "testpass", roles, "1234567890");
         user = userRepository.save(user);  // Sla de User op om een ID te krijgen
 
         // Maak nu de DeliveryAddress aan met de opgeslagen User

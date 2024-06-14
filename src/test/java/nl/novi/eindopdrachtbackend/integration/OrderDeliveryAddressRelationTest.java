@@ -2,13 +2,12 @@ package nl.novi.eindopdrachtbackend.integration;
 
 import jakarta.transaction.Transactional;
 import nl.novi.eindopdrachtbackend.model.*;
-import nl.novi.eindopdrachtbackend.repository.DeliveryAddressRepository;
-import nl.novi.eindopdrachtbackend.repository.OrderRepository;
-import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
-import nl.novi.eindopdrachtbackend.repository.UserRepository;
+import nl.novi.eindopdrachtbackend.repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -27,11 +26,18 @@ class OrderDeliveryAddressRelationTest {
     @Autowired
     private RestaurantRepository restaurantRepository;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     @Test
     @Transactional
     void testOrderIsLinkedToDeliveryAddressCorrectly() {
+        // Create and save the Role
+        Role customerRole = new Role(UserRole.CUSTOMER);
+        roleRepository.save(customerRole);
+
         // Create and save a User with the correct Role
-        User user = new User("Jan Jansen", "jan@example.com", "securepassword", UserRole.CUSTOMER, "0612345678");
+        User user = new User("Jan Jansen", "jan@example.com", "securepassword", Collections.singleton(customerRole), "0612345678");
         user = userRepository.saveAndFlush(user); // Gebruik saveAndFlush om onmiddellijk te schrijven naar de database
 
         // Create a DeliveryAddress

@@ -8,6 +8,11 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RestaurantTest {
+
+    private Role createRole(UserRole userRole) {
+        return new Role(userRole);
+    }
+
     @Test
     public void testRestaurantConstructor() {
         // Create an instance of Restaurant using the constructor
@@ -23,7 +28,10 @@ class RestaurantTest {
     public void testRestaurantFullConstructor() {
         Set<Menu> menus = new HashSet<>();
         Set<Order> orders = new HashSet<>();
-        User owner = new User("Owner Name", "owner@example.com", "pass123", UserRole.OWNER, "123456789");
+        Role ownerRole = createRole(UserRole.OWNER);
+        Set<Role> roles = new HashSet<>();
+        roles.add(ownerRole);
+        User owner = new User("Owner Name", "owner@example.com", "pass123", roles, "123456789");
 
         Restaurant restaurant = new Restaurant("The Gourmet Spot", "Downtown Street, City", "0123456789", menus, orders, owner);
 

@@ -3,10 +3,11 @@ package nl.novi.eindopdrachtbackend.service;
 import nl.novi.eindopdrachtbackend.dto.*;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
+import nl.novi.eindopdrachtbackend.model.Role;
 import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.model.UserRole;
+import nl.novi.eindopdrachtbackend.repository.RoleRepository;
 import nl.novi.eindopdrachtbackend.repository.UserRepository;
-import nl.novi.eindopdrachtbackend.repository.DeliveryAddressRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +31,7 @@ public class UserServiceImplTest {
     private UserRepository userRepository;
 
     @Mock
-    private DeliveryAddressRepository deliveryAddressRepository;
+    private RoleRepository roleRepository;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -41,7 +42,7 @@ public class UserServiceImplTest {
 
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
-        user = new User("John Doe", "john.doe@example.com", "password123", UserRole.CUSTOMER, "555-1234");
+        user = new User("John Doe", "john.doe@example.com", "password123", new ArrayList<>(), "555-1234");
 
         // Reflectively setting the ID
         Field field = User.class.getDeclaredField("id");
@@ -60,7 +61,7 @@ public class UserServiceImplTest {
         userInputDTO.setName("Jane Doe");
         userInputDTO.setEmail("jane.doe@example.com");
         userInputDTO.setPassword("securepassword");
-        userInputDTO.setRole(UserRole.OWNER);
+        userInputDTO.setRoles(Arrays.asList("OWNER"));
         userInputDTO.setPhoneNumber("555-6789");
         userInputDTO.setDeliveryAddress(addressInputDTO);
 
@@ -71,7 +72,6 @@ public class UserServiceImplTest {
         addressInputDTO.setPostcode("12345");
         addressInputDTO.setCountry("USA");
     }
-
 
     @Test
     void getAllUsersTest() {
@@ -91,23 +91,34 @@ public class UserServiceImplTest {
     @Test
     void createUserTest() {
         User newUser = new User();
-        newUser.setName(userInputDTO.getName()); // Verifying this will set correctly in UserMapper
+        newUser.setName(userInputDTO.getName());
         newUser.setEmail(userInputDTO.getEmail());
-        newUser.setRole(userInputDTO.getRole());
+        newUser.setPassword(userInputDTO.getPassword());
         newUser.setPhoneNumber(userInputDTO.getPhoneNumber());
         newUser.setDeliveryAddress(new DeliveryAddress()); // Simplified for test
 
+        Role role = new Role(UserRole.OWNER);
+        when(roleRepository.findById("OWNER")).thenReturn(Optional.of(role));
         when(userRepository.save(any(User.class))).thenReturn(newUser);
+
         UserDTO result = userService.createUser(userInputDTO);
+
         assertEquals("Jane Doe", result.getName());
+        assertEquals("OWNER", result.getRoles().get(0));
     }
 
     @Test
     void updateUserTest() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        Role role = new Role(UserRole.OWNER);
+        when(roleRepository.findById("OWNER")).thenReturn(Optional.of(role));
         when(userRepository.save(any(User.class))).thenReturn(user);
+
         UserDTO result = userService.updateUser(1L, userInputDTO);
+
         assertEquals("Jane Doe", result.getName());
+        assertEquals("OWNER", result.getRoles().get(0));
     }
 
     @Test
@@ -133,9 +144,10 @@ public class UserServiceImplTest {
         assertEquals(1, result.size());
         assertEquals("John Doe", result.get(0).getName());
     }
+
     @Test
     void getAddressByUserId_ShouldReturnAddress_WhenUserHasAddress() throws NoSuchFieldException, IllegalAccessException {
-        User user = new User("John Doe", "john@example.com", "password", UserRole.CUSTOMER, "555-1234");
+        User user = new User("John Doe", "john@example.com", "password", new ArrayList<>(), "555-1234");
 
         Field idField = User.class.getDeclaredField("id");
         idField.setAccessible(true);
@@ -160,7 +172,7 @@ public class UserServiceImplTest {
 
     @Test
     void getAddressByUserId_ShouldThrowException_WhenUserHasNoAddress() throws NoSuchFieldException, IllegalAccessException {
-        User user = new User("John Doe", "john@example.com", "password", UserRole.CUSTOMER, "555-1234");
+        User user = new User("John Doe", "john@example.com", "password", new ArrayList<>(), "555-1234");
 
         Field idField = User.class.getDeclaredField("id");
         idField.setAccessible(true);
@@ -173,6 +185,4 @@ public class UserServiceImplTest {
         assertThrows(ResourceNotFoundException.class, () -> userService.getAddressByUserId(1L),
                 "Should throw exception when address is null");
     }
-
-
 }

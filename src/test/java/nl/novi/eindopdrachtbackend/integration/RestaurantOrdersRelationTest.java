@@ -2,13 +2,12 @@ package nl.novi.eindopdrachtbackend.integration;
 
 import jakarta.transaction.Transactional;
 import nl.novi.eindopdrachtbackend.model.*;
-import nl.novi.eindopdrachtbackend.repository.DeliveryAddressRepository;
-import nl.novi.eindopdrachtbackend.repository.OrderRepository;
-import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
-import nl.novi.eindopdrachtbackend.repository.UserRepository;
+import nl.novi.eindopdrachtbackend.repository.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -23,16 +22,22 @@ class RestaurantOrdersRelationTest {
     private RestaurantRepository restaurantRepository;
     @Autowired
     private DeliveryAddressRepository deliveryAddressRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Test
     @Transactional
     public void testRestaurantLinksBackToOrderCorrectly() {
+        // Setup Role
+        Role ownerRole = new Role(UserRole.OWNER);
+        roleRepository.save(ownerRole);
+
         // Setup Restaurant
         Restaurant restaurant = new Restaurant("The Good Food Place", "123 Main St", "555-1234");
         restaurant = restaurantRepository.save(restaurant);
 
         // Setup User
-        User user = new User("Jan Jansen", "jan@example.com", "password123", UserRole.OWNER, "0612345678");
+        User user = new User("Jan Jansen", "jan@example.com", "password123", Collections.singletonList(ownerRole), "0612345678");
         user = userRepository.save(user);
 
         // Setup DeliveryAddress
@@ -51,6 +56,5 @@ class RestaurantOrdersRelationTest {
         // Get saved User and verify relation
         Restaurant savedRestaurant = restaurantRepository.findById(restaurant.getId()).orElseThrow();
         assertTrue(savedRestaurant.getOrders().contains(order), "The order is not linked to the restaurant.");
-
     }
 }

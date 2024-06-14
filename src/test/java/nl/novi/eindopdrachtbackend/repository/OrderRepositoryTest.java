@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +28,11 @@ public class OrderRepositoryTest {
     @BeforeEach
     void setUp() {
         // Setup data
-        user = new User("John Doe", "john@example.com", "password", UserRole.CUSTOMER, "555-1234");
+        Role customerRole = new Role(UserRole.CUSTOMER);
+        Set<Role> roles = new HashSet<>();
+        roles.add(customerRole);
+
+        user = new User("John Doe", "john@example.com", "password", roles, "555-1234");
         user = entityManager.persistAndFlush(user);
 
         restaurant = new Restaurant("The Good Food Place", "123 Main St", "555-1234");

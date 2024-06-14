@@ -1,5 +1,6 @@
 package nl.novi.eindopdrachtbackend.repository;
 
+import nl.novi.eindopdrachtbackend.model.Role;
 import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.model.UserRole;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,6 +24,9 @@ public class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     @BeforeEach
     void setUp() {
         entityManager.getEntityManager().createQuery("DELETE FROM Order").executeUpdate();
@@ -28,10 +34,17 @@ public class UserRepositoryTest {
         entityManager.getEntityManager().createQuery("DELETE FROM Restaurant").executeUpdate();
         entityManager.getEntityManager().createQuery("DELETE FROM DeliveryAddress").executeUpdate();
         entityManager.getEntityManager().createQuery("DELETE FROM User").executeUpdate();
+        entityManager.getEntityManager().createQuery("DELETE FROM Role").executeUpdate();
         entityManager.clear();
 
-        User johnDoe = new User("John Doe", "johndoe@example.com", "password", UserRole.CUSTOMER, "555-1234");
-        User janeDoe = new User("Jane Doe", "janedoe@example.com", "password", UserRole.CUSTOMER, "555-5678");
+        Role customerRole = new Role(UserRole.CUSTOMER);
+        customerRole = roleRepository.save(customerRole);
+
+        Set<Role> roles = new HashSet<>();
+        roles.add(customerRole);
+
+        User johnDoe = new User("John Doe", "johndoe@example.com", "password", roles, "555-1234");
+        User janeDoe = new User("Jane Doe", "janedoe@example.com", "password", roles, "555-5678");
         entityManager.persist(johnDoe);
         entityManager.persist(janeDoe);
         entityManager.flush();
@@ -64,7 +77,6 @@ public class UserRepositoryTest {
 
         // Verification
         assertEquals(2, foundUsers.size(), "Should return 2 users with CUSTOMER role");
-        assertTrue(foundUsers.stream().allMatch(user -> user.getRole() == UserRole.CUSTOMER), "All users should have the CUSTOMER role");
+        assertTrue(foundUsers.stream().allMatch(user -> user.getRoles().stream().anyMatch(role -> role.getRolename() == UserRole.CUSTOMER)), "All users should have the CUSTOMER role");
     }
-
 }

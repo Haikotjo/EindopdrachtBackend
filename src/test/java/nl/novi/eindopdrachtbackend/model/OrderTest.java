@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,10 +12,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class OrderTest {
 
+    private Role createRole(UserRole userRole) {
+        return new Role(userRole);
+    }
+
     @Test
     public void testOrderConstructor() {
+        // Create roles
+        Role customerRole = createRole(UserRole.CUSTOMER);
+        Set<Role> roles = new HashSet<>();
+        roles.add(customerRole);
+
         // Create an instance of Order using the constructor
-        User customer = new User("John Doe", "john.doe@example.com", "password", UserRole.CUSTOMER, "1234567890");
+        User customer = new User("John Doe", "john.doe@example.com", "password", roles, "1234567890");
         Restaurant restaurant = new Restaurant("Italian Bistro", "123 Main Street", "555-1234");
         DeliveryAddress deliveryAddress = new DeliveryAddress("Main Street", 123, "Springfield", "12345", "USA");
 
@@ -34,7 +44,11 @@ public class OrderTest {
     @Test
     public void testAddMenuItemToOrder() {
         // Arrange
-        User customer = new User("John Doe", "john.doe@example.com", "password", UserRole.CUSTOMER, "1234567890");
+        Role customerRole = createRole(UserRole.CUSTOMER);
+        Set<Role> roles = new HashSet<>();
+        roles.add(customerRole);
+
+        User customer = new User("John Doe", "john.doe@example.com", "password", roles, "1234567890");
         Restaurant restaurant = new Restaurant("Italian Bistro", "123 Main Street", "555-1234");
         DeliveryAddress deliveryAddress = new DeliveryAddress("Main Street", 123, "Springfield", "12345", "USA");
 
@@ -57,7 +71,11 @@ public class OrderTest {
     @Test
     public void testOrderDateTimeSetter() {
         // Arrange
-        User customer = new User("John Doe", "john.doe@example.com", "password", UserRole.CUSTOMER, "1234567890");
+        Role customerRole = createRole(UserRole.CUSTOMER);
+        Set<Role> roles = new HashSet<>();
+        roles.add(customerRole);
+
+        User customer = new User("John Doe", "john.doe@example.com", "password", roles, "1234567890");
         Restaurant restaurant = new Restaurant("Italian Bistro", "123 Main Street", "555-1234");
         DeliveryAddress deliveryAddress = new DeliveryAddress("Main Street", 123, "Springfield", "12345", "USA");
 
