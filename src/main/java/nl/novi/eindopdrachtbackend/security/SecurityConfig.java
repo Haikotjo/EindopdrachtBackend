@@ -51,11 +51,14 @@ public class SecurityConfig  {
         http
                 .httpBasic().disable()
                 .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.POST, "/users").permitAll()
-                .requestMatchers(HttpMethod.POST, "/auth").permitAll()
-                .requestMatchers("/secret").hasAuthority("ADMIN")
-                .requestMatchers("/**").hasAnyAuthority("USER", "ADMIN")
-                .anyRequest().denyAll()
+//                MOET WEER AAN!!!!!!!!!!!!!
+//                .requestMatchers(HttpMethod.POST, "/users").permitAll()
+//                .requestMatchers(HttpMethod.POST, "/auth").permitAll()
+//                .requestMatchers("/secret").hasAuthority("ADMIN")
+//                .requestMatchers("/**").hasAnyAuthority("USER", "ADMIN")
+//                .anyRequest().denyAll()
+
+                .anyRequest().permitAll() // Schakel alle beveiliging uit MOET WEG!!!!!!!!!!!!
                 .and()
                 .addFilterBefore(new JwtRequestFilter(jwtService, userDetailsService()), UsernamePasswordAuthenticationFilter.class)
                 .csrf().disable()

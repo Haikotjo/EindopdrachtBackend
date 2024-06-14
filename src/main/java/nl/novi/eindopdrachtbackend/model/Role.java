@@ -1,5 +1,6 @@
 package nl.novi.eindopdrachtbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.Collection;
 
@@ -34,6 +35,7 @@ public class Role {
     }
 
     // Add this method to return the string representation
+    @JsonIgnore
     public String getRoleNameAsString() {
         return rolename.name();
     }
