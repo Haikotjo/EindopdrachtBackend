@@ -32,4 +32,9 @@ public class Role {
     public void setRolename(UserRole rolename) {
         this.rolename = rolename;
     }
+
+    // Add this method to return the string representation
+    public String getRoleNameAsString() {
+        return rolename.name();
+    }
 }

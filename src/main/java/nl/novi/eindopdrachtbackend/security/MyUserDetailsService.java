@@ -17,14 +17,13 @@ public class MyUserDetailsService implements UserDetailsService {
         this.userRepository = userRepository;
     }
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> ou = userRepository.findById(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> ou = userRepository.findByEmail(email);
         if (ou.isPresent()) {
             User user = ou.get();
             return new MyUserDetails(user);
-        }
-        else {
-            throw new UsernameNotFoundException(username);
+        } else {
+            throw new UsernameNotFoundException(email);
         }
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,6 +30,7 @@ public class UserRepositoryTest {
 
     @BeforeEach
     void setUp() {
+        // Clear the database
         entityManager.getEntityManager().createQuery("DELETE FROM Order").executeUpdate();
         entityManager.getEntityManager().createQuery("DELETE FROM Menu").executeUpdate();
         entityManager.getEntityManager().createQuery("DELETE FROM Restaurant").executeUpdate();
@@ -37,12 +39,15 @@ public class UserRepositoryTest {
         entityManager.getEntityManager().createQuery("DELETE FROM Role").executeUpdate();
         entityManager.clear();
 
+        // Create roles
         Role customerRole = new Role(UserRole.CUSTOMER);
         customerRole = roleRepository.save(customerRole);
 
+        // Assign roles to users
         Set<Role> roles = new HashSet<>();
         roles.add(customerRole);
 
+        // Create users
         User johnDoe = new User("John Doe", "johndoe@example.com", "password", roles, "555-1234");
         User janeDoe = new User("Jane Doe", "janedoe@example.com", "password", roles, "555-5678");
         entityManager.persist(johnDoe);
@@ -78,5 +83,24 @@ public class UserRepositoryTest {
         // Verification
         assertEquals(2, foundUsers.size(), "Should return 2 users with CUSTOMER role");
         assertTrue(foundUsers.stream().allMatch(user -> user.getRoles().stream().anyMatch(role -> role.getRolename() == UserRole.CUSTOMER)), "All users should have the CUSTOMER role");
+    }
+
+    @Test
+    void whenFindByEmail_thenReturnUser() {
+        // Action
+        Optional<User> foundUser = userRepository.findByEmail("johndoe@example.com");
+
+        // Verification
+        assertTrue(foundUser.isPresent(), "User with email 'johndoe@example.com' should be found");
+        assertEquals("John Doe", foundUser.get().getName(), "The name of the found user should be 'John Doe'");
+    }
+
+    @Test
+    void whenFindByEmailNotFound_thenReturnEmpty() {
+        // Action
+        Optional<User> foundUser = userRepository.findByEmail("nonexistent@example.com");
+
+        // Verification
+        assertTrue(foundUser.isEmpty(), "No user should be found with email 'nonexistent@example.com'");
     }
 }

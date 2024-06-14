@@ -1,9 +1,6 @@
 package nl.novi.eindopdrachtbackend.security;
 
-import nl.novi.eindopdrachtbackend.service.JwtService;
 import nl.novi.eindopdrachtbackend.repository.UserRepository;
-import nl.novi.eindopdrachtbackend.service.MyUserDetailsService;
-import nl.novi.eindopdrachtbackend.filter.JwtRequestFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

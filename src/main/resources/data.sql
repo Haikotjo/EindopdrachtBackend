@@ -30,16 +30,15 @@ INSERT INTO roles (rolename) VALUES ('CUSTOMER');
 INSERT INTO roles (rolename) VALUES ('OWNER');
 INSERT INTO roles (rolename) VALUES ('ADMIN');
 
--- Insert users without roles
+-- Insert users
 INSERT INTO users (name, email, password, phone_number) VALUES ('John Doe', 'john.doe@example.com', 'password123', '1234567890');
 INSERT INTO users (name, email, password, phone_number) VALUES ('Jane Smith', 'jane.smith@example.com', 'password456', '0987654321');
--- Insert another user without a delivery address
 INSERT INTO users (name, email, password, phone_number) VALUES ('Alice Johnson', 'alice.johnson@example.com', 'password789', '1122334455');
 
 -- Associate users with roles
-INSERT INTO user_roles (user_id, role_id) VALUES ((SELECT id FROM users WHERE email='john.doe@example.com'), (SELECT id FROM roles WHERE rolename='CUSTOMER'));
-INSERT INTO user_roles (user_id, role_id) VALUES ((SELECT id FROM users WHERE email='jane.smith@example.com'), (SELECT id FROM roles WHERE rolename='CUSTOMER'));
-INSERT INTO user_roles (user_id, role_id) VALUES ((SELECT id FROM users WHERE email='alice.johnson@example.com'), (SELECT id FROM roles WHERE rolename='CUSTOMER'));
+INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='john.doe@example.com'), 'CUSTOMER');
+INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='jane.smith@example.com'), 'CUSTOMER');
+INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='alice.johnson@example.com'), 'CUSTOMER');
 
 -- Insert delivery addresses ensuring correct alignment with user IDs and table fields
 INSERT INTO delivery_addresses (street, house_number, city, postcode, country, user_id) VALUES ('Maple Street', 123, 'Springfield', '12345', 'USA', 1);
