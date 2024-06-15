@@ -19,7 +19,8 @@ class UserTest {
         role = new Role(UserRole.CUSTOMER);
         Set<Role> roles = new HashSet<>();
         roles.add(role);
-        user = new User("John Doe", "johndoe@example.com", "password123", roles, "555-1234");
+        DeliveryAddress address = new DeliveryAddress("123 Main St", 10, "Anytown", "A1B2C3", "CountryLand");
+        user = new User("John Doe", "johndoe@example.com", "password123", roles, "555-1234", new ArrayList<>(), address);
     }
 
     @Test
@@ -55,10 +56,7 @@ class UserTest {
         user.setDeliveryAddress(address);
 
         assertEquals(address, user.getDeliveryAddress());
-        assertNull(user.getDeliveryAddress().getUser());  // Controleer of de relatie correct is ingesteld
-
-        address.setUser(user);
-        assertEquals(user, address.getUser()); // Zorg ervoor dat de relatie wederzijds is
+        assertEquals(user, user.getDeliveryAddress().getUser());  // Controleer of de relatie correct is ingesteld
     }
 
     @Test
