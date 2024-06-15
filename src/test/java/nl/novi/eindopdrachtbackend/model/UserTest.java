@@ -19,8 +19,7 @@ class UserTest {
         role = new Role(UserRole.CUSTOMER);
         Set<Role> roles = new HashSet<>();
         roles.add(role);
-        DeliveryAddress address = new DeliveryAddress("123 Main St", 10, "Anytown", "A1B2C3", "CountryLand");
-        user = new User("John Doe", "johndoe@example.com", "password123", roles, "555-1234", new ArrayList<>(), address);
+        user = new User("John Doe", "johndoe@example.com", "password123", roles, "555-1234");
     }
 
     @Test

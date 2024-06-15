@@ -16,29 +16,11 @@ public class UserMapper {
         dto.setEmail(user.getEmail());
         dto.setRoles(user.getRoles().stream().map(role -> role.getRolename().name()).collect(Collectors.toList()));
         dto.setPhoneNumber(user.getPhoneNumber());
-        dto.setDeliveryAddress(DeliveryAddressMapper.toDeliveryAddressDTO(user.getDeliveryAddress()));
-        dto.setOrders(user.getOrders().stream().map(OrderMapper::toDTO).collect(Collectors.toList()));
         return dto;
     }
 
     // Convert UserInputDTO to User entity
     public static User toUser(UserInputDTO inputDTO) {
-        User user = new User();
-        user.setName(inputDTO.getName());
-        user.setEmail(inputDTO.getEmail());
-        user.setPassword(inputDTO.getPassword());
-        user.setPhoneNumber(inputDTO.getPhoneNumber());
-
-        if (inputDTO.getDeliveryAddress() != null) {
-            DeliveryAddress address = new DeliveryAddress();
-            address.setStreet(inputDTO.getDeliveryAddress().getStreet());
-            address.setHouseNumber(inputDTO.getDeliveryAddress().getHouseNumber());
-            address.setCity(inputDTO.getDeliveryAddress().getCity());
-            address.setPostcode(inputDTO.getDeliveryAddress().getPostcode());
-            address.setCountry(inputDTO.getDeliveryAddress().getCountry());
-            user.setDeliveryAddress(address);
-        }
-
         List<Role> roles = new ArrayList<>();
         if (inputDTO.getRoles() != null) {
             for (String roleName : inputDTO.getRoles()) {
@@ -46,7 +28,7 @@ public class UserMapper {
                 roles.add(role);
             }
         }
-        user.setRoles(roles);
-        return user;
+
+        return new User(inputDTO.getName(), inputDTO.getEmail(), inputDTO.getPassword(), roles, inputDTO.getPhoneNumber());
     }
 }

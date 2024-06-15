@@ -33,16 +33,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO createUser(UserInputDTO userInputDTO) {
+    public UserDTO createAdmin(UserInputDTO userInputDTO) {
         User user = UserMapper.toUser(userInputDTO);
-        List<Role> roles = userInputDTO.getRoles().stream()
-                .map(roleName -> {
-                    UserRole roleEnum = UserRole.valueOf(roleName);
-                    return roleRepository.findById(roleEnum)
-                            .orElseThrow(() -> new ResourceNotFoundException("Role not found with name: " + roleName));
-                })
-                .collect(Collectors.toList());
-        user.setRoles(roles);
+        Role role = roleRepository.findById(UserRole.ADMIN)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with name: ADMIN"));
+        user.setRoles(List.of(role));
+        user = userRepository.save(user);
+        return UserMapper.toUserDTO(user);
+    }
+
+    @Override
+    public UserDTO createCustomer(UserInputDTO userInputDTO) {
+        User user = UserMapper.toUser(userInputDTO);
+        Role role = roleRepository.findById(UserRole.CUSTOMER)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with name: CUSTOMER"));
+        user.setRoles(List.of(role));
+        user = userRepository.save(user);
+        return UserMapper.toUserDTO(user);
+    }
+
+    @Override
+    public UserDTO createOwner(UserInputDTO userInputDTO) {
+        User user = UserMapper.toUser(userInputDTO);
+        Role role = roleRepository.findById(UserRole.OWNER)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with name: OWNER"));
+        user.setRoles(List.of(role));
         user = userRepository.save(user);
         return UserMapper.toUserDTO(user);
     }

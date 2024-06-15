@@ -59,12 +59,36 @@ public class UserControllerTest {
     }
 
     @Test
-    void createUser_ShouldCreateUser() {
+    void createAdmin_ShouldCreateAdmin() {
         UserInputDTO inputDTO = new UserInputDTO();
         UserDTO expectedUser = new UserDTO();
-        when(userService.createUser(inputDTO)).thenReturn(expectedUser);
+        when(userService.createAdmin(inputDTO)).thenReturn(expectedUser);
 
-        ResponseEntity<UserDTO> response = userController.createUser(inputDTO);
+        ResponseEntity<UserDTO> response = userController.createAdmin(inputDTO);
+
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    }
+
+    @Test
+    void createCustomer_ShouldCreateCustomer() {
+        UserInputDTO inputDTO = new UserInputDTO();
+        UserDTO expectedUser = new UserDTO();
+        when(userService.createCustomer(inputDTO)).thenReturn(expectedUser);
+
+        ResponseEntity<UserDTO> response = userController.createCustomer(inputDTO);
+
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    }
+
+    @Test
+    void createOwner_ShouldCreateOwner() {
+        UserInputDTO inputDTO = new UserInputDTO();
+        UserDTO expectedUser = new UserDTO();
+        when(userService.createOwner(inputDTO)).thenReturn(expectedUser);
+
+        ResponseEntity<UserDTO> response = userController.createOwner(inputDTO);
 
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -108,6 +132,4 @@ public class UserControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("123 Main St", response.getBody().getStreet());
     }
-
-
 }

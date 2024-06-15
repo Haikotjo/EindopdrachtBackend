@@ -1,13 +1,9 @@
 package nl.novi.eindopdrachtbackend.service;
 
 import nl.novi.eindopdrachtbackend.dto.*;
+import nl.novi.eindopdrachtbackend.model.*;
+import nl.novi.eindopdrachtbackend.repository.*;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
-import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
-import nl.novi.eindopdrachtbackend.model.Role;
-import nl.novi.eindopdrachtbackend.model.User;
-import nl.novi.eindopdrachtbackend.model.UserRole;
-import nl.novi.eindopdrachtbackend.repository.RoleRepository;
-import nl.novi.eindopdrachtbackend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +34,6 @@ public class UserServiceImplTest {
 
     private User user;
     private UserInputDTO userInputDTO;
-    private DeliveryAddressInputDTO addressInputDTO;
     private UserRoleUpdateDTO userRoleUpdateDTO;
 
     @BeforeEach
@@ -50,28 +45,12 @@ public class UserServiceImplTest {
         field.setAccessible(true);
         field.set(user, 1L);
 
-        DeliveryAddress address = new DeliveryAddress();
-        address.setStreet("123 Main St");
-        address.setCity("Anytown");
-        address.setCountry("USA");
-        address.setPostcode("12345");
-        address.setHouseNumber(456);
-        user.setDeliveryAddress(address);
-
         userInputDTO = new UserInputDTO();
         userInputDTO.setName("Jane Doe");
         userInputDTO.setEmail("jane.doe@example.com");
         userInputDTO.setPassword("securepassword");
         userInputDTO.setRoles(Arrays.asList("OWNER"));
         userInputDTO.setPhoneNumber("555-6789");
-        userInputDTO.setDeliveryAddress(addressInputDTO);
-
-        addressInputDTO = new DeliveryAddressInputDTO();
-        addressInputDTO.setStreet("123 Main St");
-        addressInputDTO.setHouseNumber(456);
-        addressInputDTO.setCity("Anytown");
-        addressInputDTO.setPostcode("12345");
-        addressInputDTO.setCountry("USA");
 
         userRoleUpdateDTO = new UserRoleUpdateDTO();
         userRoleUpdateDTO.setRole("OWNER");
@@ -95,24 +74,51 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void createUserTest() {
-        User newUser = new User();
-        newUser.setName(userInputDTO.getName());
-        newUser.setEmail(userInputDTO.getEmail());
-        newUser.setPassword(userInputDTO.getPassword());
-        newUser.setPhoneNumber(userInputDTO.getPhoneNumber());
-        newUser.setDeliveryAddress(new DeliveryAddress()); // Simplified for test
-        newUser.setRoles(new ArrayList<>());  // Zorg ervoor dat de rollenlijst niet null is
-
-        Role role = new Role(UserRole.OWNER);
-        when(roleRepository.findById(UserRole.OWNER)).thenReturn(Optional.of(role));
+    void createAdminTest() {
+        Role role = new Role(UserRole.ADMIN);
+        when(roleRepository.findById(UserRole.ADMIN)).thenReturn(Optional.of(role));
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
             User savedUser = invocation.getArgument(0);
+            savedUser.setRoles(new ArrayList<>()); // Zorg ervoor dat de lijst mutabel is
             savedUser.getRoles().add(role);
             return savedUser;
         });
 
-        UserDTO result = userService.createUser(userInputDTO);
+        UserDTO result = userService.createAdmin(userInputDTO);
+
+        assertEquals("Jane Doe", result.getName());
+        assertEquals("ADMIN", result.getRoles().get(0));
+    }
+
+    @Test
+    void createCustomerTest() {
+        Role role = new Role(UserRole.CUSTOMER);
+        when(roleRepository.findById(UserRole.CUSTOMER)).thenReturn(Optional.of(role));
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
+            User savedUser = invocation.getArgument(0);
+            savedUser.setRoles(new ArrayList<>()); // Zorg ervoor dat de lijst mutabel is
+            savedUser.getRoles().add(role);
+            return savedUser;
+        });
+
+        UserDTO result = userService.createCustomer(userInputDTO);
+
+        assertEquals("Jane Doe", result.getName());
+        assertEquals("CUSTOMER", result.getRoles().get(0));
+    }
+
+    @Test
+    void createOwnerTest() {
+        Role role = new Role(UserRole.OWNER);
+        when(roleRepository.findById(UserRole.OWNER)).thenReturn(Optional.of(role));
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
+            User savedUser = invocation.getArgument(0);
+            savedUser.setRoles(new ArrayList<>()); // Zorg ervoor dat de lijst mutabel is
+            savedUser.getRoles().add(role);
+            return savedUser;
+        });
+
+        UserDTO result = userService.createOwner(userInputDTO);
 
         assertEquals("Jane Doe", result.getName());
         assertEquals("OWNER", result.getRoles().get(0));
@@ -122,16 +128,11 @@ public class UserServiceImplTest {
     void updateUserTest() {
         user.setRoles(new ArrayList<>());  // Zorg ervoor dat de rollenlijst niet null is
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-
-        Role role = new Role(UserRole.OWNER);
-        user.getRoles().add(role);  // Voeg de rol toe aan de gebruiker
-        when(roleRepository.findById(UserRole.OWNER)).thenReturn(Optional.of(role));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
         UserDTO result = userService.updateUser(1L, userInputDTO);
 
         assertEquals("Jane Doe", result.getName());
-        assertEquals("OWNER", result.getRoles().get(0));
     }
 
     @Test

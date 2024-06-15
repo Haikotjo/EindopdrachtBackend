@@ -1,7 +1,5 @@
 package nl.novi.eindopdrachtbackend.dto;
 
-import nl.novi.eindopdrachtbackend.model.UserRole;
-
 import java.util.List;
 
 public class UserInputDTO {
@@ -10,7 +8,6 @@ public class UserInputDTO {
     private String password;
     private List<String> roles;
     private String phoneNumber;
-    private DeliveryAddressInputDTO deliveryAddress;
 
     // Getters en setters
 
@@ -52,13 +49,5 @@ public class UserInputDTO {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public DeliveryAddressInputDTO getDeliveryAddress() {
-        return deliveryAddress;
-    }
-
-    public void setDeliveryAddress(DeliveryAddressInputDTO deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
     }
 }

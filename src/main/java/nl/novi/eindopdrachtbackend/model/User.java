@@ -32,7 +32,7 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, optional = true)
     private DeliveryAddress deliveryAddress;
 
-    // Relatie toevoegen naar Restaurant
+    // Relation to Restaurant
     @OneToOne(mappedBy = "owner", optional = true)
     private Restaurant restaurant;
 
@@ -40,29 +40,7 @@ public class User {
     public User() {
     }
 
-    // Constructor for CUSTOMER
-    public User(String name, String email, String password, Collection<Role> roles, String phoneNumber, List<Order> orders, DeliveryAddress deliveryAddress) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.roles = roles;
-        this.phoneNumber = phoneNumber;
-        this.orders = orders;
-        this.deliveryAddress = deliveryAddress;
-    }
-
-    // Constructor for OWNER
-    public User(String name, String email, String password, Collection<Role> roles, String phoneNumber, List<Order> orders, Restaurant restaurant) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.roles = roles;
-        this.phoneNumber = phoneNumber;
-        this.orders = orders;
-        this.restaurant = restaurant;
-    }
-
-    // Constructor for ADMIN
+    // General constructor
     public User(String name, String email, String password, Collection<Role> roles, String phoneNumber) {
         this.name = name;
         this.email = email;

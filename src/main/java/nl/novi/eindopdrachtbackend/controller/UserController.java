@@ -29,9 +29,21 @@ public class UserController {
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserInputDTO userInputDTO) {
-        UserDTO newUser = userService.createUser(userInputDTO);
+    @PostMapping("/admin")
+    public ResponseEntity<UserDTO> createAdmin(@RequestBody UserInputDTO userInputDTO) {
+        UserDTO newUser = userService.createAdmin(userInputDTO);
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/customer")
+    public ResponseEntity<UserDTO> createCustomer(@RequestBody UserInputDTO userInputDTO) {
+        UserDTO newUser = userService.createCustomer(userInputDTO);
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/owner")
+    public ResponseEntity<UserDTO> createOwner(@RequestBody UserInputDTO userInputDTO) {
+        UserDTO newUser = userService.createOwner(userInputDTO);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
@@ -70,5 +82,4 @@ public class UserController {
         DeliveryAddressDTO addressDTO = userService.getAddressByUserId(userId);
         return new ResponseEntity<>(addressDTO, HttpStatus.OK);
     }
-
 }
