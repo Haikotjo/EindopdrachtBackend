@@ -40,15 +40,7 @@ public class User {
     public User() {
     }
 
-    public User(String name, String email, String password, Collection<Role> roles, String phoneNumber) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.roles = roles;
-        this.phoneNumber = phoneNumber;
-    }
-
-
+    // Constructor for CUSTOMER
     public User(String name, String email, String password, Collection<Role> roles, String phoneNumber, List<Order> orders, DeliveryAddress deliveryAddress) {
         this.name = name;
         this.email = email;
@@ -59,6 +51,7 @@ public class User {
         this.deliveryAddress = deliveryAddress;
     }
 
+    // Constructor for OWNER
     public User(String name, String email, String password, Collection<Role> roles, String phoneNumber, List<Order> orders, Restaurant restaurant) {
         this.name = name;
         this.email = email;
@@ -67,6 +60,15 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.orders = orders;
         this.restaurant = restaurant;
+    }
+
+    // Constructor for ADMIN
+    public User(String name, String email, String password, Collection<Role> roles, String phoneNumber) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+        this.phoneNumber = phoneNumber;
     }
 
     // Getters and setters
