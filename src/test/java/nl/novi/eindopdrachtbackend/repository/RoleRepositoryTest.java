@@ -34,7 +34,7 @@ public class RoleRepositoryTest {
 
     @Test
     void testFindById() {
-        Optional<Role> foundRole = roleRepository.findById("CUSTOMER");
+        Optional<Role> foundRole = roleRepository.findById(UserRole.CUSTOMER);
         assertThat(foundRole.isPresent()).isTrue();
         assertThat(foundRole.get().getRolename()).isEqualTo(UserRole.CUSTOMER);
     }

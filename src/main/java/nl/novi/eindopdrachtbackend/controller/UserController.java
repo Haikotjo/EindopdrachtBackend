@@ -1,9 +1,6 @@
 package nl.novi.eindopdrachtbackend.controller;
 
-import nl.novi.eindopdrachtbackend.dto.DeliveryAddressDTO;
-import nl.novi.eindopdrachtbackend.dto.UserDTO;
-import nl.novi.eindopdrachtbackend.dto.UserInputDTO;
-import nl.novi.eindopdrachtbackend.dto.DeliveryAddressInputDTO;
+import nl.novi.eindopdrachtbackend.dto.*;
 import nl.novi.eindopdrachtbackend.model.UserRole;
 import nl.novi.eindopdrachtbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +38,12 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserInputDTO userInputDTO) {
         UserDTO updatedUser = userService.updateUser(id, userInputDTO);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/role")
+    public ResponseEntity<UserDTO> updateUserRole(@PathVariable Long id, @RequestBody UserRoleUpdateDTO userRoleUpdateDTO) {
+        UserDTO updatedUser = userService.updateUserRole(id, userRoleUpdateDTO);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 

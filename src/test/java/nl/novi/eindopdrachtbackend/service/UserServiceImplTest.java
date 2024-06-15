@@ -39,6 +39,7 @@ public class UserServiceImplTest {
     private User user;
     private UserInputDTO userInputDTO;
     private DeliveryAddressInputDTO addressInputDTO;
+    private UserRoleUpdateDTO userRoleUpdateDTO;
 
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
@@ -71,10 +72,14 @@ public class UserServiceImplTest {
         addressInputDTO.setCity("Anytown");
         addressInputDTO.setPostcode("12345");
         addressInputDTO.setCountry("USA");
+
+        userRoleUpdateDTO = new UserRoleUpdateDTO();
+        userRoleUpdateDTO.setRole("OWNER");
     }
 
     @Test
     void getAllUsersTest() {
+        user.setRoles(new ArrayList<>());  // Zorg ervoor dat de rollenlijst niet null is
         when(userRepository.findAll()).thenReturn(Arrays.asList(user));
         List<UserDTO> result = userService.getAllUsers();
         assertEquals(1, result.size());
@@ -83,6 +88,7 @@ public class UserServiceImplTest {
 
     @Test
     void getUserByIdTest() {
+        user.setRoles(new ArrayList<>());  // Zorg ervoor dat de rollenlijst niet null is
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         UserDTO result = userService.getUserById(1L);
         assertEquals("John Doe", result.getName());
@@ -96,10 +102,15 @@ public class UserServiceImplTest {
         newUser.setPassword(userInputDTO.getPassword());
         newUser.setPhoneNumber(userInputDTO.getPhoneNumber());
         newUser.setDeliveryAddress(new DeliveryAddress()); // Simplified for test
+        newUser.setRoles(new ArrayList<>());  // Zorg ervoor dat de rollenlijst niet null is
 
         Role role = new Role(UserRole.OWNER);
-        when(roleRepository.findById("OWNER")).thenReturn(Optional.of(role));
-        when(userRepository.save(any(User.class))).thenReturn(newUser);
+        when(roleRepository.findById(UserRole.OWNER)).thenReturn(Optional.of(role));
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
+            User savedUser = invocation.getArgument(0);
+            savedUser.getRoles().add(role);
+            return savedUser;
+        });
 
         UserDTO result = userService.createUser(userInputDTO);
 
@@ -109,15 +120,31 @@ public class UserServiceImplTest {
 
     @Test
     void updateUserTest() {
+        user.setRoles(new ArrayList<>());  // Zorg ervoor dat de rollenlijst niet null is
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         Role role = new Role(UserRole.OWNER);
-        when(roleRepository.findById("OWNER")).thenReturn(Optional.of(role));
+        user.getRoles().add(role);  // Voeg de rol toe aan de gebruiker
+        when(roleRepository.findById(UserRole.OWNER)).thenReturn(Optional.of(role));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
         UserDTO result = userService.updateUser(1L, userInputDTO);
 
         assertEquals("Jane Doe", result.getName());
+        assertEquals("OWNER", result.getRoles().get(0));
+    }
+
+    @Test
+    void updateUserRoleTest() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        Role role = new Role(UserRole.OWNER);
+        when(roleRepository.findById(UserRole.OWNER)).thenReturn(Optional.of(role));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        UserDTO result = userService.updateUserRole(1L, userRoleUpdateDTO);
+
+        assertEquals(1, result.getRoles().size());
         assertEquals("OWNER", result.getRoles().get(0));
     }
 
@@ -131,6 +158,7 @@ public class UserServiceImplTest {
 
     @Test
     void findByNameIgnoreCaseTest() {
+        user.setRoles(new ArrayList<>());  // Zorg ervoor dat de rollenlijst niet null is
         when(userRepository.findByNameIgnoreCase("john")).thenReturn(Arrays.asList(user));
         List<UserDTO> result = userService.findByNameIgnoreCase("john");
         assertEquals(1, result.size());
@@ -139,6 +167,7 @@ public class UserServiceImplTest {
 
     @Test
     void findByRoleTest() {
+        user.setRoles(new ArrayList<>());  // Zorg ervoor dat de rollenlijst niet null is
         when(userRepository.findByRole(UserRole.CUSTOMER)).thenReturn(Arrays.asList(user));
         List<UserDTO> result = userService.findByRole(UserRole.CUSTOMER);
         assertEquals(1, result.size());
@@ -161,6 +190,7 @@ public class UserServiceImplTest {
         address.setHouseNumber(456);
 
         user.setDeliveryAddress(address);
+        user.setRoles(new ArrayList<>());  // Zorg ervoor dat de rollenlijst niet null is
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
@@ -179,6 +209,7 @@ public class UserServiceImplTest {
         idField.set(user, 1L);
 
         user.setDeliveryAddress(null);
+        user.setRoles(new ArrayList<>());  // Zorg ervoor dat de rollenlijst niet null is
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 

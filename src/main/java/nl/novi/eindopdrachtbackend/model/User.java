@@ -28,8 +28,8 @@ public class User {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
-    //Relation to DeliveryAddress
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    // Relation to DeliveryAddress
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, optional = true)
     private DeliveryAddress deliveryAddress;
 
     // Relatie toevoegen naar Restaurant
@@ -131,6 +131,9 @@ public class User {
 
     public void setDeliveryAddress(DeliveryAddress deliveryAddress) {
         this.deliveryAddress = deliveryAddress;
+        if (deliveryAddress != null) {
+            deliveryAddress.setUser(this);
+        }
     }
 
     public Restaurant getRestaurant() {

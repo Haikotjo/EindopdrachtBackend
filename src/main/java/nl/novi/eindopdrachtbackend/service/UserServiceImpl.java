@@ -36,14 +36,16 @@ public class UserServiceImpl implements UserService {
     public UserDTO createUser(UserInputDTO userInputDTO) {
         User user = UserMapper.toUser(userInputDTO);
         List<Role> roles = userInputDTO.getRoles().stream()
-                .map(roleRepository::findById)
-                .map(role -> role.orElseThrow(() -> new ResourceNotFoundException("Role not found")))
+                .map(roleName -> {
+                    UserRole roleEnum = UserRole.valueOf(roleName);
+                    return roleRepository.findById(roleEnum)
+                            .orElseThrow(() -> new ResourceNotFoundException("Role not found with name: " + roleName));
+                })
                 .collect(Collectors.toList());
         user.setRoles(roles);
         user = userRepository.save(user);
         return UserMapper.toUserDTO(user);
     }
-
     @Override
     public UserDTO updateUser(Long id, UserInputDTO userInputDTO) {
         User existingUser = userRepository.findById(id)
@@ -51,11 +53,6 @@ public class UserServiceImpl implements UserService {
         existingUser.setName(userInputDTO.getName());
         existingUser.setEmail(userInputDTO.getEmail());
         existingUser.setPassword(userInputDTO.getPassword());
-        List<Role> roles = userInputDTO.getRoles().stream()
-                .map(roleRepository::findById)
-                .map(role -> role.orElseThrow(() -> new ResourceNotFoundException("Role not found")))
-                .collect(Collectors.toList());
-        existingUser.setRoles(roles);
         existingUser.setPhoneNumber(userInputDTO.getPhoneNumber());
         existingUser = userRepository.save(existingUser);
         return UserMapper.toUserDTO(existingUser);
@@ -91,5 +88,18 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException("Address not found for user id: " + userId);
         }
         return DeliveryAddressMapper.toDeliveryAddressDTO(address);
+    }
+
+    @Override
+    public UserDTO updateUserRole(Long id, UserRoleUpdateDTO userRoleUpdateDTO) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        UserRole newRoleEnum = UserRole.valueOf(userRoleUpdateDTO.getRole());
+        Role newRole = roleRepository.findById(newRoleEnum)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with name: " + userRoleUpdateDTO.getRole()));
+        existingUser.getRoles().clear();
+        existingUser.getRoles().add(newRole);
+        userRepository.save(existingUser);
+        return UserMapper.toUserDTO(existingUser);
     }
 }

@@ -1,9 +1,6 @@
 package nl.novi.eindopdrachtbackend.dto;
 
-import nl.novi.eindopdrachtbackend.model.DeliveryAddress;
-import nl.novi.eindopdrachtbackend.model.Role;
-import nl.novi.eindopdrachtbackend.model.User;
-import nl.novi.eindopdrachtbackend.model.UserRole;
+import nl.novi.eindopdrachtbackend.model.*;
 
 import java.util.stream.Collectors;
 import java.util.List;

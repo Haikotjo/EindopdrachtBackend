@@ -34,7 +34,6 @@ public class Role {
         this.rolename = rolename;
     }
 
-    // Add this method to return the string representation
     @JsonIgnore
     public String getRoleNameAsString() {
         return rolename.name();
