@@ -56,11 +56,6 @@ INSERT INTO delivery_addresses (street, house_number, city, postcode, country, u
 INSERT INTO delivery_addresses (street, house_number, city, postcode, country, user_id) VALUES ('Elm Street', 456, 'Shelbyville', '67890', 'USA', 2);
 
 -- Insert restaurants
-INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Italian Bistro', '123 Main Street, Springfield', '555-1234', 1);
-INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Veggie Delight', '456 Oak Avenue, Shelbyville', '555-5678', 2);
-INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Sushi Place', '789 Maple Road, Capital City', '555-8765', NULL);
-
--- Insert restaurants
 INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Italian Bistro', '123 Main Street, Springfield', '555-1234', (SELECT id FROM users WHERE email='owner.one@example.com'));
 INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Veggie Delight', '456 Oak Avenue, Shelbyville', '555-5678', (SELECT id FROM users WHERE email='owner.two@example.com'));
 INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Sushi Place', '789 Maple Road, Capital City', '555-8765', (SELECT id FROM users WHERE email='owner.three@example.com'));

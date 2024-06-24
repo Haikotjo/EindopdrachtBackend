@@ -4,7 +4,9 @@ import nl.novi.eindopdrachtbackend.dto.*;
 import nl.novi.eindopdrachtbackend.model.*;
 import nl.novi.eindopdrachtbackend.repository.*;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
+import nl.novi.eindopdrachtbackend.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -33,10 +35,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getUserById(Long id) {
+        String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
+        User currentUser = userRepository.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Current user not found"));
+
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+
+        // Only current user or admin can see the user
+        if (!currentUser.getRoles().contains(UserRole.ADMIN) && !user.getEmail().equals(currentUserEmail)) {
+            throw new AccessDeniedException("You do not have permission to view this user");
+        }
+
         return UserMapper.toUserDTO(user);
     }
+
 
     @Override
     public UserDTO createAdmin(UserInputDTO userInputDTO) {
