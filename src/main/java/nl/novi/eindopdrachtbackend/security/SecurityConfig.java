@@ -55,7 +55,7 @@ public class SecurityConfig  {
                 .requestMatchers(HttpMethod.GET, "/users/**").permitAll()  // Sta GET-verzoeken naar /users toe zonder authenticatie
                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                 .requestMatchers("/secret").hasAuthority("ADMIN")
-                .requestMatchers("/**").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers("/**").hasAnyAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtRequestFilter(jwtService, userDetailsService()), UsernamePasswordAuthenticationFilter.class)

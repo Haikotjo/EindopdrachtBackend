@@ -31,14 +31,25 @@ INSERT INTO roles (rolename) VALUES ('OWNER');
 INSERT INTO roles (rolename) VALUES ('ADMIN');
 
 -- Insert users
-INSERT INTO users (name, email, password, phone_number) VALUES ('John Doe', 'john.doe@example.com', '$2a$10$u8e7vGCVfyTv//7ErYqHyeS.687DN7atPCNptcyHyrlq9wKhocGkO', '1234567890');
-INSERT INTO users (name, email, password, phone_number) VALUES ('Jane Smith', 'jane.smith@example.com', '$2a$10$APU1qR6P0fLepm/qUDFieev1G3hrxE704eqPc6B84Bkr3nXcq20Su', '0987654321');
-INSERT INTO users (name, email, password, phone_number) VALUES ('Alice Johnson', 'alice.johnson@example.com', '$2a$10$Ncn8xMg4Q0EQUJKDKJFHquXOqClnoHUHFwHCwKzWcHuuHa1xpfIXK', '1122334455');
+INSERT INTO users (name, email, password, phone_number) VALUES ('John Doe', 'john.doe@example.com', '$2a$10$l8Aw3v4sJpSHWUjtXUdkO.v766JvM6Ro9vrQ3IogQOU1U88Tu46ky', '1234567890');
+INSERT INTO users (name, email, password, phone_number) VALUES ('Jane Smith', 'jane.smith@example.com', '$2a$10$K6pbGwTYnNmWSM1kiLfJvOxbEnxy7K1hCAi0rIJ9d3OzICW3sUI1y', '0987654321');
+INSERT INTO users (name, email, password, phone_number) VALUES ('Alice Johnson', 'alice.johnson@example.com', '$2a$10$HS5wLdrmMRuBgF9d18Tbnux/Lqe4Zu25xc87qlSyLTqmlzrqGgXS2', '1122334455');
+INSERT INTO users (name, email, password, phone_number) VALUES ('Owner One', 'owner.one@example.com', '$2a$10$2q1rPfRqfs8braxU9c3WzeihkPD4jvILzFtWgeOiR3OnnkO4B9HWe', '1111111111');
+INSERT INTO users (name, email, password, phone_number) VALUES ('Owner Two', 'owner.two@example.com', '$2a$10$KTQEBBo.dZXZL6USfu/qV.wxt./HSi09KCB5crxQFAvpLCCwnzW7O', '2222222222');
+INSERT INTO users (name, email, password, phone_number) VALUES ('Owner Three', 'owner.three@example.com', '$2a$10$tMOde/XYW82ohctp6jkHjOMQQ3repa3vupD20/WfO2O94X6mv8Dfe', '3333333333');
+INSERT INTO users (name, email, password, phone_number) VALUES ('Admin User', 'admin.user@example.com', '$2a$10$5CVbOzUidUJMUYJkdlOMXuIggBw5/61Fa1dzM5CEB/8fs2BTPnCfO', '555-9999');
 
 -- Associate users with roles
 INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='john.doe@example.com'), 'CUSTOMER');
 INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='jane.smith@example.com'), 'CUSTOMER');
 INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='alice.johnson@example.com'), 'CUSTOMER');
+
+INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='owner.one@example.com'), 'OWNER');
+INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='owner.two@example.com'), 'OWNER');
+INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='owner.three@example.com'), 'OWNER');
+
+INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='admin.user@example.com'), 'ADMIN');
+
 
 -- Insert delivery addresses ensuring correct alignment with user IDs and table fields
 INSERT INTO delivery_addresses (street, house_number, city, postcode, country, user_id) VALUES ('Maple Street', 123, 'Springfield', '12345', 'USA', 1);
@@ -48,6 +59,11 @@ INSERT INTO delivery_addresses (street, house_number, city, postcode, country, u
 INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Italian Bistro', '123 Main Street, Springfield', '555-1234', 1);
 INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Veggie Delight', '456 Oak Avenue, Shelbyville', '555-5678', 2);
 INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Sushi Place', '789 Maple Road, Capital City', '555-8765', NULL);
+
+-- Insert restaurants
+INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Italian Bistro', '123 Main Street, Springfield', '555-1234', (SELECT id FROM users WHERE email='owner.one@example.com'));
+INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Veggie Delight', '456 Oak Avenue, Shelbyville', '555-5678', (SELECT id FROM users WHERE email='owner.two@example.com'));
+INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Sushi Place', '789 Maple Road, Capital City', '555-8765', (SELECT id FROM users WHERE email='owner.three@example.com'));
 
 -- Associate menus with restaurants
 UPDATE menus SET restaurant_id = 1 WHERE id = 1; -- Italian Specials hoort bij Italian Bistro
