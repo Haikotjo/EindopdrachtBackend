@@ -28,9 +28,9 @@ public class SecurityConfig  {
     }
 
     @Bean
-    public AuthenticationManager authManager(HttpSecurity http, PasswordEncoder encoder, UserDetailsService udService) throws Exception {
+    public AuthenticationManager authManager(HttpSecurity http, PasswordEncoder encoder, UserDetailsService userDetailsService) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(udService)
+                .userDetailsService(userDetailsService)
                 .passwordEncoder(encoder)
                 .and()
                 .build();
@@ -50,15 +50,13 @@ public class SecurityConfig  {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .httpBasic().disable()
-                .authorizeHttpRequests()
-//                MOET WEER AAN!!!!!!!!!!!!!
-//                .requestMatchers(HttpMethod.POST, "/users").permitAll()
-//                .requestMatchers(HttpMethod.POST, "/auth").permitAll()
-//                .requestMatchers("/secret").hasAuthority("ADMIN")
-//                .requestMatchers("/**").hasAnyAuthority("USER", "ADMIN")
-//                .anyRequest().denyAll()
-
-                .anyRequest().permitAll() // Schakel alle beveiliging uit MOET WEG!!!!!!!!!!!!
+                .authorizeRequests()
+                .requestMatchers(HttpMethod.POST, "/users/**").permitAll() // Voor alle POST verzoeken naar /users
+                .requestMatchers(HttpMethod.GET, "/users/**").permitAll()  // Sta GET-verzoeken naar /users toe zonder authenticatie
+                .requestMatchers(HttpMethod.POST, "/auth").permitAll()
+                .requestMatchers("/secret").hasAuthority("ADMIN")
+                .requestMatchers("/**").hasAnyAuthority("USER", "ADMIN")
+                .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtRequestFilter(jwtService, userDetailsService()), UsernamePasswordAuthenticationFilter.class)
                 .csrf().disable()

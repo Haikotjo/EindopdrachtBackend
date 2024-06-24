@@ -31,9 +31,9 @@ INSERT INTO roles (rolename) VALUES ('OWNER');
 INSERT INTO roles (rolename) VALUES ('ADMIN');
 
 -- Insert users
-INSERT INTO users (name, email, password, phone_number) VALUES ('John Doe', 'john.doe@example.com', 'password123', '1234567890');
-INSERT INTO users (name, email, password, phone_number) VALUES ('Jane Smith', 'jane.smith@example.com', 'password456', '0987654321');
-INSERT INTO users (name, email, password, phone_number) VALUES ('Alice Johnson', 'alice.johnson@example.com', 'password789', '1122334455');
+INSERT INTO users (name, email, password, phone_number) VALUES ('John Doe', 'john.doe@example.com', '$2a$10$u8e7vGCVfyTv//7ErYqHyeS.687DN7atPCNptcyHyrlq9wKhocGkO', '1234567890');
+INSERT INTO users (name, email, password, phone_number) VALUES ('Jane Smith', 'jane.smith@example.com', '$2a$10$APU1qR6P0fLepm/qUDFieev1G3hrxE704eqPc6B84Bkr3nXcq20Su', '0987654321');
+INSERT INTO users (name, email, password, phone_number) VALUES ('Alice Johnson', 'alice.johnson@example.com', '$2a$10$Ncn8xMg4Q0EQUJKDKJFHquXOqClnoHUHFwHCwKzWcHuuHa1xpfIXK', '1122334455');
 
 -- Associate users with roles
 INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='john.doe@example.com'), 'CUSTOMER');
