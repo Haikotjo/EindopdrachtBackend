@@ -82,4 +82,10 @@ public class UserController {
         DeliveryAddressDTO addressDTO = userService.getAddressByUserId(userId);
         return new ResponseEntity<>(addressDTO, HttpStatus.OK);
     }
+
+    @GetMapping("/{userId}/restaurants")
+    public ResponseEntity<RestaurantDTO> getRestaurantsByUserId(@PathVariable Long userId) {
+        RestaurantDTO restaurantDTO = userService.getRestaurantsByUserId(userId);
+        return new ResponseEntity<>(restaurantDTO, HttpStatus.OK);
+    }
 }

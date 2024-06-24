@@ -16,6 +16,7 @@ public interface UserService {
     List<UserDTO> findByNameIgnoreCase(String name);
     List<UserDTO> findByRole(UserRole role);
     DeliveryAddressDTO getAddressByUserId(Long userId);
+    RestaurantDTO getRestaurantsByUserId(Long userId);
     UserDTO updateUserRole(Long id, UserRoleUpdateDTO userRoleUpdateDTO);
 }
 

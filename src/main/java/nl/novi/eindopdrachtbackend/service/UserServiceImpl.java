@@ -115,6 +115,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public RestaurantDTO getRestaurantsByUserId(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+        Restaurant restaurant = user.getRestaurant();
+        if (restaurant == null) {
+            throw new ResourceNotFoundException("Restaurant not found for user id: " + userId);
+        }
+        return RestaurantMapper.toDTO(restaurant);
+    }
+
+    @Override
     public UserDTO updateUserRole(Long id, UserRoleUpdateDTO userRoleUpdateDTO) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));

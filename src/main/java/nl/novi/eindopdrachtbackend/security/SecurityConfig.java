@@ -54,7 +54,6 @@ public class SecurityConfig  {
                 .requestMatchers(HttpMethod.POST, "/users/**").permitAll() // Voor alle POST verzoeken naar /users
                 .requestMatchers(HttpMethod.GET, "/users/**").permitAll()  // Sta GET-verzoeken naar /users toe zonder authenticatie
                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
-                .requestMatchers("/secret").hasAuthority("ADMIN")
                 .requestMatchers("/**").hasAnyAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
