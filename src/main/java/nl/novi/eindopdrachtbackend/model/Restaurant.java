@@ -24,28 +24,12 @@ public class Restaurant {
     private User owner;
 
     //Relation to Menu
-    @OneToMany(mappedBy = "restaurant")
-    private Set<Menu> menus;
-
-    public void addMenu(Menu menu) {
-        this.getMenus().add(menu);
-        menu.setRestaurant(this);
-    }
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Menu> menus = new HashSet<>();
 
     //Relation to Orders
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Order> orders = new HashSet<>();
-
-    public void addOrder(Order order) {
-        orders.add(order);
-        order.setRestaurant(this);
-    }
-
-    public void removeOrder(Order order) {
-        orders.remove(order);
-        order.setRestaurant(null);
-    }
-
 
 //    constructors
 
@@ -68,6 +52,20 @@ public class Restaurant {
     }
 
     // getters and setters
+    public void addMenu(Menu menu) {
+        this.getMenus().add(menu);
+        menu.setRestaurant(this);
+    }
+
+    public void addOrder(Order order) {
+        orders.add(order);
+        order.setRestaurant(this);
+    }
+
+    public void removeOrder(Order order) {
+        orders.remove(order);
+        order.setRestaurant(null);
+    }
 
     public Long getId() {
         return id;
