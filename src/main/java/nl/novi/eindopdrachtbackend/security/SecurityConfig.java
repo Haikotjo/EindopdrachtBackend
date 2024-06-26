@@ -54,14 +54,19 @@ public class SecurityConfig  {
                 .httpBasic().disable()
                 .authorizeRequests()
                 .requestMatchers(HttpMethod.POST, "/users/**").permitAll() // Voor alle POST verzoeken naar /users
-                .requestMatchers(HttpMethod.GET, "/users/**").authenticated()  // Sta GET-verzoeken naar /users toe zonder authenticatie
-                .requestMatchers(HttpMethod.PUT, "/users/**").authenticated()  // Sta PUT-verzoeken naar /users toe zonder authenticatie
+
+                .requestMatchers(HttpMethod.GET, "/users/**").authenticated()  // Geauthenticeerde gebruikers kunnen PUT-verzoeken naar /users doen
+                .requestMatchers(HttpMethod.PUT, "/users/**").authenticated()  // Geauthenticeerde gebruikers kunnen PUT-verzoeken naar /users doen
+                .requestMatchers(HttpMethod.DELETE, "/users/**").authenticated() // Geauthenticeerde gebruikers kunnen DELETE-verzoeken naar /users doen
 
                 .requestMatchers(HttpMethod.GET, "/users/admin/**").hasAuthority("ADMIN") // Alleen admin kan /users/admin/** endpoints benaderen
                 .requestMatchers(HttpMethod.PUT, "/users/admin/**").hasAuthority("ADMIN") // Alleen admin kan /users/admin/** endpoints benaderen
+                .requestMatchers(HttpMethod.DELETE, "/users/admin/**").hasAuthority("ADMIN") // Alleen admin kan /users/admin/** endpoints benaderen
 
                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
-                .requestMatchers("/**").hasAnyAuthority("ADMIN")
+
+//                .requestMatchers("/**").hasAnyAuthority("ADMIN")
+
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtRequestFilter(jwtService, userDetailsService()), UsernamePasswordAuthenticationFilter.class)
