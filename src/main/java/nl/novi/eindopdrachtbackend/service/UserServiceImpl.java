@@ -102,18 +102,48 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
-        if (!currentUser.getRoles().contains(UserRole.ADMIN) && !user.getEmail().equals(currentUserEmail)) {
+        if (!user.getEmail().equals(currentUserEmail)) {
             throw new AccessDeniedException("You do not have permission to update this user");
         }
 
-        // Update user details
         user.setName(userInputDTO.getName());
         user.setEmail(userInputDTO.getEmail());
         user.setPhoneNumber(userInputDTO.getPhoneNumber());
         user.setPassword(userInputDTO.getPassword()); // Assuming password is already encoded
+        // Andere velden bijwerken indien nodig
 
-        User updatedUser = userRepository.save(user);
-        return UserMapper.toUserDTO(updatedUser);
+        userRepository.save(user);
+
+        return UserMapper.toUserDTO(user);
+    }
+
+    @Override
+    public UserDTO updateUserForAdmin(Long id, UserInputDTO userInputDTO) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+
+        user.setName(userInputDTO.getName());
+        user.setEmail(userInputDTO.getEmail());
+        user.setPhoneNumber(userInputDTO.getPhoneNumber());
+        user.setPassword(userInputDTO.getPassword()); // Assuming password is already encoded
+        // Andere velden bijwerken indien nodig
+
+        userRepository.save(user);
+
+        return UserMapper.toUserDTO(user);
+    }
+
+    @Override
+    public UserDTO updateUserRole(Long id, UserRoleUpdateDTO userRoleUpdateDTO) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        UserRole newRoleEnum = UserRole.valueOf(userRoleUpdateDTO.getRole());
+        Role newRole = roleRepository.findById(newRoleEnum)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found with name: " + userRoleUpdateDTO.getRole()));
+        existingUser.getRoles().clear();
+        existingUser.getRoles().add(newRole);
+        userRepository.save(existingUser);
+        return UserMapper.toUserDTO(existingUser);
     }
 
     @Override
@@ -157,18 +187,5 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException("Restaurant not found for user id: " + userId);
         }
         return RestaurantMapper.toDTO(restaurant);
-    }
-
-    @Override
-    public UserDTO updateUserRole(Long id, UserRoleUpdateDTO userRoleUpdateDTO) {
-        User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
-        UserRole newRoleEnum = UserRole.valueOf(userRoleUpdateDTO.getRole());
-        Role newRole = roleRepository.findById(newRoleEnum)
-                .orElseThrow(() -> new ResourceNotFoundException("Role not found with name: " + userRoleUpdateDTO.getRole()));
-        existingUser.getRoles().clear();
-        existingUser.getRoles().add(newRole);
-        userRepository.save(existingUser);
-        return UserMapper.toUserDTO(existingUser);
     }
 }

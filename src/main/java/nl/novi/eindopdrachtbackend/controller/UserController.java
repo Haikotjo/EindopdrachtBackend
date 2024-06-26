@@ -65,6 +65,14 @@ public class UserController {
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
+    @PutMapping("/admin/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<UserDTO> updateUserForAdmin(@PathVariable Long id, @RequestBody UserInputDTO userInputDTO) {
+        UserDTO updatedUser = userService.updateUserForAdmin(id, userInputDTO);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
+
+
     @PutMapping("/{id}/role")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserDTO> updateUserRole(@PathVariable Long id, @RequestBody UserRoleUpdateDTO userRoleUpdateDTO) {

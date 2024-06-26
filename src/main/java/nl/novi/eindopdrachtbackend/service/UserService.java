@@ -13,6 +13,7 @@ public interface UserService {
     UserDTO createCustomer(UserInputDTO userInputDTO);
     UserDTO createOwner(UserInputDTO userInputDTO);
     UserDTO updateUser(Long id, UserInputDTO userInputDTO);
+    UserDTO updateUserForAdmin(Long id, UserInputDTO userInputDTO);
     void deleteUser(Long id);
     List<UserDTO> findByNameIgnoreCase(String name);
     List<UserDTO> findByRole(UserRole role);

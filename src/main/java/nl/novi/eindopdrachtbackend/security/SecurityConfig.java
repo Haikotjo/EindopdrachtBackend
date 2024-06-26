@@ -54,7 +54,12 @@ public class SecurityConfig  {
                 .httpBasic().disable()
                 .authorizeRequests()
                 .requestMatchers(HttpMethod.POST, "/users/**").permitAll() // Voor alle POST verzoeken naar /users
-                .requestMatchers(HttpMethod.GET, "/users/**").permitAll()  // Sta GET-verzoeken naar /users toe zonder authenticatie
+                .requestMatchers(HttpMethod.GET, "/users/**").authenticated()  // Sta GET-verzoeken naar /users toe zonder authenticatie
+                .requestMatchers(HttpMethod.PUT, "/users/**").authenticated()  // Sta PUT-verzoeken naar /users toe zonder authenticatie
+
+                .requestMatchers(HttpMethod.GET, "/users/admin/**").hasAuthority("ADMIN") // Alleen admin kan /users/admin/** endpoints benaderen
+                .requestMatchers(HttpMethod.PUT, "/users/admin/**").hasAuthority("ADMIN") // Alleen admin kan /users/admin/** endpoints benaderen
+
                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                 .requestMatchers("/**").hasAnyAuthority("ADMIN")
                 .anyRequest().authenticated()
