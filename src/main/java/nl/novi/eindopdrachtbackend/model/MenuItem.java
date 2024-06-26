@@ -18,21 +18,21 @@ public class MenuItem {
     private String image;
 
 
-//Relation to ingredients
-    @ManyToMany
+    //Relation to ingredients
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "menu_item_ingredients",
             joinColumns = @JoinColumn(name = "menu_item_id"),
             inverseJoinColumns = @JoinColumn(name = "ingredient_id")
     )
-    private Set<Ingredient> ingredients;
+    private Set<Ingredient> ingredients = new HashSet<>();
 
     //Relation to Menu
-    @ManyToMany(mappedBy = "menuItems")
+    @ManyToMany(mappedBy = "menuItems", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Menu> menus;
 
     // Relation to Orders
-    @ManyToMany(mappedBy = "menuItems")
+    @ManyToMany(mappedBy = "menuItems", cascade = CascadeType.ALL)
     private Set<Order> orders = new HashSet<>();
 
 

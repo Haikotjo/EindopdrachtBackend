@@ -19,7 +19,7 @@ public class Restaurant {
     private String phoneNumber;
 
     //Relation to user owner of restaurant
-    @OneToOne(optional = true)
+    @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User owner;
 

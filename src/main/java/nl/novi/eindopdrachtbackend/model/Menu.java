@@ -16,19 +16,13 @@ public class Menu {
     private String description;
 
 //Relation to menuItem
-    @ManyToMany
+@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "menu_menuItem",
             joinColumns = @JoinColumn(name = "menu_id"),
             inverseJoinColumns = @JoinColumn(name = "menu_item_id")
     )
     private Set<MenuItem> menuItems;
-
-    public void addMenuItem(MenuItem menuItem) {
-        this.getMenuItems().add(menuItem);
-        menuItem.getMenus().add(this);
-    }
-
 
     //Relation to restaurants
     @ManyToOne
@@ -54,6 +48,11 @@ public class Menu {
     }
 
     // getters and setters
+
+    public void addMenuItem(MenuItem menuItem) {
+        this.getMenuItems().add(menuItem);
+        menuItem.getMenus().add(this);
+    }
 
     public Long getId() {
         return id;

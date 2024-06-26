@@ -33,7 +33,7 @@ public class User {
     private DeliveryAddress deliveryAddress;
 
     // Relation to Restaurant
-    @OneToOne(mappedBy = "owner", optional = true)
+    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private Restaurant restaurant;
 
     // Constructors

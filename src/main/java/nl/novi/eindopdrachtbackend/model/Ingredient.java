@@ -16,8 +16,8 @@ public class Ingredient {
     private int quantity;
 
 //Relation to menuItem
-    @ManyToMany(mappedBy = "ingredients")
-    private Set<MenuItem> menuItems;
+@ManyToMany(mappedBy = "ingredients", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+private Set<MenuItem> menuItems = new HashSet<>();
 
     public void addMenuItem(MenuItem menuItem) {
         this.getMenuItems().add(menuItem);
