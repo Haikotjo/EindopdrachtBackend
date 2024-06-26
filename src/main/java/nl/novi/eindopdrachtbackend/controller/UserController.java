@@ -25,6 +25,13 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+    @GetMapping("/admin/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<UserDTO> getUserByIdForAdmin(@PathVariable Long id) {
+        UserDTO userDTO = userService.getUserByIdForAdmin(id);
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'OWNER', 'CUSTOMER')")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
@@ -33,6 +40,7 @@ public class UserController {
     }
 
     @PostMapping("/admin")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserDTO> createAdmin(@RequestBody UserInputDTO userInputDTO) {
         UserDTO newUser = userService.createAdmin(userInputDTO);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
@@ -51,12 +59,14 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'OWNER', 'CUSTOMER')")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserInputDTO userInputDTO) {
         UserDTO updatedUser = userService.updateUser(id, userInputDTO);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
     @PutMapping("/{id}/role")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserDTO> updateUserRole(@PathVariable Long id, @RequestBody UserRoleUpdateDTO userRoleUpdateDTO) {
         UserDTO updatedUser = userService.updateUserRole(id, userRoleUpdateDTO);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);

@@ -34,6 +34,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDTO getUserByIdForAdmin(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        return UserMapper.toUserDTO(user);
+    }
+
+
+    @Override
     public UserDTO getUserById(Long id) {
         String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
         User currentUser = userRepository.findByEmail(currentUserEmail)
@@ -42,13 +50,15 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
-        // Only current user or admin can see the user
-        if (!currentUser.getRoles().contains(UserRole.ADMIN) && !user.getEmail().equals(currentUserEmail)) {
+        // Controleer of de huidige gebruiker zijn eigen gegevens probeert op te halen
+        if (!user.getEmail().equals(currentUserEmail)) {
             throw new AccessDeniedException("You do not have permission to view this user");
         }
 
+        // Als de huidige gebruiker zijn eigen gegevens probeert op te halen
         return UserMapper.toUserDTO(user);
     }
+
 
 
     @Override
@@ -85,14 +95,25 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public UserDTO updateUser(Long id, UserInputDTO userInputDTO) {
-        User existingUser = userRepository.findById(id)
+        String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
+        User currentUser = userRepository.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Current user not found"));
+
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
-        existingUser.setName(userInputDTO.getName());
-        existingUser.setEmail(userInputDTO.getEmail());
-        existingUser.setPassword(userInputDTO.getPassword());
-        existingUser.setPhoneNumber(userInputDTO.getPhoneNumber());
-        existingUser = userRepository.save(existingUser);
-        return UserMapper.toUserDTO(existingUser);
+
+        if (!currentUser.getRoles().contains(UserRole.ADMIN) && !user.getEmail().equals(currentUserEmail)) {
+            throw new AccessDeniedException("You do not have permission to update this user");
+        }
+
+        // Update user details
+        user.setName(userInputDTO.getName());
+        user.setEmail(userInputDTO.getEmail());
+        user.setPhoneNumber(userInputDTO.getPhoneNumber());
+        user.setPassword(userInputDTO.getPassword()); // Assuming password is already encoded
+
+        User updatedUser = userRepository.save(user);
+        return UserMapper.toUserDTO(updatedUser);
     }
 
     @Override
