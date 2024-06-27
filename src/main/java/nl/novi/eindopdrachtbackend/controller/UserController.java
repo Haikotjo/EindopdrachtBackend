@@ -101,6 +101,7 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/search/by-role")
     public ResponseEntity<List<UserDTO>> getUsersByRole(@RequestParam UserRole role) {
         List<UserDTO> users = userService.findByRole(role);
