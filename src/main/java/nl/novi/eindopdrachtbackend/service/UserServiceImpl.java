@@ -1,6 +1,7 @@
 package nl.novi.eindopdrachtbackend.service;
 
 import nl.novi.eindopdrachtbackend.dto.*;
+import nl.novi.eindopdrachtbackend.exception.RoleNotFoundException;
 import nl.novi.eindopdrachtbackend.model.*;
 import nl.novi.eindopdrachtbackend.repository.*;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
@@ -179,9 +180,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> findByRole(UserRole role) {
-        return userRepository.findByRole(role).stream()
+        List<UserDTO> users = userRepository.findByRole(role).stream()
                 .map(UserMapper::toUserDTO)
                 .collect(Collectors.toList());
+
+        if (users.isEmpty()) {
+            throw new RoleNotFoundException("No users found with role: " + role);
+        }
+
+        return users;
     }
 
     @Override
