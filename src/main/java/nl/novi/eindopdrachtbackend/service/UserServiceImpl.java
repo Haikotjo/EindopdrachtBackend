@@ -7,6 +7,7 @@ import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -170,10 +171,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDTO> findByNameIgnoreCase(String name) {
-        return userRepository.findByNameIgnoreCase(name).stream()
+    public UserDTO findByEmail(String email) {
+        return userRepository.findByEmail(email)
                 .map(UserMapper::toUserDTO)
-                .collect(Collectors.toList());
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
 
     @Override

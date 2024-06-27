@@ -62,6 +62,7 @@ public class SecurityConfig  {
                 .requestMatchers(HttpMethod.GET, "/users/admin/**").hasAuthority("ADMIN") // Alleen admin kan /users/admin/** endpoints benaderen
                 .requestMatchers(HttpMethod.PUT, "/users/admin/**").hasAuthority("ADMIN") // Alleen admin kan /users/admin/** endpoints benaderen
                 .requestMatchers(HttpMethod.DELETE, "/users/admin/**").hasAuthority("ADMIN") // Alleen admin kan /users/admin/** endpoints benaderen
+                .requestMatchers(HttpMethod.GET, "/users/search/by-email").hasAuthority("ADMIN") // Alleen admin kan /users/search/by-email endpoint benaderen
 
                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
 

@@ -94,10 +94,11 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/search/by-name")
-    public ResponseEntity<List<UserDTO>> getUsersByName(@RequestParam String name) {
-        List<UserDTO> users = userService.findByNameIgnoreCase(name);
-        return new ResponseEntity<>(users, HttpStatus.OK);
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/search/by-email")
+    public ResponseEntity<UserDTO> getUserByEmail(@RequestParam String email) {
+        UserDTO user = userService.findByEmail(email);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/search/by-role")

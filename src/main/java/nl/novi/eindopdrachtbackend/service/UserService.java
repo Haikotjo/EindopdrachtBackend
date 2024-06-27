@@ -16,7 +16,7 @@ public interface UserService {
     UserDTO updateUserForAdmin(Long id, UserInputDTO userInputDTO);
     void deleteUser(Long id);
     void deleteUserForAdmin(Long id);
-    List<UserDTO> findByNameIgnoreCase(String name);
+    UserDTO findByEmail(String email);
     List<UserDTO> findByRole(UserRole role);
     DeliveryAddressDTO getAddressByUserId(Long userId);
     RestaurantDTO getRestaurantsByUserId(Long userId);
