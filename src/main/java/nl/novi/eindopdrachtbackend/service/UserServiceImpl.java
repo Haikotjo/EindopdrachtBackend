@@ -28,6 +28,7 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // Get all users (ADMIN only)
     @Override
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream()
@@ -35,14 +36,15 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+    // Get user by ID with full information (ADMIN only)
     @Override
     public UserDTO getUserByIdForAdmin(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
-        return UserMapper.toUserDTO(user);
+        return UserMapper.toFullUserDTO(user);
     }
 
-
+    // Get user by ID with basic information
     @Override
     public UserDTO getUserById(Long id) {
         String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
@@ -61,8 +63,7 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserDTO(user);
     }
 
-
-
+    // Post new ADMIN user (ADMIN only)
     @Override
     public UserDTO createAdmin(UserInputDTO userInputDTO) {
         User user = UserMapper.toUser(userInputDTO);
@@ -74,6 +75,7 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserDTO(user);
     }
 
+    // Post new CUSTOMER user
     @Override
     public UserDTO createCustomer(UserInputDTO userInputDTO) {
         User user = UserMapper.toUser(userInputDTO);
@@ -85,6 +87,7 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserDTO(user);
     }
 
+    // Post new OWNER user
     @Override
     public UserDTO createOwner(UserInputDTO userInputDTO) {
         User user = UserMapper.toUser(userInputDTO);
@@ -95,6 +98,8 @@ public class UserServiceImpl implements UserService {
         user = userRepository.save(user);
         return UserMapper.toUserDTO(user);
     }
+
+    // Update user for own id
     @Override
     public UserDTO updateUser(Long id, UserInputDTO userInputDTO) {
         String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
@@ -119,6 +124,7 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserDTO(user);
     }
 
+    // Update user for all id's (ADMIN only)
     @Override
     public UserDTO updateUserForAdmin(Long id, UserInputDTO userInputDTO) {
         User user = userRepository.findById(id)
@@ -135,6 +141,7 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserDTO(user);
     }
 
+    // Update user role for all id's (ADMIN only)
     @Override
     public UserDTO updateUserRole(Long id, UserRoleUpdateDTO userRoleUpdateDTO) {
         User existingUser = userRepository.findById(id)
@@ -148,6 +155,7 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserDTO(existingUser);
     }
 
+    // Delete user for own id
     @Override
     public void deleteUser(Long id) {
         String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
@@ -164,6 +172,7 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
+    // Delete user for all id's (ADMIN only)
     @Override
     public void deleteUserForAdmin(Long id) {
         User user = userRepository.findById(id)
@@ -171,6 +180,7 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
+    // Search for user by email (ADMIN only)
     @Override
     public UserDTO findByEmail(String email) {
         return userRepository.findByEmail(email)
@@ -178,6 +188,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
 
+    // Search by role (ADMIN only)
     @Override
     public List<UserDTO> findByRole(UserRole role) {
         List<UserDTO> users = userRepository.findByRole(role).stream()
@@ -189,27 +200,5 @@ public class UserServiceImpl implements UserService {
         }
 
         return users;
-    }
-
-    @Override
-    public DeliveryAddressDTO getAddressByUserId(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
-        DeliveryAddress address = user.getDeliveryAddress();
-        if (address == null) {
-            throw new ResourceNotFoundException("Address not found for user id: " + userId);
-        }
-        return DeliveryAddressMapper.toDeliveryAddressDTO(address);
-    }
-
-    @Override
-    public RestaurantDTO getRestaurantsByUserId(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
-        Restaurant restaurant = user.getRestaurant();
-        if (restaurant == null) {
-            throw new ResourceNotFoundException("Restaurant not found for user id: " + userId);
-        }
-        return RestaurantMapper.toDTO(restaurant);
     }
 }

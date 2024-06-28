@@ -64,7 +64,10 @@ public class SecurityConfig  {
                 .requestMatchers(HttpMethod.DELETE, "/users/admin/**").hasAuthority("ADMIN") // Alleen admin kan /users/admin/** endpoints benaderen
 
                 .requestMatchers(HttpMethod.GET, "/users/search/by-email").hasAuthority("ADMIN") // Alleen admin kan /users/search/by-email endpoint benaderen
-                .requestMatchers(HttpMethod.GET, "/users/search/by-role").hasAuthority("ADMIN") // Alleen admin kan /users/admin/search/by-role endpoint benaderen
+                .requestMatchers(HttpMethod.GET, "/users/search/by-role").hasAuthority("ADMIN") // Alleen admin kan /users/search/by-role endpoint benaderen
+
+                .requestMatchers(HttpMethod.GET, "/{userId}/address").hasAnyAuthority("ADMIN", "CUSTOMER")// Alleen admin en customer kan /{usersID}/adress endpoint benaderen
+                .requestMatchers(HttpMethod.GET, "/{userId}/restaurants").hasAnyAuthority("ADMIN", "OWNER")// Alleen admin en owner kan /{usersID}/restaurant endpoint benaderen
 
                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
 

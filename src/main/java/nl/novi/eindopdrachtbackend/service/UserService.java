@@ -18,8 +18,6 @@ public interface UserService {
     void deleteUserForAdmin(Long id);
     UserDTO findByEmail(String email);
     List<UserDTO> findByRole(UserRole role);
-    DeliveryAddressDTO getAddressByUserId(Long userId);
-    RestaurantDTO getRestaurantsByUserId(Long userId);
     UserDTO updateUserRole(Long id, UserRoleUpdateDTO userRoleUpdateDTO);
 }
 

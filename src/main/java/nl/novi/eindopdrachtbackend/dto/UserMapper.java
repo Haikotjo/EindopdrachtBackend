@@ -19,6 +19,21 @@ public class UserMapper {
         return dto;
     }
 
+    public static UserDTO toFullUserDTO(User user) {
+        UserDTO dto = new UserDTO();
+
+        dto.setId(user.getId());
+        dto.setName(user.getName());
+        dto.setEmail(user.getEmail());
+        dto.setRoles(user.getRoles().stream().map(role -> role.getRolename().name()).collect(Collectors.toList()));
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setDeliveryAddress(DeliveryAddressMapper.toDeliveryAddressDTO(user.getDeliveryAddress()));
+        dto.setRestaurant(RestaurantMapper.toDTO(user.getRestaurant()));
+        dto.setOrders(user.getOrders().stream().map(OrderMapper::toDTO).collect(Collectors.toList()));
+
+        return dto;
+    }
+
     // Convert UserInputDTO to User entity
     public static User toUser(UserInputDTO inputDTO) {
         List<Role> roles = new ArrayList<>();
