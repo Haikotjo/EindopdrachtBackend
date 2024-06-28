@@ -27,9 +27,18 @@ public class UserMapper {
         dto.setEmail(user.getEmail());
         dto.setRoles(user.getRoles().stream().map(role -> role.getRolename().name()).collect(Collectors.toList()));
         dto.setPhoneNumber(user.getPhoneNumber());
-        dto.setDeliveryAddress(DeliveryAddressMapper.toDeliveryAddressDTO(user.getDeliveryAddress()));
-        dto.setRestaurant(RestaurantMapper.toDTO(user.getRestaurant()));
-        dto.setOrders(user.getOrders().stream().map(OrderMapper::toDTO).collect(Collectors.toList()));
+        if (user.getDeliveryAddress() != null) {
+            dto.setDeliveryAddress(DeliveryAddressMapper.toDeliveryAddressDTO(user.getDeliveryAddress()));
+        }
+
+        if (user.getRestaurant() != null) {
+            dto.setRestaurant(RestaurantMapper.toDTO(user.getRestaurant()));
+        }
+
+        if (user.getOrders() != null) {
+            dto.setOrders(user.getOrders().stream().map(OrderMapper::toDTO).collect(Collectors.toList()));
+        }
+
 
         return dto;
     }
