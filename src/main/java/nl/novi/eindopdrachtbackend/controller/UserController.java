@@ -1,5 +1,6 @@
 package nl.novi.eindopdrachtbackend.controller;
 
+import jakarta.validation.Valid;
 import nl.novi.eindopdrachtbackend.dto.*;
 import nl.novi.eindopdrachtbackend.model.UserRole;
 import nl.novi.eindopdrachtbackend.service.UserService;
@@ -46,21 +47,21 @@ public class UserController {
     // Post new ADMIN user (ADMIN only)
     @PostMapping("/admin")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<UserDTO> createAdmin(@RequestBody UserInputDTO userInputDTO) {
+    public ResponseEntity<UserDTO> createAdmin(@RequestBody @Valid UserInputDTO userInputDTO) {
         UserDTO newUser = userService.createAdmin(userInputDTO);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
     // Post new CUSTOMER user (public access)
     @PostMapping("/customer")
-    public ResponseEntity<UserDTO> createCustomer(@RequestBody UserInputDTO userInputDTO) {
+    public ResponseEntity<UserDTO> createCustomer(@RequestBody @Valid UserInputDTO userInputDTO) {
         UserDTO newUser = userService.createCustomer(userInputDTO);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
     // Post new OWNER user (public access)
     @PostMapping("/owner")
-    public ResponseEntity<UserDTO> createOwner(@RequestBody UserInputDTO userInputDTO) {
+    public ResponseEntity<UserDTO> createOwner(@RequestBody @Valid UserInputDTO userInputDTO) {
         UserDTO newUser = userService.createOwner(userInputDTO);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
@@ -68,7 +69,7 @@ public class UserController {
     // Update user for own id (authenticated users)
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'OWNER', 'CUSTOMER')")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserInputDTO userInputDTO) {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody @Valid UserInputDTO userInputDTO) {
         UserDTO updatedUser = userService.updateUser(id, userInputDTO);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
@@ -76,7 +77,7 @@ public class UserController {
     // Update user for all id's (ADMIN only)
     @PutMapping("/admin/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<UserDTO> updateUserForAdmin(@PathVariable Long id, @RequestBody UserInputDTO userInputDTO) {
+    public ResponseEntity<UserDTO> updateUserForAdmin(@PathVariable Long id, @RequestBody @Valid UserInputDTO userInputDTO) {
         UserDTO updatedUser = userService.updateUserForAdmin(id, userInputDTO);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
@@ -84,7 +85,7 @@ public class UserController {
     // Update user role for all id's (ADMIN only)
     @PutMapping("/{id}/role")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<UserDTO> updateUserRole(@PathVariable Long id, @RequestBody UserRoleUpdateDTO userRoleUpdateDTO) {
+    public ResponseEntity<UserDTO> updateUserRole(@PathVariable Long id, @RequestBody @Valid UserRoleUpdateDTO userRoleUpdateDTO) {
         UserDTO updatedUser = userService.updateUserRole(id, userRoleUpdateDTO);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
