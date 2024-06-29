@@ -9,16 +9,18 @@ import java.util.ArrayList;
 public class UserMapper {
 
     // Convert User entity to UserDTO
+
+    // For basic information
     public static UserDTO toUserDTO(User user) {
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());
         dto.setName(user.getName());
         dto.setEmail(user.getEmail());
-        dto.setRoles(user.getRoles().stream().map(role -> role.getRolename().name()).collect(Collectors.toList()));
         dto.setPhoneNumber(user.getPhoneNumber());
         return dto;
     }
 
+    // For full information
     public static UserDTO toFullUserDTO(User user) {
         UserDTO dto = new UserDTO();
 

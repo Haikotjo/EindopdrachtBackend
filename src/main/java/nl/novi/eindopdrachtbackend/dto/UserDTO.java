@@ -16,7 +16,7 @@ public class UserDTO {
     public UserDTO() {}
 
     // Constructor for basic information
-    public UserDTO(Long id, String name, String email, List<String> roles, String phoneNumber) {
+    public UserDTO(Long id, String name, String email, String phoneNumber) {
         this.id = id;
         this.name = name;
         this.email = email;

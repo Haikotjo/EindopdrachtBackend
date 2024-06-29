@@ -19,6 +19,8 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
+
+    // Get all users by ID with full information (ADMIN only)
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<UserDTO> users = userService.getAllUsers();
@@ -33,7 +35,7 @@ public class UserController {
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
-    // Get user by ID with basic information
+    // Get user by ID with basic information for authenticated users
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'OWNER', 'CUSTOMER')")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
@@ -49,21 +51,21 @@ public class UserController {
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
-    // Post new CUSTOMER user
+    // Post new CUSTOMER user (public access)
     @PostMapping("/customer")
     public ResponseEntity<UserDTO> createCustomer(@RequestBody UserInputDTO userInputDTO) {
         UserDTO newUser = userService.createCustomer(userInputDTO);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
-    // Post new OWNER user
+    // Post new OWNER user (public access)
     @PostMapping("/owner")
     public ResponseEntity<UserDTO> createOwner(@RequestBody UserInputDTO userInputDTO) {
         UserDTO newUser = userService.createOwner(userInputDTO);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
-    // Update user for own id
+    // Update user for own id (authenticated users)
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'OWNER', 'CUSTOMER')")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserInputDTO userInputDTO) {
@@ -87,7 +89,7 @@ public class UserController {
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
-    // Delete user for own id
+    // Delete user (authenticated users)
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'OWNER', 'CUSTOMER')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {

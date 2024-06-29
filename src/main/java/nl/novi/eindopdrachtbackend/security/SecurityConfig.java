@@ -53,23 +53,30 @@ public class SecurityConfig  {
         http
                 .httpBasic().disable()
                 .authorizeRequests()
-                .requestMatchers(HttpMethod.POST, "/users/**").permitAll() // Voor alle POST verzoeken naar /users
 
-                .requestMatchers(HttpMethod.GET, "/users/**").authenticated()  // Geauthenticeerde gebruikers kunnen PUT-verzoeken naar /users doen
-                .requestMatchers(HttpMethod.PUT, "/users/**").authenticated()  // Geauthenticeerde gebruikers kunnen PUT-verzoeken naar /users doen
-                .requestMatchers(HttpMethod.DELETE, "/users/**").authenticated() // Geauthenticeerde gebruikers kunnen DELETE-verzoeken naar /users doen
+                //                USER entity endpoints
 
-                .requestMatchers(HttpMethod.GET, "/users/admin/**").hasAuthority("ADMIN") // Alleen admin kan /users/admin/** endpoints benaderen
-                .requestMatchers(HttpMethod.PUT, "/users/admin/**").hasAuthority("ADMIN") // Alleen admin kan /users/admin/** endpoints benaderen
-                .requestMatchers(HttpMethod.DELETE, "/users/admin/**").hasAuthority("ADMIN") // Alleen admin kan /users/admin/** endpoints benaderen
-
-                .requestMatchers(HttpMethod.GET, "/users/search/by-email").hasAuthority("ADMIN") // Alleen admin kan /users/search/by-email endpoint benaderen
-                .requestMatchers(HttpMethod.GET, "/users/search/by-role").hasAuthority("ADMIN") // Alleen admin kan /users/search/by-role endpoint benaderen
-
-                .requestMatchers(HttpMethod.GET, "/{userId}/address").hasAnyAuthority("ADMIN", "CUSTOMER")// Alleen admin en customer kan /{usersID}/adress endpoint benaderen
-                .requestMatchers(HttpMethod.GET, "/{userId}/restaurants").hasAnyAuthority("ADMIN", "OWNER")// Alleen admin en owner kan /{usersID}/restaurant endpoint benaderen
-
+                // Public access for creating new users and for authentication
+                .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
+
+                // Authenticated users can make GET, PUT, DELETE requests to /users
+                .requestMatchers(HttpMethod.GET, "/users/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/users/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "/users/**").authenticated()
+
+                // ADMIN access only
+                .requestMatchers(HttpMethod.GET, "/users/admin/**").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/users/admin/**").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/users/admin/**").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/users/search/by-email").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/users/search/by-role").hasAuthority("ADMIN")
+
+                // USER and ADMIN access
+                .requestMatchers(HttpMethod.GET, "/{userId}/address").hasAnyAuthority("ADMIN", "CUSTOMER")
+
+                // OWNER and ADMIN access
+                .requestMatchers(HttpMethod.GET, "/{userId}/restaurants").hasAnyAuthority("ADMIN", "OWNER")
 
 //                .requestMatchers("/**").hasAnyAuthority("ADMIN")
 
