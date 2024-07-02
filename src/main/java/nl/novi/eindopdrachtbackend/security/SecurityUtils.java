@@ -17,7 +17,6 @@ public class SecurityUtils {
         return null;
     }
 
-    // Nieuwe methode om de ID van de huidige ingelogde gebruiker terug te geven
     public static Long getCurrentAuthenticatedUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {

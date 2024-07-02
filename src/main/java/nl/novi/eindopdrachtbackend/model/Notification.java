@@ -1,11 +1,9 @@
 package nl.novi.eindopdrachtbackend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "notifications")
 public class Notification {
 
     @Id
@@ -13,18 +11,21 @@ public class Notification {
     private Long id;
     private String message;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public Notification() {}
 
-    public Notification(String message) {
+    public Notification(String message, User user) {
         this.message = message;
+        this.user = user;
     }
+
+    // Getters en setters
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getMessage() {
@@ -33,5 +34,13 @@ public class Notification {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

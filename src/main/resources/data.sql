@@ -1,7 +1,7 @@
 -- Insert ingredients
-INSERT INTO ingredients (name, quantity) VALUES ('Sugar', 100);
-INSERT INTO ingredients (name, quantity) VALUES ('Flour', 50);
-INSERT INTO ingredients (name, quantity) VALUES ('Butter', 30);
+INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description) VALUES ('Sugar', 100, 'grams', 1.0, 'Supplier A', '2024-12-31', 'Sweetener');
+INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description) VALUES ('Flour', 50, 'grams', 0.5, 'Supplier B', '2024-12-31', 'Used in baking');
+INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description) VALUES ('Butter', 30, 'grams', 1.5, 'Supplier C', '2024-12-31', 'Dairy product');
 
 -- Insert menu items including new ones for Spaghetti Bolognese and Vegetable Lasagna
 INSERT INTO menu_items (name, price, description, image) VALUES ('Cheese Pizza', 10.00, 'Cheese pizza with extra cheese topping', 'cheese_pizza.jpg');
@@ -76,3 +76,8 @@ INSERT INTO order_menu_items (order_id, menu_item_id) VALUES (2, 2); -- Order 2 
 INSERT INTO order_menu_items (order_id, menu_item_id) VALUES (2, 4); -- Order 2 heeft Vegetable Lasagna
 INSERT INTO order_menu_items (order_id, menu_item_id) VALUES (3, 1); -- Order 3 heeft Cheese Pizza
 INSERT INTO order_menu_items (order_id, menu_item_id) VALUES (3, 4); -- Order 3 heeft Vegetable Lasagna
+
+-- Insert notifications
+INSERT INTO notifications (message, user_id) VALUES ('Your ingredient Sugar is running low.', (SELECT id FROM users WHERE email='owner.one@example.com'));
+INSERT INTO notifications (message, user_id) VALUES ('Your ingredient Flour is running low.', (SELECT id FROM users WHERE email='owner.two@example.com'));
+INSERT INTO notifications (message, user_id) VALUES ('Your ingredient Butter is expiring soon.', (SELECT id FROM users WHERE email='owner.three@example.com'));

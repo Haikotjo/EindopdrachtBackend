@@ -1,7 +1,6 @@
 package nl.novi.eindopdrachtbackend.model;
 
 import jakarta.persistence.*;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,8 +16,7 @@ public class MenuItem {
     private String description;
     private String image;
 
-
-    //Relation to ingredients
+    // Relation to ingredients
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "menu_item_ingredients",
@@ -27,23 +25,20 @@ public class MenuItem {
     )
     private Set<Ingredient> ingredients = new HashSet<>();
 
-    //Relation to Menu
+    // Relation to Menu
     @ManyToMany(mappedBy = "menuItems", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Set<Menu> menus;
+    private Set<Menu> menus = new HashSet<>();
 
     // Relation to Orders
     @ManyToMany(mappedBy = "menuItems", cascade = CascadeType.ALL)
     private Set<Order> orders = new HashSet<>();
 
+    // Relation to Restaurant
+    @ManyToOne
+    @JoinColumn(name = "restaurant_id")
+    private Restaurant restaurant;
 
-    public void addIngredient(Ingredient ingredient) {
-        this.getIngredients().add(ingredient);
-        ingredient.getMenuItems().add(this);
-    }
-
-
-    //    constructors
-
+    // constructors
     public MenuItem() {
     }
 
@@ -54,18 +49,17 @@ public class MenuItem {
         this.image = image;
     }
 
-    public MenuItem(String name, double price, String description, String image, Set<Ingredient> ingredients, Set<Menu> menus) {
+    public MenuItem(String name, double price, String description, String image, Set<Ingredient> ingredients, Set<Menu> menus, Restaurant restaurant) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.image = image;
         this.ingredients = ingredients;
         this.menus = menus;
+        this.restaurant = restaurant;
     }
 
-
     // getters and setters
-
     public Long getId() {
         return id;
     }
@@ -114,7 +108,7 @@ public class MenuItem {
     }
 
     public Set<Menu> getMenus() {
-        if (menus == null){
+        if (menus == null) {
             menus = new HashSet<>();
         }
         return menus;
@@ -134,6 +128,16 @@ public class MenuItem {
     public void setOrders(Set<Order> orders) {
         this.orders = orders;
     }
+
+    public Restaurant getRestaurant() {
+        return restaurant;
+    }
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
+    }
+    public void addIngredient(Ingredient ingredient) {
+        this.ingredients.add(ingredient);
+        ingredient.getMenuItems().add(this);
+    }
 }
-
-
