@@ -86,7 +86,9 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "/notifications/**").hasAnyAuthority("ADMIN", "OWNER")
                                 .requestMatchers(HttpMethod.DELETE, "/notifications/**").hasAnyAuthority("ADMIN", "OWNER")
 
-                                .requestMatchers(HttpMethod.GET, "/notifications/**").hasAnyAuthority("ADMIN", "OWNER")
+                                .requestMatchers(HttpMethod.GET, "/notifications/admin/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/notifications/owner/**").hasAuthority("OWNER")
+
 
 //                .requestMatchers("/**").hasAnyAuthority("ADMIN")
 

@@ -79,5 +79,8 @@ INSERT INTO order_menu_items (order_id, menu_item_id) VALUES (3, 4); -- Order 3 
 
 -- Insert notifications
 INSERT INTO notifications (message, user_id) VALUES ('Your ingredient Sugar is running low.', (SELECT id FROM users WHERE email='owner.one@example.com'));
+INSERT INTO notifications (message, user_id) VALUES ('Your ingredient X is running low.', (SELECT id FROM users WHERE email='owner.one@example.com'));
 INSERT INTO notifications (message, user_id) VALUES ('Your ingredient Flour is running low.', (SELECT id FROM users WHERE email='owner.two@example.com'));
+INSERT INTO notifications (message, user_id) VALUES ('Your ingredient X is running low.', (SELECT id FROM users WHERE email='owner.two@example.com'));
 INSERT INTO notifications (message, user_id) VALUES ('Your ingredient Butter is expiring soon.', (SELECT id FROM users WHERE email='owner.three@example.com'));
+INSERT INTO notifications (message, user_id) VALUES ('Your ingredient X is expiring soon.', (SELECT id FROM users WHERE email='owner.three@example.com'));
