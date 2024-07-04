@@ -26,14 +26,14 @@ public class ExpirationDateCheckerService {
     }
 
     /**
-     * Scheduled method to check expiration dates of ingredients daily.
-     * If an ingredient is expiring soon, it generates a notification for the owner of the restaurant.
+     * Schedules a daily check for expiring ingredients and sends notifications to owners if ingredients are expiring soon.
+     * This method is executed at midnight every day.
      */
     @Scheduled(cron = "0 0 0 * * ?")
     public void checkExpirationDates() {
         List<Ingredient> ingredients = ingredientRepository.findAll();
         for (Ingredient ingredient : ingredients) {
-            if (isExpiringSoon(ingredient)) {
+            if (ingredient.getQuantity() > 0 && isExpiringSoon(ingredient)) {
                 for (MenuItem menuItem : ingredient.getMenuItems()) {
                     User owner = menuItem.getRestaurant().getOwner();
                     NotificationInputDTO notificationInputDTO = new NotificationInputDTO();
@@ -45,9 +45,9 @@ public class ExpirationDateCheckerService {
     }
 
     /**
-     * Checks if an ingredient is expiring within the warning period.
+     * Checks if the given ingredient is expiring soon, within the defined warning period.
      *
-     * @param ingredient The ingredient to check
+     * @param ingredient the ingredient to check
      * @return true if the ingredient is expiring soon, false otherwise
      */
     private boolean isExpiringSoon(Ingredient ingredient) {
