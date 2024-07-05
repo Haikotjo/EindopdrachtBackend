@@ -5,17 +5,15 @@ import nl.novi.eindopdrachtbackend.dto.IngredientInputDTO;
 
 import java.util.List;
 
+/**
+ * Service interface for managing ingredients.
+ */
 public interface IngredientService {
-
     IngredientDTO createIngredient(IngredientInputDTO ingredientInputDTO);
-
     IngredientDTO updateIngredient(Long id, IngredientInputDTO ingredientInputDTO);
-
-    List<IngredientDTO> getAllIngredients();
-
-    IngredientDTO getIngredientById(Long id);
-
+    List<IngredientDTO> getAllIngredientsForOwner(Long ownerId);
+    List<IngredientDTO> getAllIngredientsForLoggedInOwner(String email);
+    IngredientDTO getIngredientByIdForOwner(Long id);
+    IngredientDTO getIngredientByIdForCustomer(Long id);
     void deleteIngredient(Long id);
-
-    List<IngredientDTO> findByNameIgnoreCase(String name);
 }

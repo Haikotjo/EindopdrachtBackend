@@ -15,6 +15,7 @@ public class Menu {
     private String name;
     private String description;
 
+
 //Relation to menuItem
 @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(

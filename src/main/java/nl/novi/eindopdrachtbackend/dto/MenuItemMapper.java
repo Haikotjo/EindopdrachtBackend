@@ -16,7 +16,7 @@ public class MenuItemMapper {
         dto.setImage(menuItem.getImage());
         if (menuItem.getIngredients() != null) {
             List<IngredientDTO> ingredientDTOS = menuItem.getIngredients().stream()
-                    .map(IngredientMapper::toIngredientDTO)
+                    .map(IngredientMapper::toCustomerIngredientDTO)
                     .collect(Collectors.toList());
             dto.setIngredients(ingredientDTOS);
         }

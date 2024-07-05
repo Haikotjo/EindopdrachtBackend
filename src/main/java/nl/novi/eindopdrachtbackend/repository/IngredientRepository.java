@@ -9,10 +9,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
-    List<Ingredient> findByNameIgnoreCase(String name);
+
     @Query("SELECT i FROM Ingredient i WHERE i.quantity < ?1")
     List<Ingredient> findLowStockIngredients(int minQuantityThreshold);
 
     @Query("SELECT i FROM Ingredient i WHERE i.expirationDate <= ?1")
     List<Ingredient> findExpiringIngredients(LocalDate expirationWarningDate);
+    List<Ingredient> findByMenuItems_Menus_Restaurant_Owner_Id(Long ownerId);
 }

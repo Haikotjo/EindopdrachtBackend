@@ -89,6 +89,9 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/notifications/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/notifications/owner/**").hasAuthority("OWNER")
 
+                                //                  Ingredient entity endpoints
+                                .requestMatchers(HttpMethod.GET, "/ingredients").hasAnyAuthority("ADMIN", "OWNER")
+
 
 //                .requestMatchers("/**").hasAnyAuthority("ADMIN")
 
