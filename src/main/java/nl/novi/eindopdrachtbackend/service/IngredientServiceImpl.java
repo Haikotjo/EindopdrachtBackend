@@ -26,9 +26,14 @@ public class IngredientServiceImpl implements IngredientService {
         this.userRepository = userRepository;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    @Override
+    public List<IngredientDTO> getAllIngredients() {
+        List<Ingredient> ingredients = ingredientRepository.findAll();
+        return ingredients.stream()
+                .map(IngredientMapper::toOwnerIngredientDTO)
+                .collect(Collectors.toList());
+    }
+
     @Override
     public IngredientDTO createIngredient(IngredientInputDTO ingredientInputDTO) {
         Ingredient ingredient = IngredientMapper.toIngredient(ingredientInputDTO);
@@ -36,9 +41,6 @@ public class IngredientServiceImpl implements IngredientService {
         return IngredientMapper.toOwnerIngredientDTO(savedIngredient);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public IngredientDTO updateIngredient(Long id, IngredientInputDTO ingredientInputDTO) {
         Ingredient existingIngredient = ingredientRepository.findById(id)
@@ -64,29 +66,20 @@ public class IngredientServiceImpl implements IngredientService {
         return getAllIngredientsForOwner(currentUser.getId());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public IngredientDTO getIngredientByIdForOwner(Long id) {
-        Ingredient ingredient = ingredientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id));
+    public IngredientDTO getIngredientByIdForOwner(Long id, Long ownerId) {
+        Ingredient ingredient = ingredientRepository.findByIdAndMenuItems_Menus_Restaurant_Owner_Id(id, ownerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id + " and owner id :: " + ownerId));
         return IngredientMapper.toOwnerIngredientDTO(ingredient);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public IngredientDTO getIngredientByIdForCustomer(Long id) {
-        Ingredient ingredient = ingredientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id));
-        return IngredientMapper.toCustomerIngredientDTO(ingredient);
+    public IngredientDTO getIngredientByIdForAdmin(Long id, Long ownerId) {
+        Ingredient ingredient = ingredientRepository.findByIdAndMenuItems_Menus_Restaurant_Owner_Id(id, ownerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id + " and owner id :: " + ownerId));
+        return IngredientMapper.toOwnerIngredientDTO(ingredient);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void deleteIngredient(Long id) {
         Ingredient ingredient = ingredientRepository.findById(id)

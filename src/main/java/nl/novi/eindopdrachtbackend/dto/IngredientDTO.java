@@ -1,5 +1,7 @@
 package nl.novi.eindopdrachtbackend.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import nl.novi.eindopdrachtbackend.model.Ingredient;
 
 /**
@@ -7,10 +9,14 @@ import nl.novi.eindopdrachtbackend.model.Ingredient;
  */
 public class IngredientDTO {
     private Long id;
+    @NotBlank
     private String name;
-    private int quantity;
+
+    @NotNull
+    private Double cost;
+
     private String unit;
-    private double cost;
+    private Integer quantity;
     private String supplier;
     private String expirationDate;
     private String description;

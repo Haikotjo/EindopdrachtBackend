@@ -50,7 +50,12 @@ public class IngredientMapper {
     public static Ingredient toIngredient(IngredientInputDTO inputDTO) {
         Ingredient ingredient = new Ingredient();
         ingredient.setName(inputDTO.getName());
+        ingredient.setCost(inputDTO.getCost());
         ingredient.setQuantity(inputDTO.getQuantity());
+        ingredient.setUnit(inputDTO.getUnit());
+        ingredient.setSupplier(inputDTO.getSupplier());
+        ingredient.setExpirationDate(inputDTO.getExpirationDate());
+        ingredient.setDescription(inputDTO.getDescription());
         return ingredient;
     }
 }

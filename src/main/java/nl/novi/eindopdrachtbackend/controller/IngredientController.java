@@ -29,6 +29,14 @@ public class IngredientController {
         this.userRepository = userRepository;
     }
 
+    // Endpoint voor admin om alle ingrediënten op te halen
+    @GetMapping("/admin/all")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<List<IngredientDTO>> getAllIngredients() {
+        List<IngredientDTO> ingredients = ingredientService.getAllIngredients();
+        return new ResponseEntity<>(ingredients, HttpStatus.OK);
+    }
+
     // Endpoint voor admin om alle ingrediënten van een specifieke eigenaar op te halen
     @GetMapping("/admin/{ownerId}")
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -46,18 +54,31 @@ public class IngredientController {
         return new ResponseEntity<>(ingredients, HttpStatus.OK);
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<IngredientDTO> getIngredientById(@PathVariable Long id) {
-//        IngredientDTO ingredient = ingredientService.getIngredientById(id);
-//        return new ResponseEntity<>(ingredient, HttpStatus.OK);
-//    }
-//
-//    @PostMapping
-//    public ResponseEntity<ApiResponse> createIngredient(@RequestBody IngredientInputDTO ingredientInputDTO) {
-//        IngredientDTO createdIngredientDto = ingredientService.createIngredient(ingredientInputDTO);
-//        ApiResponse apiResponse = new ApiResponse(true, "Ingredient successfully created.", createdIngredientDto);
-//        return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
-//    }
+    // Endpoint voor admin om een specifiek ingrediënt van een eigenaar op te halen
+    @GetMapping("/admin/{ownerId}/ingredient/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<IngredientDTO> getIngredientByIdForAdmin(@PathVariable Long ownerId, @PathVariable Long id) {
+        IngredientDTO ingredient = ingredientService.getIngredientByIdForAdmin(id, ownerId);
+        return new ResponseEntity<>(ingredient, HttpStatus.OK);
+    }
+
+    // Endpoint voor eigenaars om een specifiek ingrediënt op te halen
+    @GetMapping("/owner/ingredient/{id}")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<IngredientDTO> getIngredientByIdForOwner(@PathVariable Long id) {
+        String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
+        User currentUser = userRepository.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + currentUserEmail));
+        IngredientDTO ingredient = ingredientService.getIngredientByIdForOwner(id, currentUser.getId());
+        return new ResponseEntity<>(ingredient, HttpStatus.OK);
+    }
+    // Endpoint voor eigenaars om een ingrediënt aan te maken
+    @PostMapping("/owner")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<IngredientDTO> createIngredient(@RequestBody IngredientInputDTO ingredientInputDTO) {
+        IngredientDTO createdIngredient = ingredientService.createIngredient(ingredientInputDTO);
+        return new ResponseEntity<>(createdIngredient, HttpStatus.CREATED);
+    }
 //
 //    @PutMapping("/{id}")
 //    public ResponseEntity<ApiResponse> updateIngredient(@PathVariable Long id, @RequestBody IngredientInputDTO ingredientInputDTO) {
