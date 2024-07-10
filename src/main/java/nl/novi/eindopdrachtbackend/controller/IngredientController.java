@@ -33,16 +33,28 @@ public class IngredientController {
     @GetMapping("/admin/all")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<IngredientDTO>> getAllIngredients() {
-        List<IngredientDTO> ingredients = ingredientService.getAllIngredients();
-        return new ResponseEntity<>(ingredients, HttpStatus.OK);
+        try {
+            List<IngredientDTO> ingredients = ingredientService.getAllIngredients();
+            return new ResponseEntity<>(ingredients, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Ingrediënts not found
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // Endpoint voor admin om alle ingrediënten van een specifieke eigenaar op te halen
     @GetMapping("/admin/{ownerId}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<IngredientDTO>> getAllIngredientsForOwner(@PathVariable Long ownerId) {
-        List<IngredientDTO> ingredients = ingredientService.getAllIngredientsForOwner(ownerId);
-        return new ResponseEntity<>(ingredients, HttpStatus.OK);
+        try {
+            List<IngredientDTO> ingredients = ingredientService.getAllIngredientsForOwner(ownerId);
+            return new ResponseEntity<>(ingredients, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // Endpoint voor eigenaars om hun eigen ingrediënten op te halen
@@ -50,28 +62,49 @@ public class IngredientController {
     @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<List<IngredientDTO>> getAllIngredientsForLoggedInOwner() {
         String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
-        List<IngredientDTO> ingredients = ingredientService.getAllIngredientsForLoggedInOwner(currentUserEmail);
-        return new ResponseEntity<>(ingredients, HttpStatus.OK);
+        try {
+            User currentUser = userRepository.findByEmail(currentUserEmail)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + currentUserEmail));
+            List<IngredientDTO> ingredients = ingredientService.getAllIngredientsForOwner(currentUser.getId());
+            return new ResponseEntity<>(ingredients, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // Endpoint voor admin om een specifiek ingrediënt van een eigenaar op te halen
     @GetMapping("/admin/{ownerId}/ingredient/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<IngredientDTO> getIngredientByIdForAdmin(@PathVariable Long ownerId, @PathVariable Long id) {
-        IngredientDTO ingredient = ingredientService.getIngredientByIdForAdmin(id, ownerId);
-        return new ResponseEntity<>(ingredient, HttpStatus.OK);
+        try {
+            IngredientDTO ingredient = ingredientService.getIngredientByIdForAdmin(id, ownerId);
+            return new ResponseEntity<>(ingredient, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // Endpoint voor eigenaars om een specifiek ingrediënt op te halen
     @GetMapping("/owner/ingredient/{id}")
     @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<IngredientDTO> getIngredientByIdForOwner(@PathVariable Long id) {
-        String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
-        User currentUser = userRepository.findByEmail(currentUserEmail)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + currentUserEmail));
-        IngredientDTO ingredient = ingredientService.getIngredientByIdForOwner(id, currentUser.getId());
-        return new ResponseEntity<>(ingredient, HttpStatus.OK);
+        try {
+            String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
+            User currentUser = userRepository.findByEmail(currentUserEmail)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + currentUserEmail));
+            IngredientDTO ingredient = ingredientService.getIngredientByIdForOwner(id, currentUser.getId());
+            return new ResponseEntity<>(ingredient, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
     // Endpoint voor eigenaars om een ingrediënt aan te maken
     @PostMapping("/owner")
     @PreAuthorize("hasAuthority('OWNER')")
@@ -79,6 +112,7 @@ public class IngredientController {
         IngredientDTO createdIngredient = ingredientService.createIngredient(ingredientInputDTO);
         return new ResponseEntity<>(createdIngredient, HttpStatus.CREATED);
     }
+
 //
 //    @PutMapping("/{id}")
 //    public ResponseEntity<ApiResponse> updateIngredient(@PathVariable Long id, @RequestBody IngredientInputDTO ingredientInputDTO) {
