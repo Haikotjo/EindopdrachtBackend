@@ -63,9 +63,7 @@ public class IngredientController {
     public ResponseEntity<List<IngredientDTO>> getAllIngredientsForLoggedInOwner() {
         String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
         try {
-            User currentUser = userRepository.findByEmail(currentUserEmail)
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + currentUserEmail));
-            List<IngredientDTO> ingredients = ingredientService.getAllIngredientsForOwner(currentUser.getId());
+            List<IngredientDTO> ingredients = ingredientService.getAllIngredientsForLoggedInOwner(currentUserEmail);
             return new ResponseEntity<>(ingredients, HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -73,6 +71,7 @@ public class IngredientController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     // Endpoint voor admin om een specifiek ingrediënt van een eigenaar op te halen
     @GetMapping("/admin/{ownerId}/ingredient/{id}")
