@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -104,16 +106,36 @@ public class IngredientController {
         }
     }
 
-//// Endpoint voor eigenaars om een ingrediënt aan te maken
-//    @PostMapping("/owner")
-//    @PreAuthorize("hasAuthority('OWNER')")
-//    public ResponseEntity<IngredientDTO> createIngredientForOwner(@RequestBody IngredientInputDTO ingredientInputDTO) {
-//        String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
-//        User currentUser = userRepository.findByEmail(currentUserEmail)
-//                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + currentUserEmail));
-//        IngredientDTO createdIngredient = ingredientService.createIngredientForOwner(ingredientInputDTO, currentUser);
-//        return new ResponseEntity<>(createdIngredient, HttpStatus.CREATED);
-//    }
+    // Endpoint voor eigenaars om een ingrediënt aan te maken
+    @PostMapping("/owner")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<IngredientDTO> createIngredientForOwner(@RequestBody IngredientInputDTO ingredientInputDTO) {
+        User currentUser = getCurrentUser();
+        IngredientDTO newIngredient = ingredientService.createIngredientForOwner(ingredientInputDTO, currentUser);
+        return new ResponseEntity<>(newIngredient, HttpStatus.CREATED);
+    }
+
+    // Private method to get the currently authenticated user
+    private User getCurrentUser() {
+        String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
+        return userRepository.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + currentUserEmail));
+    }
+
+    // Endpoint voor admins om een ingrediënt aan te maken voor een owner
+    @PostMapping("/admin/create")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<IngredientDTO> createIngredientForAdmin(@RequestBody IngredientInputDTO ingredientInputDTO) {
+        try {
+            Long ownerId = ingredientInputDTO.getOwnerId(); // Verondersteld dat ownerId is toegevoegd aan IngredientInputDTO
+            IngredientDTO ingredientDTO = ingredientService.createIngredientForAdmin(ingredientInputDTO, ownerId);
+            return new ResponseEntity<>(ingredientDTO, HttpStatus.CREATED);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 //
 //    // Endpoint voor admins om een ingrediënt aan te maken voor een specifieke eigenaar
 //    @PostMapping("/admin/{ownerId}")

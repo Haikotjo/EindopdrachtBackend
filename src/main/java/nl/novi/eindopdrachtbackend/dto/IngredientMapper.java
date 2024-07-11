@@ -24,6 +24,7 @@ public class IngredientMapper {
         dto.setSupplier(ingredient.getSupplier());
         dto.setExpirationDate(ingredient.getExpirationDate());
         dto.setDescription(ingredient.getDescription());
+        ingredient.getOwner().getId();
         return dto;
     }
 
@@ -46,7 +47,6 @@ public class IngredientMapper {
      * Converts an IngredientInputDTO to an Ingredient entity.
      *
      * @param inputDTO the IngredientInputDTO
-     * @param owner the owner of the ingredient
      * @return the Ingredient entity
      */
     public static Ingredient toIngredient(IngredientInputDTO inputDTO, User owner) {

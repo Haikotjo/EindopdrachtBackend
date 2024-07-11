@@ -21,6 +21,7 @@ public class IngredientDTO {
     private String supplier;
     private String expirationDate;
     private String description;
+    private Long ownerId;
 
     /**
      * Default constructor.
@@ -57,6 +58,18 @@ public class IngredientDTO {
         this.name = name;
         this.cost = cost;
         this.description = description;
+    }
+
+    public IngredientDTO(Long id, String name, double cost, int quantity, String unit, String supplier, String expirationDate, String description, Long ownerId) {
+        this.id = id;
+        this.name = name;
+        this.cost = cost;
+        this.quantity = quantity;
+        this.unit = unit;
+        this.supplier = supplier;
+        this.expirationDate = expirationDate;
+        this.description = description;
+        this.ownerId = ownerId;
     }
 
     // Getters and setters
@@ -203,5 +216,13 @@ public class IngredientDTO {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 }

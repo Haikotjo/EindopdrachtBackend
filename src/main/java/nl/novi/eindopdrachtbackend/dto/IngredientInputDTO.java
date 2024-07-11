@@ -11,7 +11,7 @@ public class IngredientInputDTO {
     private String supplier;
     private String expirationDate;
     private String description;
-    private Long ownerId; // Add ownerId to associate with a user
+    private Long ownerId;
 
     // Getters and Setters
 

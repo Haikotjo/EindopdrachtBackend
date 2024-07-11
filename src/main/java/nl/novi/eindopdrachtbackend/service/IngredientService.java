@@ -2,6 +2,7 @@ package nl.novi.eindopdrachtbackend.service;
 
 import nl.novi.eindopdrachtbackend.dto.IngredientDTO;
 import nl.novi.eindopdrachtbackend.dto.IngredientInputDTO;
+import nl.novi.eindopdrachtbackend.model.User;
 
 import java.util.List;
 
@@ -14,8 +15,8 @@ public interface IngredientService {
     List<IngredientDTO> getAllIngredientsForLoggedInOwner(String email);
     IngredientDTO getIngredientByIdForOwner(Long id, Long ownerId);
     IngredientDTO getIngredientByIdForAdmin(Long id, Long ownerId);
-//    IngredientDTO createIngredient(IngredientInputDTO ingredientInputDTO);
-//    IngredientDTO updateIngredient(Long id, IngredientInputDTO ingredientInputDTO);
+    IngredientDTO createIngredientForOwner(IngredientInputDTO ingredientInputDTO, User owner);
+    IngredientDTO createIngredientForAdmin(IngredientInputDTO ingredientInputDTO, Long ownerId);
 
     void deleteIngredient(Long id);
 }

@@ -91,6 +91,7 @@ public class SecurityConfig {
 
                                 //                  Ingredient entity endpoints
                                 .requestMatchers(HttpMethod.GET, "/ingredients").hasAnyAuthority("ADMIN", "OWNER")
+                                .requestMatchers(HttpMethod.POST, "/ingredients").hasAnyAuthority("ADMIN", "OWNER")
 
 
 //                .requestMatchers("/**").hasAnyAuthority("ADMIN")

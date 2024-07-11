@@ -103,12 +103,21 @@ public class IngredientServiceImpl implements IngredientService {
         }
     }
 
-//    @Override
-//    public IngredientDTO createIngredient(IngredientInputDTO ingredientInputDTO) {
-//        Ingredient ingredient = IngredientMapper.toIngredient(ingredientInputDTO);
-//        Ingredient savedIngredient = ingredientRepository.save(ingredient);
-//        return IngredientMapper.toOwnerIngredientDTO(savedIngredient);
-//    }
+    @Override
+    public IngredientDTO createIngredientForOwner(IngredientInputDTO ingredientInputDTO, User owner) {
+        Ingredient ingredient = IngredientMapper.toIngredient(ingredientInputDTO, owner);
+        Ingredient savedIngredient = ingredientRepository.save(ingredient);
+        return IngredientMapper.toOwnerIngredientDTO(savedIngredient);
+    }
+
+    @Override
+    public IngredientDTO createIngredientForAdmin(IngredientInputDTO ingredientInputDTO, Long ownerId) {
+        User owner = userRepository.findById(ownerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Owner not found with id: " + ownerId));
+        Ingredient ingredient = IngredientMapper.toIngredient(ingredientInputDTO, owner);
+        Ingredient savedIngredient = ingredientRepository.save(ingredient);
+        return IngredientMapper.toOwnerIngredientDTO(savedIngredient);
+    }
 //
 //    @Override
 //    public IngredientDTO updateIngredient(Long id, IngredientInputDTO ingredientInputDTO) {
