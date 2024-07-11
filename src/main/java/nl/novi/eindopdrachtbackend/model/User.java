@@ -3,7 +3,9 @@ package nl.novi.eindopdrachtbackend.model;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -36,6 +38,10 @@ public class User {
     // Relation to Restaurant
     @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private Restaurant restaurant;
+
+    // Relation to Ingredients
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Ingredient> ingredients = new HashSet<>();
 
     // Constructors
     public User() {
@@ -123,5 +129,13 @@ public class User {
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+    }
+
+    public Set<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(Set<Ingredient> ingredients) {
+        this.ingredients = ingredients;
     }
 }

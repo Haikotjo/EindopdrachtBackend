@@ -104,13 +104,25 @@ public class IngredientController {
         }
     }
 
-    // Endpoint voor eigenaars om een ingrediënt aan te maken
-    @PostMapping("/owner")
-    @PreAuthorize("hasAuthority('OWNER')")
-    public ResponseEntity<IngredientDTO> createIngredient(@RequestBody IngredientInputDTO ingredientInputDTO) {
-        IngredientDTO createdIngredient = ingredientService.createIngredient(ingredientInputDTO);
-        return new ResponseEntity<>(createdIngredient, HttpStatus.CREATED);
-    }
+//// Endpoint voor eigenaars om een ingrediënt aan te maken
+//    @PostMapping("/owner")
+//    @PreAuthorize("hasAuthority('OWNER')")
+//    public ResponseEntity<IngredientDTO> createIngredientForOwner(@RequestBody IngredientInputDTO ingredientInputDTO) {
+//        String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
+//        User currentUser = userRepository.findByEmail(currentUserEmail)
+//                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + currentUserEmail));
+//        IngredientDTO createdIngredient = ingredientService.createIngredientForOwner(ingredientInputDTO, currentUser);
+//        return new ResponseEntity<>(createdIngredient, HttpStatus.CREATED);
+//    }
+//
+//    // Endpoint voor admins om een ingrediënt aan te maken voor een specifieke eigenaar
+//    @PostMapping("/admin/{ownerId}")
+//    @PreAuthorize("hasAuthority('ADMIN')")
+//    public ResponseEntity<IngredientDTO> createIngredientForAdmin(@PathVariable Long ownerId, @RequestBody IngredientInputDTO ingredientInputDTO) {
+//        IngredientDTO createdIngredient = ingredientService.createIngredientForAdmin(ingredientInputDTO, ownerId);
+//        return new ResponseEntity<>(createdIngredient, HttpStatus.CREATED);
+//    }
+
 
 //
 //    @PutMapping("/{id}")

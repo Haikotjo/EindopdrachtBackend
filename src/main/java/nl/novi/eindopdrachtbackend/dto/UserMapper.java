@@ -1,7 +1,6 @@
 package nl.novi.eindopdrachtbackend.dto;
 
 import nl.novi.eindopdrachtbackend.model.*;
-
 import java.util.stream.Collectors;
 import java.util.List;
 import java.util.ArrayList;
@@ -41,6 +40,12 @@ public class UserMapper {
             dto.setOrders(user.getOrders().stream().map(OrderMapper::toDTO).collect(Collectors.toList()));
         }
 
+        // Voeg de lijst van IngredientDTO toe
+        if (user.getIngredients() != null) {
+            dto.setIngredients(user.getIngredients().stream()
+                    .map(IngredientMapper::toOwnerIngredientDTO)
+                    .collect(Collectors.toList()));
+        }
 
         return dto;
     }

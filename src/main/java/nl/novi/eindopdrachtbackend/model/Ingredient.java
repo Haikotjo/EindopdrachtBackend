@@ -26,33 +26,16 @@ public class Ingredient {
     @ManyToMany(mappedBy = "ingredients", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<MenuItem> menuItems = new HashSet<>();
 
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
+
     // Constructors
 
     /**
      * Default constructor.
      */
     public Ingredient() {
-    }
-
-    /**
-     * Constructor used by the owner to keep track of ingredient details.
-     *
-     * @param name          the name of the ingredient
-     * @param quantity      the quantity of the ingredient
-     * @param unit          the unit of measurement for the ingredient
-     * @param cost          the cost of the ingredient
-     * @param supplier      the supplier of the ingredient
-     * @param expirationDate the expiration date of the ingredient
-     * @param description   the description of the ingredient
-     */
-    public Ingredient(String name, int quantity, String unit, double cost, String supplier, String expirationDate, String description) {
-        this.name = name;
-        this.quantity = quantity;
-        this.unit = unit;
-        this.cost = cost;
-        this.supplier = supplier;
-        this.expirationDate = expirationDate;
-        this.description = description;
     }
 
     /**
@@ -66,6 +49,31 @@ public class Ingredient {
         this.name = name;
         this.quantity = quantity;
         this.menuItems = menuItems;
+    }
+
+    /**
+     * Constructor used by the owner to keep track of ingredient details.
+     *
+     * @param name          the name of the ingredient
+     * @param quantity      the quantity of the ingredient
+     * @param unit          the unit of measurement for the ingredient
+     * @param cost          the cost of the ingredient
+     * @param supplier      the supplier of the ingredient
+     * @param expirationDate the expiration date of the ingredient
+     * @param description   the description of the ingredient
+     * @param menuItems     the set of menu items that use this ingredient
+     * @param owner         the owner of the ingredient
+     */
+    public Ingredient(String name, int quantity, String unit, double cost, String supplier, String expirationDate, String description, Set<MenuItem> menuItems, User owner) {
+        this.name = name;
+        this.quantity = quantity;
+        this.unit = unit;
+        this.cost = cost;
+        this.supplier = supplier;
+        this.expirationDate = expirationDate;
+        this.description = description;
+        this.menuItems = menuItems != null ? menuItems : new HashSet<>();
+        this.owner = owner;
     }
 
     // Getters and Setters
@@ -234,5 +242,23 @@ public class Ingredient {
     public void addMenuItem(MenuItem menuItem) {
         this.getMenuItems().add(menuItem);
         menuItem.getIngredients().add(this);
+    }
+
+    /**
+     * Gets the owner of the ingredient.
+     *
+     * @return the owner of the ingredient
+     */
+    public User getOwner() {
+        return owner;
+    }
+
+    /**
+     * Sets the owner of the ingredient.
+     *
+     * @param owner the owner of the ingredient
+     */
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 }

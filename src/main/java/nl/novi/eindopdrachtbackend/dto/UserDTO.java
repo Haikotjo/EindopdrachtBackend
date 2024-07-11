@@ -11,6 +11,7 @@ public class UserDTO {
     private DeliveryAddressDTO deliveryAddress;
     private RestaurantDTO restaurant;
     private List<OrderDTO> orders;
+    private List<IngredientDTO> ingredients;
 
     // Constructors
     public UserDTO() {}
@@ -24,7 +25,7 @@ public class UserDTO {
     }
 
     // Constructor for full information
-    public UserDTO(Long id, String name, String email, List<String> roles, String phoneNumber, DeliveryAddressDTO deliveryAddress, RestaurantDTO restaurant, List<OrderDTO> orders) {
+    public UserDTO(Long id, String name, String email, List<String> roles, String phoneNumber, DeliveryAddressDTO deliveryAddress, RestaurantDTO restaurant, List<OrderDTO> orders, List<IngredientDTO> ingredients) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -33,6 +34,7 @@ public class UserDTO {
         this.deliveryAddress = deliveryAddress;
         this.restaurant = restaurant;
         this.orders = orders;
+        this.ingredients = ingredients;
 
     }
 
@@ -99,5 +101,13 @@ public class UserDTO {
 
     public void setOrders(List<OrderDTO> orders) {
         this.orders = orders;
+    }
+
+    public List<IngredientDTO> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(List<IngredientDTO> ingredients) {
+        this.ingredients = ingredients;
     }
 }

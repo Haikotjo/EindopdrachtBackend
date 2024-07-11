@@ -1,29 +1,4 @@
--- Insert ingredients
-INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description) VALUES ('Sugar', 100, 'grams', 1.0, 'Supplier A', '2024-12-31', 'Sweetener');
-INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description) VALUES ('Flour', 50, 'grams', 0.5, 'Supplier B', '2024-12-31', 'Used in baking');
-INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description) VALUES ('Butter', 30, 'grams', 1.5, 'Supplier C', '2024-12-31', 'Dairy product');
 
--- Insert menu items including new ones for Spaghetti Bolognese and Vegetable Lasagna
-INSERT INTO menu_items (name, price, description, image) VALUES ('Cheese Pizza', 10.00, 'Cheese pizza with extra cheese topping', 'cheese_pizza.jpg');
-INSERT INTO menu_items (name, price, description, image) VALUES ('Veggie Pizza', 12.00, 'Pizza with a variety of vegetables', 'veggie_pizza.jpg');
-INSERT INTO menu_items (name, price, description, image) VALUES ('Spaghetti Bolognese', 15.00, 'Classic spaghetti with homemade bolognese sauce', 'spaghetti_bolognese.jpg');
-INSERT INTO menu_items (name, price, description, image) VALUES ('Vegetable Lasagna', 14.00, 'Layers of pasta, fresh veggies, and rich tomato sauce', 'vegetable_lasagna.jpg');
-
--- Associate ingredients with menu items
-INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id) VALUES (1, 1); -- Cheese Pizza heeft Sugar
-INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id) VALUES (1, 3); -- Cheese Pizza heeft Butter
-INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id) VALUES (2, 2); -- Veggie Pizza heeft Flour
-INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id) VALUES (2, 3); -- Veggie Pizza heeft Butter
-
--- Insert some menus
-INSERT INTO menus (name, description) VALUES ('Italian Specials', 'A selection of Italian cuisine favorites');
-INSERT INTO menus (name, description) VALUES ('Vegetarian Delights', 'A variety of healthy vegetarian dishes');
-
--- Associate menu_items with menus
-INSERT INTO menu_menu_item (menu_id, menu_item_id) VALUES (1, 1); -- Cheese Pizza in Italian Specials
-INSERT INTO menu_menu_item (menu_id, menu_item_id) VALUES (1, 3); -- Spaghetti Bolognese in Italian Specials
-INSERT INTO menu_menu_item (menu_id, menu_item_id) VALUES (2, 2); -- Veggie Pizza in Vegetarian Delights
-INSERT INTO menu_menu_item (menu_id, menu_item_id) VALUES (2, 4); -- Vegetable Lasagna in Vegetarian Delights
 
 -- Insert roles
 INSERT INTO roles (rolename) VALUES ('CUSTOMER');
@@ -50,6 +25,35 @@ INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users W
 
 INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='admin.user@example.com'), 'ADMIN');
 
+-- Insert ingredients with owner_id
+INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id) VALUES ('Sugar', 100, 'grams', 1.0, 'Supplier A', '2024-12-31', 'Sweetener', 4);
+INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id) VALUES ('Flour', 50, 'grams', 0.5, 'Supplier B', '2024-12-31', 'Used in baking', 5);
+INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id) VALUES ('Butter', 30, 'grams', 1.5, 'Supplier C', '2024-12-31', 'Dairy product', 6);
+INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id) VALUES ('Salt', 200, 'grams', 0.2, 'Supplier D', '2024-12-31', 'Basic seasoning', 4);
+INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id) VALUES ('Pepper', 100, 'grams', 2.0, 'Supplier E', '2024-12-31', 'Spicy seasoning', 5);
+INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id) VALUES ('Olive Oil', 50, 'liters', 10.0, 'Supplier F', '2024-12-31', 'Cooking oil', 6);
+
+-- Insert menu items including new ones for Spaghetti Bolognese and Vegetable Lasagna
+INSERT INTO menu_items (name, price, description, image) VALUES ('Cheese Pizza', 10.00, 'Cheese pizza with extra cheese topping', 'cheese_pizza.jpg');
+INSERT INTO menu_items (name, price, description, image) VALUES ('Veggie Pizza', 12.00, 'Pizza with a variety of vegetables', 'veggie_pizza.jpg');
+INSERT INTO menu_items (name, price, description, image) VALUES ('Spaghetti Bolognese', 15.00, 'Classic spaghetti with homemade bolognese sauce', 'spaghetti_bolognese.jpg');
+INSERT INTO menu_items (name, price, description, image) VALUES ('Vegetable Lasagna', 14.00, 'Layers of pasta, fresh veggies, and rich tomato sauce', 'vegetable_lasagna.jpg');
+
+-- Associate ingredients with menu items
+INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id) VALUES (1, 1); -- Cheese Pizza heeft Sugar
+INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id) VALUES (1, 3); -- Cheese Pizza heeft Butter
+INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id) VALUES (2, 2); -- Veggie Pizza heeft Flour
+INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id) VALUES (2, 3); -- Veggie Pizza heeft Butter
+
+-- Insert some menus
+INSERT INTO menus (name, description) VALUES ('Italian Specials', 'A selection of Italian cuisine favorites');
+INSERT INTO menus (name, description) VALUES ('Vegetarian Delights', 'A variety of healthy vegetarian dishes');
+
+-- Associate menu_items with menus
+INSERT INTO menu_menu_item (menu_id, menu_item_id) VALUES (1, 1); -- Cheese Pizza in Italian Specials
+INSERT INTO menu_menu_item (menu_id, menu_item_id) VALUES (1, 3); -- Spaghetti Bolognese in Italian Specials
+INSERT INTO menu_menu_item (menu_id, menu_item_id) VALUES (2, 2); -- Veggie Pizza in Vegetarian Delights
+INSERT INTO menu_menu_item (menu_id, menu_item_id) VALUES (2, 4); -- Vegetable Lasagna in Vegetarian Delights
 
 -- Insert delivery addresses ensuring correct alignment with user IDs and table fields
 INSERT INTO delivery_addresses (street, house_number, city, postcode, country, user_id) VALUES ('Maple Street', 123, 'Springfield', '12345', 'USA', 1);

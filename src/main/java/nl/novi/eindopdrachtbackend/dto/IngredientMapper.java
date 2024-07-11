@@ -1,6 +1,7 @@
 package nl.novi.eindopdrachtbackend.dto;
 
 import nl.novi.eindopdrachtbackend.model.Ingredient;
+import nl.novi.eindopdrachtbackend.model.User;
 
 /**
  * Mapper class for converting between Ingredient entities and DTOs.
@@ -45,9 +46,10 @@ public class IngredientMapper {
      * Converts an IngredientInputDTO to an Ingredient entity.
      *
      * @param inputDTO the IngredientInputDTO
+     * @param owner the owner of the ingredient
      * @return the Ingredient entity
      */
-    public static Ingredient toIngredient(IngredientInputDTO inputDTO) {
+    public static Ingredient toIngredient(IngredientInputDTO inputDTO, User owner) {
         Ingredient ingredient = new Ingredient();
         ingredient.setName(inputDTO.getName());
         ingredient.setCost(inputDTO.getCost());
@@ -56,6 +58,7 @@ public class IngredientMapper {
         ingredient.setSupplier(inputDTO.getSupplier());
         ingredient.setExpirationDate(inputDTO.getExpirationDate());
         ingredient.setDescription(inputDTO.getDescription());
+        ingredient.setOwner(owner);
         return ingredient;
     }
 }

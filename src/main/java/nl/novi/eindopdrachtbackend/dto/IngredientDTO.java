@@ -9,6 +9,7 @@ import nl.novi.eindopdrachtbackend.model.Ingredient;
  */
 public class IngredientDTO {
     private Long id;
+
     @NotBlank
     private String name;
 
@@ -20,6 +21,12 @@ public class IngredientDTO {
     private String supplier;
     private String expirationDate;
     private String description;
+
+    /**
+     * Default constructor.
+     */
+    public IngredientDTO() {
+    }
 
     /**
      * Constructs an IngredientDTO from an Ingredient entity.
@@ -38,9 +45,18 @@ public class IngredientDTO {
     }
 
     /**
-     * Default constructor.
+     * Constructs a simplified IngredientDTO for customers.
+     *
+     * @param id    the ID of the ingredient
+     * @param name  the name of the ingredient
+     * @param cost  the cost of the ingredient
+     * @param description the description of the ingredient
      */
-    public IngredientDTO() {
+    public IngredientDTO(Long id, String name, Double cost, String description) {
+        this.id = id;
+        this.name = name;
+        this.cost = cost;
+        this.description = description;
     }
 
     // Getters and setters

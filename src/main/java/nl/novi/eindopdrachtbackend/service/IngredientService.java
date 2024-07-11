@@ -14,8 +14,8 @@ public interface IngredientService {
     List<IngredientDTO> getAllIngredientsForLoggedInOwner(String email);
     IngredientDTO getIngredientByIdForOwner(Long id, Long ownerId);
     IngredientDTO getIngredientByIdForAdmin(Long id, Long ownerId);
-    IngredientDTO createIngredient(IngredientInputDTO ingredientInputDTO);
-    IngredientDTO updateIngredient(Long id, IngredientInputDTO ingredientInputDTO);
+//    IngredientDTO createIngredient(IngredientInputDTO ingredientInputDTO);
+//    IngredientDTO updateIngredient(Long id, IngredientInputDTO ingredientInputDTO);
 
     void deleteIngredient(Long id);
 }

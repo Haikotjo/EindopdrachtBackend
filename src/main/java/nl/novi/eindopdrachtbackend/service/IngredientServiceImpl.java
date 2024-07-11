@@ -45,7 +45,7 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public List<IngredientDTO> getAllIngredientsForOwner(Long ownerId) {
         try {
-            List<Ingredient> ingredients = ingredientRepository.findByMenuItems_Menus_Restaurant_Owner_Id(ownerId);
+            List<Ingredient> ingredients = ingredientRepository.findByOwner_Id(ownerId);
             if (ingredients.isEmpty()) {
                 throw new ResourceNotFoundException("No ingredients found for owner with ID " + ownerId);
             }
@@ -76,7 +76,7 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public IngredientDTO getIngredientByIdForAdmin(Long id, Long ownerId) {
         try {
-            Ingredient ingredient = ingredientRepository.findByIdAndMenuItems_Menus_Restaurant_Owner_Id(id, ownerId)
+            Ingredient ingredient = ingredientRepository.findByIdAndOwner_Id(id, ownerId)
                     .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id + " and owner id :: " + ownerId));
             return IngredientMapper.toOwnerIngredientDTO(ingredient);
         } catch (ResourceNotFoundException e) {
@@ -91,7 +91,7 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public IngredientDTO getIngredientByIdForOwner(Long id, Long ownerId) {
         try {
-            Ingredient ingredient = ingredientRepository.findByIdAndMenuItems_Menus_Restaurant_Owner_Id(id, ownerId)
+            Ingredient ingredient = ingredientRepository.findByIdAndOwner_Id(id, ownerId)
                     .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id + " and owner id :: " + ownerId));
             return IngredientMapper.toOwnerIngredientDTO(ingredient);
         } catch (ResourceNotFoundException e) {
@@ -103,22 +103,22 @@ public class IngredientServiceImpl implements IngredientService {
         }
     }
 
-    @Override
-    public IngredientDTO createIngredient(IngredientInputDTO ingredientInputDTO) {
-        Ingredient ingredient = IngredientMapper.toIngredient(ingredientInputDTO);
-        Ingredient savedIngredient = ingredientRepository.save(ingredient);
-        return IngredientMapper.toOwnerIngredientDTO(savedIngredient);
-    }
-
-    @Override
-    public IngredientDTO updateIngredient(Long id, IngredientInputDTO ingredientInputDTO) {
-        Ingredient existingIngredient = ingredientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id));
-        existingIngredient.setName(ingredientInputDTO.getName());
-        existingIngredient.setQuantity(ingredientInputDTO.getQuantity());
-        Ingredient updatedIngredient = ingredientRepository.save(existingIngredient);
-        return IngredientMapper.toOwnerIngredientDTO(updatedIngredient);
-    }
+//    @Override
+//    public IngredientDTO createIngredient(IngredientInputDTO ingredientInputDTO) {
+//        Ingredient ingredient = IngredientMapper.toIngredient(ingredientInputDTO);
+//        Ingredient savedIngredient = ingredientRepository.save(ingredient);
+//        return IngredientMapper.toOwnerIngredientDTO(savedIngredient);
+//    }
+//
+//    @Override
+//    public IngredientDTO updateIngredient(Long id, IngredientInputDTO ingredientInputDTO) {
+//        Ingredient existingIngredient = ingredientRepository.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id));
+//        existingIngredient.setName(ingredientInputDTO.getName());
+//        existingIngredient.setQuantity(ingredientInputDTO.getQuantity());
+//        Ingredient updatedIngredient = ingredientRepository.save(existingIngredient);
+//        return IngredientMapper.toOwnerIngredientDTO(updatedIngredient);
+//    }
 
 
     @Override
