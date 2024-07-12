@@ -11,6 +11,7 @@ import nl.novi.eindopdrachtbackend.service.IngredientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -115,14 +116,7 @@ public class IngredientController {
         return new ResponseEntity<>(newIngredient, HttpStatus.CREATED);
     }
 
-    // Private method to get the currently authenticated user
-    private User getCurrentUser() {
-        String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
-        return userRepository.findByEmail(currentUserEmail)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + currentUserEmail));
-    }
-
-    // Endpoint voor admins om een ingrediënt aan te maken voor een owner
+    // Endpoint voor admins om een ingrediënt aan te maken voor een specifieke owner
     @PostMapping("/admin/create")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<IngredientDTO> createIngredientForAdmin(@RequestBody IngredientInputDTO ingredientInputDTO) {
@@ -136,28 +130,46 @@ public class IngredientController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-//
-//    // Endpoint voor admins om een ingrediënt aan te maken voor een specifieke eigenaar
-//    @PostMapping("/admin/{ownerId}")
-//    @PreAuthorize("hasAuthority('ADMIN')")
-//    public ResponseEntity<IngredientDTO> createIngredientForAdmin(@PathVariable Long ownerId, @RequestBody IngredientInputDTO ingredientInputDTO) {
-//        IngredientDTO createdIngredient = ingredientService.createIngredientForAdmin(ingredientInputDTO, ownerId);
-//        return new ResponseEntity<>(createdIngredient, HttpStatus.CREATED);
-//    }
 
+    // Endpoint voor eigenaars om een ingrediënt bij te werken
+    @PutMapping("/owner/{id}")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<IngredientDTO> updateIngredientForOwner(@PathVariable Long id, @RequestBody IngredientInputDTO ingredientInputDTO) {
+        User currentUser = getCurrentUser();
+        IngredientDTO updatedIngredient = ingredientService.updateIngredientForOwner(id, ingredientInputDTO, currentUser.getId());
+        return new ResponseEntity<>(updatedIngredient, HttpStatus.OK);
+    }
 
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<ApiResponse> updateIngredient(@PathVariable Long id, @RequestBody IngredientInputDTO ingredientInputDTO) {
-//        IngredientDTO updatedIngredientDTO = ingredientService.updateIngredient(id, ingredientInputDTO);
-//        ApiResponse apiResponse = new ApiResponse(true, "Ingredient successfully updated.", updatedIngredientDTO);
-//        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteIngredient(@PathVariable Long id) {
-//        ingredientService.deleteIngredient(id);
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//    }
+    // Endpoint voor admins om een ingrediënt bij te werken voor een specifieke eigenaar
+    @PutMapping("/admin/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<IngredientDTO> updateIngredientForAdmin(@PathVariable Long id, @RequestBody IngredientInputDTO ingredientInputDTO) {
+        Long ownerId = ingredientInputDTO.getOwnerId(); // Verondersteld dat ownerId is toegevoegd aan IngredientInputDTO
+        IngredientDTO updatedIngredient = ingredientService.updateIngredientForAdmin(id, ingredientInputDTO, ownerId);
+        return new ResponseEntity<>(updatedIngredient, HttpStatus.OK);
+    }
 
+    // Private method to get the currently authenticated user
+    private User getCurrentUser() {
+        String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
+        return userRepository.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + currentUserEmail));
+    }
+
+    // Endpoint voor eigenaars om een ingrediënt te verwijderen
+    @DeleteMapping("/owner/{id}")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<Void> deleteIngredientForOwner(@PathVariable Long id) {
+        User currentUser = getCurrentUser();
+        ingredientService.deleteIngredientForOwner(id, currentUser);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    // Endpoint voor admin om een ingrediënt te verwijderen
+    @DeleteMapping("/admin/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Void> deleteIngredientForAdmin(@PathVariable Long id) {
+        ingredientService.deleteIngredientForAdmin(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

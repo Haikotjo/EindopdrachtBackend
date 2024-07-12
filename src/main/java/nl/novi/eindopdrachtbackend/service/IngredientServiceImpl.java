@@ -9,6 +9,7 @@ import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.repository.IngredientRepository;
 import nl.novi.eindopdrachtbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -118,22 +119,60 @@ public class IngredientServiceImpl implements IngredientService {
         Ingredient savedIngredient = ingredientRepository.save(ingredient);
         return IngredientMapper.toOwnerIngredientDTO(savedIngredient);
     }
-//
-//    @Override
-//    public IngredientDTO updateIngredient(Long id, IngredientInputDTO ingredientInputDTO) {
-//        Ingredient existingIngredient = ingredientRepository.findById(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id));
-//        existingIngredient.setName(ingredientInputDTO.getName());
-//        existingIngredient.setQuantity(ingredientInputDTO.getQuantity());
-//        Ingredient updatedIngredient = ingredientRepository.save(existingIngredient);
-//        return IngredientMapper.toOwnerIngredientDTO(updatedIngredient);
-//    }
+    @Override
+    public IngredientDTO updateIngredientForOwner(Long id, IngredientInputDTO ingredientInputDTO, Long ownerId) {
+        Ingredient ingredient = ingredientRepository.findByIdAndOwner_Id(id, ownerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found with id: " + id + " for owner id: " + ownerId));
 
+        ingredient.setName(ingredientInputDTO.getName());
+        ingredient.setQuantity(ingredientInputDTO.getQuantity());
+        ingredient.setUnit(ingredientInputDTO.getUnit());
+        ingredient.setCost(ingredientInputDTO.getCost());
+        ingredient.setSupplier(ingredientInputDTO.getSupplier());
+        ingredient.setExpirationDate(ingredientInputDTO.getExpirationDate());
+        ingredient.setDescription(ingredientInputDTO.getDescription());
+
+        Ingredient updatedIngredient = ingredientRepository.save(ingredient);
+        return IngredientMapper.toOwnerIngredientDTO(updatedIngredient);
+    }
 
     @Override
-    public void deleteIngredient(Long id) {
+    public IngredientDTO updateIngredientForAdmin(Long id, IngredientInputDTO ingredientInputDTO, Long ownerId) {
+        User owner = userRepository.findById(ownerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Owner not found with id: " + ownerId));
+
         Ingredient ingredient = ingredientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found with id: " + id));
+
+        ingredient.setName(ingredientInputDTO.getName());
+        ingredient.setQuantity(ingredientInputDTO.getQuantity());
+        ingredient.setUnit(ingredientInputDTO.getUnit());
+        ingredient.setCost(ingredientInputDTO.getCost());
+        ingredient.setSupplier(ingredientInputDTO.getSupplier());
+        ingredient.setExpirationDate(ingredientInputDTO.getExpirationDate());
+        ingredient.setDescription(ingredientInputDTO.getDescription());
+        ingredient.setOwner(owner);
+
+        Ingredient updatedIngredient = ingredientRepository.save(ingredient);
+        return IngredientMapper.toOwnerIngredientDTO(updatedIngredient);
+    }
+
+    @Override
+    public void deleteIngredientForOwner(final Long id, final User owner) {
+        Ingredient ingredient = ingredientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found with id: " + id));
+        if (!ingredient.getOwner().getId().equals(owner.getId())) {
+            throw new AccessDeniedException("You do not have permission to delete this ingredient");
+        }
         ingredientRepository.delete(ingredient);
     }
+
+    @Override
+    public void deleteIngredientForAdmin(final Long id) {
+        Ingredient ingredient = ingredientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found with id: " + id));
+        ingredientRepository.delete(ingredient);
+    }
+
+
 }

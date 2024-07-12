@@ -17,6 +17,8 @@ public interface IngredientService {
     IngredientDTO getIngredientByIdForAdmin(Long id, Long ownerId);
     IngredientDTO createIngredientForOwner(IngredientInputDTO ingredientInputDTO, User owner);
     IngredientDTO createIngredientForAdmin(IngredientInputDTO ingredientInputDTO, Long ownerId);
-
-    void deleteIngredient(Long id);
+    IngredientDTO updateIngredientForOwner(Long id, IngredientInputDTO ingredientInputDTO, Long ownerId);
+    IngredientDTO updateIngredientForAdmin(Long id, IngredientInputDTO ingredientInputDTO, Long ownerId);
+    void deleteIngredientForOwner(Long id, User owner);
+    void deleteIngredientForAdmin(Long id);
 }
