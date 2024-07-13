@@ -25,7 +25,8 @@ public class Ingredient {
     /**
      * The quantity of the ingredient.
      */
-    private int quantity;
+    @Column(nullable = false)
+    private int quantity = 0;
 
     /**
      * The unit of measurement for the ingredient.

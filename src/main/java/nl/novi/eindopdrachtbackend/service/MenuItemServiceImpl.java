@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation for managing menu items.
+ */
 @Service
 public class MenuItemServiceImpl implements MenuItemService{
 
@@ -25,6 +28,17 @@ public class MenuItemServiceImpl implements MenuItemService{
     public MenuItemServiceImpl(MenuItemRepository menuItemRepository, IngredientRepository ingredientRepository) {
         this.menuItemRepository = menuItemRepository;
         this.ingredientRepository = ingredientRepository;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<MenuItemDTO> getAllMenuItems() {
+        List<MenuItem> menuItems = menuItemRepository.findAll();
+        return menuItems.stream()
+                .map(MenuItemMapper::toMenuItemDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -66,14 +80,6 @@ public class MenuItemServiceImpl implements MenuItemService{
 
         MenuItem updatedMenuItem = menuItemRepository.save(existingMenuItem);
         return MenuItemMapper.toMenuItemDTO(updatedMenuItem);
-    }
-
-    @Override
-    public List<MenuItemDTO> getAllMenuItems() {
-        List<MenuItem> menuItems = menuItemRepository.findAll();
-        return menuItems.stream()
-                .map(MenuItemMapper::toMenuItemDTO)
-                .collect(Collectors.toList());
     }
 
     @Override

@@ -6,10 +6,21 @@ import nl.novi.eindopdrachtbackend.model.MenuItem;
 
 import java.util.List;
 
+
+/**
+ * Service interface for managing menu items.
+ */
 public interface MenuItemService {
+
+    /**
+     * Get all menu items (Admin only)
+     *
+     * @return list of all MenuItemDTOs
+     */
+    List<MenuItemDTO> getAllMenuItems();
     MenuItemDTO createMenuItem(MenuItemInputDTO menuItemInputDTO);
     MenuItemDTO updateMenuItem(Long id, MenuItemInputDTO menuItemInputDTO);
-    List<MenuItemDTO> getAllMenuItems();
+
     MenuItemDTO getMenuItemById(Long id);
     void deleteMenuItem(Long id);
     List<MenuItemDTO> findByNameIgnoreCase(String name);

@@ -12,7 +12,7 @@ public class IngredientDTO {
     private String name;
     private Double cost;
     private String unit;
-    private Integer quantity;
+    private int quantity;
     private String supplier;
     private String expirationDate;
     private String description;

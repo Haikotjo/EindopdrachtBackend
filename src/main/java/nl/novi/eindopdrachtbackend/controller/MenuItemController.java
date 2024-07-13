@@ -8,10 +8,14 @@ import nl.novi.eindopdrachtbackend.service.MenuItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for managing menu items.
+ */
 @RestController
 @RequestMapping("/menuItems")
 public class MenuItemController {
@@ -23,11 +27,21 @@ public class MenuItemController {
         this.menuItemService = menuItemService;
     }
 
-    @GetMapping
+    /**
+     * Get all menuItems (Admin only)
+     *
+     * @return ResponseEntity containing a list of MenuItemsDTO objects
+     */
+    @GetMapping("/admin/all")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<MenuItemDTO>> getAllMenuItems() {
         List<MenuItemDTO> menuItems = menuItemService.getAllMenuItems();
         return new ResponseEntity<>(menuItems, HttpStatus.OK);
     }
+
+
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<MenuItemDTO> getMenuItemById(@PathVariable Long id) {

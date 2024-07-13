@@ -10,7 +10,9 @@ import java.util.List;
  */
 public class MenuItemDTO {
     private Long id;
+    @NotBlank
     private String name;
+    @NotNull
     private double price;
     private String description;
     private String image;

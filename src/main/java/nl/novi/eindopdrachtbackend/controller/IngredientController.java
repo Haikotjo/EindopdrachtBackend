@@ -32,7 +32,11 @@ public class IngredientController {
         this.userRepository = userRepository;
     }
 
-    // Endpoint voor admin om alle ingrediënten op te halen
+    /**
+     * Get all notifications (Admin only)
+     *
+     * @return ResponseEntity containing a list of IngredientDTO objects
+     */
     @GetMapping("/admin/all")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<IngredientDTO>> getAllIngredients() {

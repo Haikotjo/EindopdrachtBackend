@@ -25,6 +25,11 @@ INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users W
 
 INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='admin.user@example.com'), 'ADMIN');
 
+-- Insert restaurants
+INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Italian Bistro', '123 Main Street, Springfield', '555-1234', (SELECT id FROM users WHERE email='owner.one@example.com'));
+INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Veggie Delight', '456 Oak Avenue, Shelbyville', '555-5678', (SELECT id FROM users WHERE email='owner.two@example.com'));
+INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Sushi Place', '789 Maple Road, Capital City', '555-8765', (SELECT id FROM users WHERE email='owner.three@example.com'));
+
 -- Insert ingredients with owner_id
 INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id) VALUES ('Sugar', 100, 'grams', 1.0, 'Supplier A', '2024-12-31', 'Sweetener', 4);
 INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id) VALUES ('Flour', 50, 'grams', 0.5, 'Supplier B', '2024-12-31', 'Used in baking', 5);
@@ -34,10 +39,10 @@ INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, 
 INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id) VALUES ('Olive Oil', 50, 'liters', 10.0, 'Supplier F', '2024-12-31', 'Cooking oil', 6);
 
 -- Insert menu items including new ones for Spaghetti Bolognese and Vegetable Lasagna
-INSERT INTO menu_items (name, price, description, image) VALUES ('Cheese Pizza', 10.00, 'Cheese pizza with extra cheese topping', 'cheese_pizza.jpg');
-INSERT INTO menu_items (name, price, description, image) VALUES ('Veggie Pizza', 12.00, 'Pizza with a variety of vegetables', 'veggie_pizza.jpg');
-INSERT INTO menu_items (name, price, description, image) VALUES ('Spaghetti Bolognese', 15.00, 'Classic spaghetti with homemade bolognese sauce', 'spaghetti_bolognese.jpg');
-INSERT INTO menu_items (name, price, description, image) VALUES ('Vegetable Lasagna', 14.00, 'Layers of pasta, fresh veggies, and rich tomato sauce', 'vegetable_lasagna.jpg');
+INSERT INTO menu_items (name, price, description, image, restaurant_id) VALUES ('Cheese Pizza', 10.00, 'Cheese pizza with extra cheese topping', 'cheese_pizza.jpg', (SELECT id FROM restaurants WHERE name='Italian Bistro'));
+INSERT INTO menu_items (name, price, description, image, restaurant_id) VALUES ('Veggie Pizza', 12.00, 'Pizza with a variety of vegetables', 'veggie_pizza.jpg', (SELECT id FROM restaurants WHERE name='Veggie Delight'));
+INSERT INTO menu_items (name, price, description, image, restaurant_id) VALUES ('Spaghetti Bolognese', 15.00, 'Classic spaghetti with homemade bolognese sauce', 'spaghetti_bolognese.jpg', (SELECT id FROM restaurants WHERE name='Italian Bistro'));
+INSERT INTO menu_items (name, price, description, image, restaurant_id) VALUES ('Vegetable Lasagna', 14.00, 'Layers of pasta, fresh veggies, and rich tomato sauce', 'vegetable_lasagna.jpg', (SELECT id FROM restaurants WHERE name='Veggie Delight'));
 
 -- Associate ingredients with menu items
 INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id) VALUES (1, 1); -- Cheese Pizza heeft Sugar
@@ -58,11 +63,6 @@ INSERT INTO menu_menu_item (menu_id, menu_item_id) VALUES (2, 4); -- Vegetable L
 -- Insert delivery addresses ensuring correct alignment with user IDs and table fields
 INSERT INTO delivery_addresses (street, house_number, city, postcode, country, user_id) VALUES ('Maple Street', 123, 'Springfield', '12345', 'USA', 1);
 INSERT INTO delivery_addresses (street, house_number, city, postcode, country, user_id) VALUES ('Elm Street', 456, 'Shelbyville', '67890', 'USA', 2);
-
--- Insert restaurants
-INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Italian Bistro', '123 Main Street, Springfield', '555-1234', (SELECT id FROM users WHERE email='owner.one@example.com'));
-INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Veggie Delight', '456 Oak Avenue, Shelbyville', '555-5678', (SELECT id FROM users WHERE email='owner.two@example.com'));
-INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Sushi Place', '789 Maple Road, Capital City', '555-8765', (SELECT id FROM users WHERE email='owner.three@example.com'));
 
 -- Associate menus with restaurants
 UPDATE menus SET restaurant_id = 1 WHERE id = 1; -- Italian Specials hoort bij Italian Bistro

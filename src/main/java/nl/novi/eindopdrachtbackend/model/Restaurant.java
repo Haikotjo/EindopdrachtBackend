@@ -31,6 +31,10 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Order> orders = new HashSet<>();
 
+    // Relation to MenuItem
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<MenuItem> menuItems = new HashSet<>();
+
 //    constructors
 
     public Restaurant() {
@@ -123,5 +127,26 @@ public class Restaurant {
 
     public void setOrders(Set<Order> orders) {
         this.orders = orders;
+    }
+
+    /**
+     * Gets the set of menu items offered by the restaurant.
+     *
+     * @return the set of menu items offered by the restaurant
+     */
+    public Set<MenuItem> getMenuItems() {
+        if (menuItems == null) {
+            menuItems = new HashSet<>();
+        }
+        return menuItems;
+    }
+
+    /**
+     * Sets the set of menu items offered by the restaurant.
+     *
+     * @param menuItems the set of menu items offered by the restaurant
+     */
+    public void setMenuItems(Set<MenuItem> menuItems) {
+        this.menuItems = menuItems;
     }
 }
