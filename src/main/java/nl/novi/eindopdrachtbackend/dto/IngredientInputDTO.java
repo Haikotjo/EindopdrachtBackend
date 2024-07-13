@@ -1,13 +1,18 @@
 package nl.novi.eindopdrachtbackend.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 /**
  * Data Transfer Object for creating or updating an Ingredient.
  */
 public class IngredientInputDTO {
+    @NotBlank
     private String name;
     private int quantity;
     private String unit;
-    private double cost;
+    @NotNull
+    private Double cost;
     private String supplier;
     private String expirationDate;
     private String description;

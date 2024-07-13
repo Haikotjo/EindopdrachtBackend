@@ -9,13 +9,8 @@ import nl.novi.eindopdrachtbackend.model.Ingredient;
  */
 public class IngredientDTO {
     private Long id;
-
-    @NotBlank
     private String name;
-
-    @NotNull
     private Double cost;
-
     private String unit;
     private Integer quantity;
     private String supplier;
@@ -23,6 +18,7 @@ public class IngredientDTO {
     private String description;
     private Long ownerId;
 
+    // Constructor
     /**
      * Default constructor.
      */

@@ -2,11 +2,21 @@ package nl.novi.eindopdrachtbackend.dto;
 
 import nl.novi.eindopdrachtbackend.model.MenuItem;
 import nl.novi.eindopdrachtbackend.model.Ingredient;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Mapper class for converting between MenuItem entities and DTOs.
+ */
 public class MenuItemMapper {
 
+    /**
+     * Converts a MenuItem entity to a detailed MenuItemDTO.
+     *
+     * @param menuItem the MenuItem entity
+     * @return the detailed MenuItemDTO
+     */
     public static MenuItemDTO toMenuItemDTO(MenuItem menuItem) {
         MenuItemDTO dto = new MenuItemDTO();
         dto.setId(menuItem.getId());
@@ -23,6 +33,12 @@ public class MenuItemMapper {
         return dto;
     }
 
+    /**
+     * Converts a MenuItemInputDTO to a MenuItem entity.
+     *
+     * @param inputDTO the MenuItemInputDTO
+     * @return the MenuItem entity
+     */
     public static MenuItem toMenuItem(MenuItemInputDTO inputDTO) {
         MenuItem menuItem = new MenuItem();
         menuItem.setName(inputDTO.getName());
