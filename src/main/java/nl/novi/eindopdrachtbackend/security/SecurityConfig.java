@@ -90,11 +90,14 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/notifications/owner/**").hasAuthority("OWNER")
 
                                 //                  Ingredient entity endpoints
-                                .requestMatchers(HttpMethod.GET, "/ingredients").hasAnyAuthority("ADMIN", "OWNER")
-                                .requestMatchers(HttpMethod.POST, "/ingredients").hasAnyAuthority("ADMIN", "OWNER")
-                                .requestMatchers(HttpMethod.PUT, "/ingredients").hasAnyAuthority("ADMIN", "OWNER")
-                                .requestMatchers(HttpMethod.DELETE, "/ingredients").hasAnyAuthority("ADMIN", "OWNER")
-
+                                .requestMatchers(HttpMethod.GET, "/ingredients/admin/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/ingredients/owner/**").hasAnyAuthority("ADMIN", "OWNER")
+                                .requestMatchers(HttpMethod.POST, "/ingredients/admin/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/ingredients/owner/**").hasAnyAuthority("ADMIN", "OWNER")
+                                .requestMatchers(HttpMethod.PUT, "/ingredients/admin/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/ingredients/owner/**").hasAnyAuthority("ADMIN", "OWNER")
+                                .requestMatchers(HttpMethod.DELETE, "/ingredients/admin/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/ingredients/owner/**").hasAnyAuthority("ADMIN", "OWNER")
 
 //                .requestMatchers("/**").hasAnyAuthority("ADMIN")
 
