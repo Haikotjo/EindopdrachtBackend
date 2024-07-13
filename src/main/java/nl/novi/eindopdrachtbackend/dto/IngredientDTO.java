@@ -218,11 +218,22 @@ public class IngredientDTO {
         this.description = description;
     }
 
+    /**
+     * Gets the owner ID of the ingredient.
+     *
+     * @return the owner ID of the ingredient
+     */
     public Long getOwnerId() {
         return ownerId;
     }
 
+    /**
+     * Sets the owner ID of the ingredient.
+     *
+     * @param ownerId the owner ID of the ingredient
+     */
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
     }
+
 }

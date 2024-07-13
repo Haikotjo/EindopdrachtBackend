@@ -1,7 +1,6 @@
 package nl.novi.eindopdrachtbackend.model;
 
 import jakarta.persistence.*;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,21 +10,57 @@ import java.util.Set;
 @Entity
 @Table(name = "ingredients")
 public class Ingredient {
+    /**
+     * The unique identifier for the ingredient.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * The name of the ingredient.
+     */
     private String name;
+
+    /**
+     * The quantity of the ingredient.
+     */
     private int quantity;
+
+    /**
+     * The unit of measurement for the ingredient.
+     */
     private String unit;
+
+    /**
+     * The cost of the ingredient.
+     */
     private double cost;
+
+    /**
+     * The supplier of the ingredient.
+     */
     private String supplier;
+
+    /**
+     * The expiration date of the ingredient.
+     */
     private String expirationDate;
+
+    /**
+     * The description of the ingredient.
+     */
     private String description;
 
+    /**
+     * The set of menu items that use this ingredient.
+     */
     @ManyToMany(mappedBy = "ingredients", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<MenuItem> menuItems = new HashSet<>();
 
+    /**
+     * The owner of the ingredient.
+     */
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
@@ -41,9 +76,9 @@ public class Ingredient {
     /**
      * Constructor used when adding ingredients to a menu item.
      *
-     * @param name       the name of the ingredient
-     * @param quantity   the quantity of the ingredient
-     * @param menuItems  the set of menu items that use this ingredient
+     * @param name      the name of the ingredient
+     * @param quantity  the quantity of the ingredient
+     * @param menuItems the set of menu items that use this ingredient
      */
     public Ingredient(String name, int quantity, Set<MenuItem> menuItems) {
         this.name = name;

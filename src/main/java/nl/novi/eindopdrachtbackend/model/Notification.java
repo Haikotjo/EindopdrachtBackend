@@ -30,6 +30,7 @@ public class Notification {
     @JoinColumn(name = "user_id")
     private User user;
 
+    // Constructor
     /**
      * Default constructor.
      */
@@ -46,6 +47,7 @@ public class Notification {
         this.user = user;
     }
 
+    // Getters and Setters
     /**
      * Gets the unique identifier for the notification.
      *
