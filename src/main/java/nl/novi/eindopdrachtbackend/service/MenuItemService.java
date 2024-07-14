@@ -18,10 +18,17 @@ public interface MenuItemService {
      * @return list of all MenuItemDTOs
      */
     List<MenuItemDTO> getAllMenuItems();
+
+    /**
+     * Get all menu items for a specific owner (Admin only).
+     *
+     * @param ownerId owner ID
+     * @return list of MenuItemDTOs for the specified owner
+     */
+    List<MenuItemDTO> getAllMenuItemsForOwner(Long ownerId);
+
     MenuItemDTO createMenuItem(MenuItemInputDTO menuItemInputDTO);
     MenuItemDTO updateMenuItem(Long id, MenuItemInputDTO menuItemInputDTO);
-
-    MenuItemDTO getMenuItemById(Long id);
     void deleteMenuItem(Long id);
     List<MenuItemDTO> findByNameIgnoreCase(String name);
     void addIngredientToMenuItem(Long menuItemId, Long ingredientId);

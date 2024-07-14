@@ -41,6 +41,28 @@ public class MenuItemServiceImpl implements MenuItemService{
                 .collect(Collectors.toList());
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<MenuItemDTO> getAllMenuItemsForOwner(Long ownerId) {
+        try {
+            List<MenuItem> menuItems = menuItemRepository.findByRestaurant_Owner_Id(ownerId);
+            if (menuItems.isEmpty()) {
+                throw new ResourceNotFoundException("No menu items found for owner with ID " + ownerId);
+            }
+            return menuItems.stream()
+                    .map(MenuItemMapper::toMenuItemDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve menu items for owner with ID " + ownerId, e);
+        }
+    }
+
+
+
+
+
     @Override
     public MenuItemDTO createMenuItem(MenuItemInputDTO menuItemInputDTO) {
         MenuItem menuItem = MenuItemMapper.toMenuItem(menuItemInputDTO);
@@ -80,14 +102,6 @@ public class MenuItemServiceImpl implements MenuItemService{
 
         MenuItem updatedMenuItem = menuItemRepository.save(existingMenuItem);
         return MenuItemMapper.toMenuItemDTO(updatedMenuItem);
-    }
-
-    @Override
-    public MenuItemDTO getMenuItemById(Long id) {
-        MenuItem menuItem = menuItemRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Menu item not found for this id :: " + id));
-        return MenuItemMapper.toMenuItemDTO(menuItem);
-
     }
 
     @Override

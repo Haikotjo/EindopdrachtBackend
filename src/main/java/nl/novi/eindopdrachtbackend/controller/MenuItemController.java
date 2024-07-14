@@ -3,6 +3,7 @@ package nl.novi.eindopdrachtbackend.controller;
 import nl.novi.eindopdrachtbackend.common.ApiResponse;
 import nl.novi.eindopdrachtbackend.dto.MenuItemDTO;
 import nl.novi.eindopdrachtbackend.dto.MenuItemInputDTO;
+import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.MenuItem;
 import nl.novi.eindopdrachtbackend.service.MenuItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class MenuItemController {
     }
 
     /**
-     * Get all menuItems (Admin only)
+     * Get all MenuItems (Admin only)
      *
      * @return ResponseEntity containing a list of MenuItemsDTO objects
      */
@@ -39,14 +40,23 @@ public class MenuItemController {
         return new ResponseEntity<>(menuItems, HttpStatus.OK);
     }
 
-
-
-
-
-    @GetMapping("/{id}")
-    public ResponseEntity<MenuItemDTO> getMenuItemById(@PathVariable Long id) {
-        MenuItemDTO menuItem = menuItemService.getMenuItemById(id);
-        return new ResponseEntity<>(menuItem, HttpStatus.OK);
+    /**
+     * Get all menu items for a specific owner (Admin only).
+     *
+     * @param ownerId owner ID
+     * @return ResponseEntity containing a list of MenuItemDTO objects
+     */
+    @GetMapping("/admin/{ownerId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<List<MenuItemDTO>> getAllMenuItemsForOwner(@PathVariable Long ownerId) {
+        try {
+            List<MenuItemDTO> menuItems = menuItemService.getAllMenuItemsForOwner(ownerId);
+            return new ResponseEntity<>(menuItems, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping

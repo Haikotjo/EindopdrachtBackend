@@ -33,7 +33,7 @@ public class IngredientController {
     }
 
     /**
-     * Get all notifications (Admin only)
+     * Get all Ingredients (Admin only)
      *
      * @return ResponseEntity containing a list of IngredientDTO objects
      */
@@ -44,7 +44,7 @@ public class IngredientController {
             List<IngredientDTO> ingredients = ingredientService.getAllIngredients();
             return new ResponseEntity<>(ingredients, HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Ingrediënts not found
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

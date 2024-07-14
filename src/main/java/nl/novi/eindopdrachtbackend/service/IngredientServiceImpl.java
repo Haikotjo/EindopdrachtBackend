@@ -27,6 +27,9 @@ public class IngredientServiceImpl implements IngredientService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<IngredientDTO> getAllIngredients() {
         try {
@@ -43,6 +46,9 @@ public class IngredientServiceImpl implements IngredientService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<IngredientDTO> getAllIngredientsForOwner(Long ownerId) {
         try {
@@ -54,11 +60,14 @@ public class IngredientServiceImpl implements IngredientService {
                     .map(IngredientMapper::toOwnerIngredientDTO)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            // Log de fout voor debugdoeleinden
             throw new RuntimeException("Failed to retrieve ingredients for owner with ID " + ownerId, e);
         }
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<IngredientDTO> getAllIngredientsForLoggedInOwner(String email) {
         try {
@@ -66,14 +75,15 @@ public class IngredientServiceImpl implements IngredientService {
                     .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
             return getAllIngredientsForOwner(currentUser.getId());
         } catch (ResourceNotFoundException e) {
-            // Log de fout voor debugdoeleinden
-            throw e;  // Gooi de exception opnieuw om deze door de controller te laten afhandelen
+            throw e;
         } catch (Exception e) {
-            // Log de fout voor debugdoeleinden
             throw new RuntimeException("Failed to retrieve ingredients for user with email " + email, e);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IngredientDTO getIngredientByIdForAdmin(Long id, Long ownerId) {
         try {
@@ -89,6 +99,9 @@ public class IngredientServiceImpl implements IngredientService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IngredientDTO getIngredientByIdForOwner(Long id, Long ownerId) {
         try {
@@ -104,6 +117,9 @@ public class IngredientServiceImpl implements IngredientService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IngredientDTO createIngredientForOwner(IngredientInputDTO ingredientInputDTO, User owner) {
         Ingredient ingredient = IngredientMapper.toIngredient(ingredientInputDTO, owner);
@@ -111,6 +127,9 @@ public class IngredientServiceImpl implements IngredientService {
         return IngredientMapper.toOwnerIngredientDTO(savedIngredient);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IngredientDTO createIngredientForAdmin(IngredientInputDTO ingredientInputDTO, Long ownerId) {
         User owner = userRepository.findById(ownerId)
@@ -119,6 +138,10 @@ public class IngredientServiceImpl implements IngredientService {
         Ingredient savedIngredient = ingredientRepository.save(ingredient);
         return IngredientMapper.toOwnerIngredientDTO(savedIngredient);
     }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IngredientDTO updateIngredientForOwner(Long id, IngredientInputDTO ingredientInputDTO, Long ownerId) {
         Ingredient ingredient = ingredientRepository.findByIdAndOwner_Id(id, ownerId)
@@ -136,6 +159,10 @@ public class IngredientServiceImpl implements IngredientService {
         return IngredientMapper.toOwnerIngredientDTO(updatedIngredient);
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IngredientDTO updateIngredientForAdmin(Long id, IngredientInputDTO ingredientInputDTO, Long ownerId) {
         User owner = userRepository.findById(ownerId)
@@ -157,6 +184,10 @@ public class IngredientServiceImpl implements IngredientService {
         return IngredientMapper.toOwnerIngredientDTO(updatedIngredient);
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteIngredientForOwner(final Long id, final User owner) {
         Ingredient ingredient = ingredientRepository.findById(id)
@@ -167,12 +198,14 @@ public class IngredientServiceImpl implements IngredientService {
         ingredientRepository.delete(ingredient);
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteIngredientForAdmin(final Long id) {
         Ingredient ingredient = ingredientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found with id: " + id));
         ingredientRepository.delete(ingredient);
     }
-
-
 }

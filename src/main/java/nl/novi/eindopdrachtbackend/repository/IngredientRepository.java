@@ -18,6 +18,12 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
     @Query("SELECT i FROM Ingredient i WHERE i.expirationDate <= ?1")
     List<Ingredient> findExpiringIngredients(LocalDate expirationWarningDate);
 
+    /**
+     * Find ingredients by the owner's ID.
+     *
+     * @param ownerId the ID of the owner
+     * @return list of Ingredients entities
+     */
     List<Ingredient> findByOwner_Id(Long ownerId);
 
     Optional<Ingredient> findByIdAndOwner_Id(Long id, Long ownerId);
