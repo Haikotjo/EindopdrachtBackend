@@ -7,8 +7,10 @@ import nl.novi.eindopdrachtbackend.dto.MenuItemMapper;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.Ingredient;
 import nl.novi.eindopdrachtbackend.model.MenuItem;
+import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.repository.IngredientRepository;
 import nl.novi.eindopdrachtbackend.repository.MenuItemRepository;
+import nl.novi.eindopdrachtbackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -24,10 +26,12 @@ public class MenuItemServiceImpl implements MenuItemService{
 
     private final MenuItemRepository menuItemRepository;
     private final IngredientRepository ingredientRepository;
+    private final UserRepository userRepository;
 
-    public MenuItemServiceImpl(MenuItemRepository menuItemRepository, IngredientRepository ingredientRepository) {
+    public MenuItemServiceImpl(MenuItemRepository menuItemRepository, IngredientRepository ingredientRepository, UserRepository userRepository) {
         this.menuItemRepository = menuItemRepository;
         this.ingredientRepository = ingredientRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -59,6 +63,21 @@ public class MenuItemServiceImpl implements MenuItemService{
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<MenuItemDTO> getAllMenuItemsForLoggedInOwner(String email) {
+        try {
+            User currentUser = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+            return getAllMenuItemsForOwner(currentUser.getId());
+        } catch (ResourceNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve menu items for user with email " + email, e);
+        }
+    }
 
 
 

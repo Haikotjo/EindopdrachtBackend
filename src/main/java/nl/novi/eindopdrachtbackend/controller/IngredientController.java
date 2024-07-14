@@ -50,7 +50,12 @@ public class IngredientController {
         }
     }
 
-    // Endpoint voor admin om alle ingrediënten van een specifieke eigenaar op te halen
+    /**
+     * Endpoint for admin to retrieve all ingredients for a specific owner.
+     *
+     * @param ownerId the ID of the owner
+     * @return ResponseEntity containing a list of IngredientDTO objects
+     */
     @GetMapping("/admin/{ownerId}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<IngredientDTO>> getAllIngredientsForOwner(@PathVariable Long ownerId) {
@@ -64,7 +69,12 @@ public class IngredientController {
         }
     }
 
-    // Endpoint voor eigenaars om hun eigen ingrediënten op te halen
+    /**
+     * Endpoint for admin to retrieve all ingredients for a specific owner.
+     *
+     * @param ownerId the ID of the owner
+     * @return ResponseEntity containing a list of IngredientDTO objects
+     */
     @GetMapping("/owner")
     @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<List<IngredientDTO>> getAllIngredientsForLoggedInOwner() {

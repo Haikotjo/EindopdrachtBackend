@@ -5,6 +5,7 @@ import nl.novi.eindopdrachtbackend.dto.MenuItemDTO;
 import nl.novi.eindopdrachtbackend.dto.MenuItemInputDTO;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.MenuItem;
+import nl.novi.eindopdrachtbackend.security.SecurityUtils;
 import nl.novi.eindopdrachtbackend.service.MenuItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,25 @@ public class MenuItemController {
     public ResponseEntity<List<MenuItemDTO>> getAllMenuItemsForOwner(@PathVariable Long ownerId) {
         try {
             List<MenuItemDTO> menuItems = menuItemService.getAllMenuItemsForOwner(ownerId);
+            return new ResponseEntity<>(menuItems, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Endpoint for owners to retrieve their own menu items.
+     *
+     * @return ResponseEntity containing a list of MenuItemDTO objects
+     */
+    @GetMapping("/owner")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<List<MenuItemDTO>> getAllMenuItemsForLoggedInOwner() {
+        String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
+        try {
+            List<MenuItemDTO> menuItems = menuItemService.getAllMenuItemsForLoggedInOwner(currentUserEmail);
             return new ResponseEntity<>(menuItems, HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
