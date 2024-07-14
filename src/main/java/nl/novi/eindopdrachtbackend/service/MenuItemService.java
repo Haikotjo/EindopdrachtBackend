@@ -52,6 +52,14 @@ public interface MenuItemService {
      */
     MenuItemDTO getMenuItemByIdForOwner(Long id, Long ownerId);
 
+    /**
+     * Get menu item by ID.
+     *
+     * @param id menu item ID
+     * @return MenuItemDTO for the specified ID
+     */
+    MenuItemDTO getMenuItemById(Long id);
+
 
     MenuItemDTO createMenuItem(MenuItemInputDTO menuItemInputDTO);
     MenuItemDTO updateMenuItem(Long id, MenuItemInputDTO menuItemInputDTO);

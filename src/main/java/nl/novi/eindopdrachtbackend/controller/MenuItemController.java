@@ -124,7 +124,23 @@ public class MenuItemController {
         }
     }
 
-
+    /**
+     * Endpoint to get a specific menu item by its ID open for all.
+     *
+     * @param id the ID of the menu item
+     * @return ResponseEntity containing the MenuItemDTO object for the specified ID
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<MenuItemDTO> getMenuItemById(@PathVariable Long id) {
+        try {
+            MenuItemDTO menuItem = menuItemService.getMenuItemById(id);
+            return new ResponseEntity<>(menuItem, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
 

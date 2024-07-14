@@ -113,6 +113,21 @@ public class MenuItemServiceImpl implements MenuItemService{
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MenuItemDTO getMenuItemById(Long id) {
+        try {
+            MenuItem menuItem = menuItemRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Menu item not found for this id :: " + id));
+            return MenuItemMapper.toMenuItemDTO(menuItem);
+        } catch (ResourceNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve menu item with id " + id, e);
+        }
+    }
 
 
 

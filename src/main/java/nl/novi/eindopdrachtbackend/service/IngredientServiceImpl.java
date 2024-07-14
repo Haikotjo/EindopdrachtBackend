@@ -91,10 +91,8 @@ public class IngredientServiceImpl implements IngredientService {
                     .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id + " and owner id :: " + ownerId));
             return IngredientMapper.toOwnerIngredientDTO(ingredient);
         } catch (ResourceNotFoundException e) {
-            // Log de fout voor debugdoeleinden
-            throw e;  // Gooi de exception opnieuw om deze door de controller te laten afhandelen
+            throw e;
         } catch (Exception e) {
-            // Log de fout voor debugdoeleinden
             throw new RuntimeException("Failed to retrieve ingredient with id " + id + " for owner with id " + ownerId, e);
         }
     }
