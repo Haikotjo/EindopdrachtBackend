@@ -104,7 +104,12 @@ public class IngredientController {
         }
     }
 
-    // Endpoint voor eigenaars om een specifiek ingrediënt op te halen
+    /**
+     * Get a specific ingredient for the logged-in owner.
+     *
+     * @param id the ID of the ingredient
+     * @return ResponseEntity containing the IngredientDTO object
+     */
     @GetMapping("/owner/ingredient/{id}")
     @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<IngredientDTO> getIngredientByIdForOwner(@PathVariable Long id) {

@@ -97,6 +97,23 @@ public class MenuItemServiceImpl implements MenuItemService{
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MenuItemDTO getMenuItemByIdForOwner(Long id, Long ownerId) {
+        try {
+            MenuItem menuItem = menuItemRepository.findByIdAndRestaurant_Owner_Id(id, ownerId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Menu item not found for this id :: " + id + " and owner id :: " + ownerId));
+            return MenuItemMapper.toMenuItemDTO(menuItem);
+        } catch (ResourceNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve menu item with id " + id + " for owner with id " + ownerId, e);
+        }
+    }
+
+
 
 
     @Override

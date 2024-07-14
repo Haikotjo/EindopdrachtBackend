@@ -5,6 +5,8 @@ import nl.novi.eindopdrachtbackend.dto.MenuItemDTO;
 import nl.novi.eindopdrachtbackend.dto.MenuItemInputDTO;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.MenuItem;
+import nl.novi.eindopdrachtbackend.model.User;
+import nl.novi.eindopdrachtbackend.repository.UserRepository;
 import nl.novi.eindopdrachtbackend.security.SecurityUtils;
 import nl.novi.eindopdrachtbackend.service.MenuItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +24,14 @@ import java.util.List;
 @RequestMapping("/menuItems")
 public class MenuItemController {
 
-    @Autowired
-    private MenuItemService menuItemService;
 
-    public MenuItemController(MenuItemService menuItemService) {
+    private final MenuItemService menuItemService;
+    private final UserRepository userRepository;
+
+    @Autowired
+    public MenuItemController(MenuItemService menuItemService, UserRepository userRepository) {
         this.menuItemService = menuItemService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -90,6 +95,28 @@ public class MenuItemController {
         try {
             List<MenuItemDTO> menuItems = menuItemService.getAllMenuItemsForRestaurant(restaurantId);
             return new ResponseEntity<>(menuItems, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Get a specific menu item for the logged-in owner.
+     *
+     * @param id the ID of the menu item
+     * @return ResponseEntity containing the Menu itemsDTO object
+     */
+    @GetMapping("/owner/menuItem/{id}")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<MenuItemDTO> getMenuItemByIdForOwner(@PathVariable Long id) {
+        try {
+            String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
+            User currentUser = userRepository.findByEmail(currentUserEmail)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + currentUserEmail));
+            MenuItemDTO menuItem = menuItemService.getMenuItemByIdForOwner(id, currentUser.getId());
+            return new ResponseEntity<>(menuItem, HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
