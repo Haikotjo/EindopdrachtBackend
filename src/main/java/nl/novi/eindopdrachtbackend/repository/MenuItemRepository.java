@@ -15,4 +15,6 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
      * @return list of MenuItem entities
      */
     List<MenuItem> findByRestaurant_Owner_Id(Long ownerId);
+
+    List<MenuItem> findByRestaurant_Id(Long restaurantId);
 }

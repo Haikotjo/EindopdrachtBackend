@@ -79,6 +79,23 @@ public class MenuItemServiceImpl implements MenuItemService{
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<MenuItemDTO> getAllMenuItemsForRestaurant(Long restaurantId) {
+        try {
+            List<MenuItem> menuItems = menuItemRepository.findByRestaurant_Id(restaurantId);
+            if (menuItems.isEmpty()) {
+                throw new ResourceNotFoundException("No menu items found for restaurant with ID " + restaurantId);
+            }
+            return menuItems.stream()
+                    .map(MenuItemMapper::toMenuItemDTO)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve menu items for restaurant with ID " + restaurantId, e);
+        }
+    }
 
 
 

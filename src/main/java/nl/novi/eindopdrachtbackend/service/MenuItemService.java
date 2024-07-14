@@ -26,6 +26,7 @@ public interface MenuItemService {
      * @return list of MenuItemDTOs for the specified owner
      */
     List<MenuItemDTO> getAllMenuItemsForOwner(Long ownerId);
+
     /**
      * Get all menu items for the logged-in owner.
      *
@@ -33,6 +34,15 @@ public interface MenuItemService {
      * @return list of MenuItemDTOs for the logged-in owner
      */
     List<MenuItemDTO> getAllMenuItemsForLoggedInOwner(String email);
+
+    /**
+     * Get all menu items for a specific restaurant.
+     *
+     * @param restaurantId restaurant ID
+     * @return list of MenuItemDTOs for the specified restaurant
+     */
+    List<MenuItemDTO> getAllMenuItemsForRestaurant(Long restaurantId);
+
 
 
     MenuItemDTO createMenuItem(MenuItemInputDTO menuItemInputDTO);

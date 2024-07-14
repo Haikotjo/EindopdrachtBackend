@@ -79,6 +79,29 @@ public class MenuItemController {
         }
     }
 
+    /**
+     * Get all menu items for a specific restaurant.
+     *
+     * @param restaurantId restaurant ID
+     * @return ResponseEntity containing a list of MenuItemDTO objects
+     */
+    @GetMapping("/restaurant/{restaurantId}")
+    public ResponseEntity<List<MenuItemDTO>> getAllMenuItemsForRestaurant(@PathVariable Long restaurantId) {
+        try {
+            List<MenuItemDTO> menuItems = menuItemService.getAllMenuItemsForRestaurant(restaurantId);
+            return new ResponseEntity<>(menuItems, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+
+
+
     @PostMapping
     public ResponseEntity<ApiResponse> createMenuItem(@RequestBody MenuItemInputDTO menuItemInputDTO) {
         MenuItemDTO createdMenuItemDTO = menuItemService.createMenuItem(menuItemInputDTO);
