@@ -175,9 +175,26 @@ public class MenuItemController {
         return new ResponseEntity<>(newMenuItem, HttpStatus.CREATED);
     }
 
-
-
-
+    /**
+     * Update an existing menu item for the logged-in owner, including adding ingredients by ID.
+     *
+     * @param menuItemId the ID of the menu item to update
+     * @param menuItemInputDTO the menu item input data transfer object
+     * @return ResponseEntity containing the updated MenuItemDTO object
+     */
+    @PutMapping("/owner/{menuItemId}")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<MenuItemDTO> updateMenuItemForOwner(
+            @PathVariable Long menuItemId,
+            @RequestBody MenuItemInputDTO menuItemInputDTO) {
+        User currentUser = getCurrentUser();
+        Restaurant restaurant = currentUser.getRestaurant(); // Haal het restaurant op van de huidige gebruiker
+        if (restaurant == null) {
+            throw new ResourceNotFoundException("No restaurant found for the current user.");
+        }
+        MenuItemDTO updatedMenuItem = menuItemService.updateMenuItemForOwner(menuItemId, menuItemInputDTO, restaurant.getId());
+        return new ResponseEntity<>(updatedMenuItem, HttpStatus.OK);
+    }
 
     private User getCurrentUser() {
         String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
@@ -191,15 +208,6 @@ public class MenuItemController {
 
 
 
-
-
-
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> updateMenuItem(@PathVariable Long id, @RequestBody MenuItemInputDTO menuItemInputDTO) {
-        MenuItemDTO updatedMenuItemDTO = menuItemService.updateMenuItem(id, menuItemInputDTO);
-        ApiResponse apiResponse = new ApiResponse(true, "MenuItem succesfully updated.", updatedMenuItemDTO);
-        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
-    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMenuItem(@PathVariable Long id) {

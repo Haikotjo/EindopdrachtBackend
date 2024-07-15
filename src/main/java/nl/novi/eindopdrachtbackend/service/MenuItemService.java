@@ -79,9 +79,20 @@ public interface MenuItemService {
      */
     MenuItemDTO createMenuItemForRestaurant(MenuItemInputDTO menuItemInputDTO, Long restaurantId);
 
+    /**
+     * Update an existing menu item for the logged-in owner's restaurant.
+     *
+     * @param menuItemId the ID of the menu item to update
+     * @param menuItemInputDTO the menu item input data
+     * @param restaurantId the ID of the restaurant
+     * @return the updated MenuItemDTO
+     */
+    MenuItemDTO updateMenuItemForOwner(Long menuItemId, MenuItemInputDTO menuItemInputDTO, Long restaurantId);
 
 
-    MenuItemDTO updateMenuItem(Long id, MenuItemInputDTO menuItemInputDTO);
+
+
+
     void deleteMenuItem(Long id);
     List<MenuItemDTO> findByNameIgnoreCase(String name);
     void addIngredientToMenuItem(Long menuItemId, Long ingredientId);

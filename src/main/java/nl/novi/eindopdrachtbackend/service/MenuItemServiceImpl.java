@@ -13,6 +13,7 @@ import nl.novi.eindopdrachtbackend.repository.IngredientRepository;
 import nl.novi.eindopdrachtbackend.repository.MenuItemRepository;
 import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
 import nl.novi.eindopdrachtbackend.repository.UserRepository;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -171,40 +172,44 @@ public class MenuItemServiceImpl implements MenuItemService{
         return MenuItemMapper.toMenuItemDTO(savedMenuItem);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MenuItemDTO updateMenuItemForOwner(Long menuItemId, MenuItemInputDTO menuItemInputDTO, Long restaurantId) {
+        MenuItem menuItem = menuItemRepository.findById(menuItemId)
+                .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found for this id :: " + menuItemId));
 
-
-
-
-
-
-
-
-    @Transactional
-    public MenuItemDTO updateMenuItem(Long id, MenuItemInputDTO menuItemInputDTO) {
-        MenuItem existingMenuItem = menuItemRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Menu item not found for this id :: " + id));
-
-        existingMenuItem.setName(menuItemInputDTO.getName());
-        existingMenuItem.setDescription(menuItemInputDTO.getDescription());
-        existingMenuItem.setPrice(menuItemInputDTO.getPrice());
-        existingMenuItem.setImage(menuItemInputDTO.getImage());
-
-        Set<Ingredient> currentIngredients = existingMenuItem.getIngredients();
-        Set<Long> newIngredientIds = new HashSet<>(menuItemInputDTO.getIngredientIds());
-
-        currentIngredients.removeIf(ingredient -> !newIngredientIds.contains(ingredient.getId()));
-
-        for (Long ingredientId : newIngredientIds) {
-            Ingredient ingredient = ingredientRepository.findById(ingredientId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + ingredientId));
-            if (!currentIngredients.contains(ingredient)) {
-                existingMenuItem.addIngredient(ingredient);
-            }
+        if (!menuItem.getRestaurant().getId().equals(restaurantId)) {
+            throw new AccessDeniedException("You do not have permission to modify this menu item.");
         }
 
-        MenuItem updatedMenuItem = menuItemRepository.save(existingMenuItem);
+        menuItem.setName(menuItemInputDTO.getName());
+        menuItem.setPrice(menuItemInputDTO.getPrice());
+        menuItem.setDescription(menuItemInputDTO.getDescription());
+        menuItem.setImage(menuItemInputDTO.getImage());
+
+        // Voeg nieuwe ingrediënten toe aan het menu-item
+        Set<Ingredient> ingredients = new HashSet<>();
+        for (Long ingredientId : menuItemInputDTO.getIngredientIds()) {
+            Ingredient ingredient = ingredientRepository.findById(ingredientId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + ingredientId));
+            ingredients.add(ingredient);
+        }
+        menuItem.setIngredients(ingredients);
+
+        MenuItem updatedMenuItem = menuItemRepository.save(menuItem);
         return MenuItemMapper.toMenuItemDTO(updatedMenuItem);
     }
+
+
+
+
+
+
+
+
+
 
     @Override
     public void deleteMenuItem(Long id) {
