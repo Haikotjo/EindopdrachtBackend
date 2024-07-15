@@ -152,6 +152,24 @@ public class MenuItemServiceImpl implements MenuItemService{
         return MenuItemMapper.toMenuItemDTO(savedMenuItem);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MenuItemDTO createMenuItemForRestaurant(MenuItemInputDTO menuItemInputDTO, Long restaurantId) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for this id :: " + restaurantId));
+
+        MenuItem menuItem = new MenuItem();
+        menuItem.setName(menuItemInputDTO.getName());
+        menuItem.setPrice(menuItemInputDTO.getPrice());
+        menuItem.setDescription(menuItemInputDTO.getDescription());
+        menuItem.setImage(menuItemInputDTO.getImage());
+        menuItem.setRestaurant(restaurant);
+
+        MenuItem savedMenuItem = menuItemRepository.save(menuItem);
+        return MenuItemMapper.toMenuItemDTO(savedMenuItem);
+    }
 
 
 

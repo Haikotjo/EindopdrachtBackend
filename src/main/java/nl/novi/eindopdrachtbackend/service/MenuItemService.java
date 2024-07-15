@@ -70,6 +70,16 @@ public interface MenuItemService {
      */
     MenuItemDTO createMenuItemForOwner(MenuItemInputDTO menuItemInputDTO, Long restaurantId);
 
+    /**
+     * Create a new menu item for a specific restaurant by an admin.
+     *
+     * @param menuItemInputDTO the menu item input data transfer object
+     * @param restaurantId the ID of the restaurant
+     * @return the created MenuItemDTO
+     */
+    MenuItemDTO createMenuItemForRestaurant(MenuItemInputDTO menuItemInputDTO, Long restaurantId);
+
+
 
     MenuItemDTO updateMenuItem(Long id, MenuItemInputDTO menuItemInputDTO);
     void deleteMenuItem(Long id);

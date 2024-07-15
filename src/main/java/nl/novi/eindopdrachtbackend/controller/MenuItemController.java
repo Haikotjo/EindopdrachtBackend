@@ -161,6 +161,24 @@ public class MenuItemController {
         return new ResponseEntity<>(newMenuItem, HttpStatus.CREATED);
     }
 
+    /**
+     * Create a new menu item for a specific restaurant by an admin.
+     *
+     * @param restaurantId the ID of the restaurant
+     * @param menuItemInputDTO the menu item input data transfer object
+     * @return ResponseEntity containing the created MenuItemDTO object
+     */
+    @PostMapping("/admin/{restaurantId}/menu-item")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<MenuItemDTO> createMenuItemForRestaurantByAdmin(@PathVariable Long restaurantId, @RequestBody MenuItemInputDTO menuItemInputDTO) {
+        MenuItemDTO newMenuItem = menuItemService.createMenuItemForRestaurant(menuItemInputDTO, restaurantId);
+        return new ResponseEntity<>(newMenuItem, HttpStatus.CREATED);
+    }
+
+
+
+
+
     private User getCurrentUser() {
         String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
         User user = userRepository.findByEmail(currentUserEmail)
