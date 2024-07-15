@@ -113,6 +113,11 @@ public interface MenuItemService {
      */
     void deleteMenuItemByAdmin(Long menuItemId);
 
-
+    /**
+     * Find menu items by name, ignoring case.
+     *
+     * @param name the name of the menu item
+     * @return list of MenuItemDTOs
+     */
     List<MenuItemDTO> findByNameIgnoreCase(String name);
 }

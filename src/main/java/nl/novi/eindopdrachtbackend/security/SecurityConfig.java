@@ -113,7 +113,7 @@ public class SecurityConfig {
 
                                 .requestMatchers(HttpMethod.DELETE, "/menu-items/owner/**").hasAnyAuthority("OWNER", "ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/menu-items/admin/**").hasAuthority("ADMIN")
-
+                                .requestMatchers(HttpMethod.GET, "/menu-items/search").permitAll()
 
 //                .requestMatchers("/**").hasAnyAuthority("ADMIN")
 

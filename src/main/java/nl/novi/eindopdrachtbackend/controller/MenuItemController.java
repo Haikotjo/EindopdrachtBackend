@@ -252,8 +252,12 @@ public class MenuItemController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-
-
+    /**
+     * Find menu items by name, ignoring case.
+     *
+     * @param name the name of the menu item
+     * @return ResponseEntity containing a list of MenuItemDTO objects
+     */
     @GetMapping("/search")
     public ResponseEntity<List<MenuItemDTO>> findByNameIgnoreCase(@RequestParam String name) {
         List<MenuItemDTO> menuItems = menuItemService.findByNameIgnoreCase(name);

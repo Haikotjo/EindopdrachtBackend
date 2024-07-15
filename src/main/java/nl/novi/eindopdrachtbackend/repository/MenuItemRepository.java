@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
-    List<MenuItem> findByNameIgnoreCase(String name);
 
     /**
      * Find all menu items by the owner's ID.
@@ -19,6 +18,13 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
 
     List<MenuItem> findByRestaurant_Id(Long restaurantId);
 
-
     Optional<MenuItem> findByIdAndRestaurant_Owner_Id(Long id, Long ownerId);
+
+    /**
+     * Find menu items by name, ignoring case.
+     *
+     * @param name the name of the menu item
+     * @return list of MenuItem entities
+     */
+    List<MenuItem> findByNameIgnoreCase(String name);
 }

@@ -226,6 +226,9 @@ public class MenuItemServiceImpl implements MenuItemService{
         return MenuItemMapper.toMenuItemDTO(updatedMenuItem);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteMenuItemForOwner(Long menuItemId, Long restaurantId) {
         MenuItem menuItem = menuItemRepository.findById(menuItemId)
@@ -242,6 +245,9 @@ public class MenuItemServiceImpl implements MenuItemService{
         menuItemRepository.delete(menuItem);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteMenuItemByAdmin(Long menuItemId) {
         MenuItem menuItem = menuItemRepository.findById(menuItemId)
@@ -254,9 +260,9 @@ public class MenuItemServiceImpl implements MenuItemService{
         menuItemRepository.delete(menuItem);
     }
 
-
-
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<MenuItemDTO> findByNameIgnoreCase(String name) {
         List<MenuItem> menuItem = menuItemRepository.findByNameIgnoreCase(name);
