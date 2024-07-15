@@ -2,6 +2,8 @@ package nl.novi.eindopdrachtbackend.dto;
 
 import nl.novi.eindopdrachtbackend.model.MenuItem;
 import nl.novi.eindopdrachtbackend.model.Ingredient;
+import nl.novi.eindopdrachtbackend.model.Restaurant;
+import nl.novi.eindopdrachtbackend.model.User;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,12 +41,13 @@ public class MenuItemMapper {
      * @param inputDTO the MenuItemInputDTO
      * @return the MenuItem entity
      */
-    public static MenuItem toMenuItem(MenuItemInputDTO inputDTO) {
+    public static MenuItem toMenuItem(MenuItemInputDTO inputDTO, Long restaurantId) {
         MenuItem menuItem = new MenuItem();
         menuItem.setName(inputDTO.getName());
         menuItem.setPrice(inputDTO.getPrice());
         menuItem.setDescription(inputDTO.getDescription());
         menuItem.setImage(inputDTO.getImage());
+        menuItem.setRestaurant(new Restaurant(restaurantId));
         return menuItem;
     }
 }

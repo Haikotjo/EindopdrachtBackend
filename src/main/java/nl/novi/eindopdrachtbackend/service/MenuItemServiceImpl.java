@@ -7,9 +7,11 @@ import nl.novi.eindopdrachtbackend.dto.MenuItemMapper;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.Ingredient;
 import nl.novi.eindopdrachtbackend.model.MenuItem;
+import nl.novi.eindopdrachtbackend.model.Restaurant;
 import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.repository.IngredientRepository;
 import nl.novi.eindopdrachtbackend.repository.MenuItemRepository;
+import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
 import nl.novi.eindopdrachtbackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -26,12 +28,14 @@ public class MenuItemServiceImpl implements MenuItemService{
 
     private final MenuItemRepository menuItemRepository;
     private final IngredientRepository ingredientRepository;
+    private final RestaurantRepository restaurantRepository;
     private final UserRepository userRepository;
 
-    public MenuItemServiceImpl(MenuItemRepository menuItemRepository, IngredientRepository ingredientRepository, UserRepository userRepository) {
+    public MenuItemServiceImpl(MenuItemRepository menuItemRepository, IngredientRepository ingredientRepository, UserRepository userRepository, RestaurantRepository restaurantRepository) {
         this.menuItemRepository = menuItemRepository;
         this.ingredientRepository = ingredientRepository;
         this.userRepository = userRepository;
+        this.restaurantRepository = restaurantRepository;
     }
 
     /**
@@ -129,21 +133,33 @@ public class MenuItemServiceImpl implements MenuItemService{
         }
     }
 
-
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public MenuItemDTO createMenuItem(MenuItemInputDTO menuItemInputDTO) {
-        MenuItem menuItem = MenuItemMapper.toMenuItem(menuItemInputDTO);
-        if (menuItemInputDTO.getIngredientIds() != null && !menuItemInputDTO.getIngredientIds().isEmpty()) {
-            Set<Ingredient> ingredients = menuItemInputDTO.getIngredientIds().stream()
-                    .map(id -> ingredientRepository.findById(id)
-                            .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id)))
-                    .collect(Collectors.toSet());
-            menuItem.setIngredients(ingredients);
-        }
+    public MenuItemDTO createMenuItemForOwner(MenuItemInputDTO menuItemInputDTO, Long restaurantId) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for this id :: " + restaurantId));
+
+        MenuItem menuItem = new MenuItem();
+        menuItem.setName(menuItemInputDTO.getName());
+        menuItem.setPrice(menuItemInputDTO.getPrice());
+        menuItem.setDescription(menuItemInputDTO.getDescription());
+        menuItem.setImage(menuItemInputDTO.getImage());
+        menuItem.setRestaurant(restaurant);
+
         MenuItem savedMenuItem = menuItemRepository.save(menuItem);
         return MenuItemMapper.toMenuItemDTO(savedMenuItem);
     }
+
+
+
+
+
+
+
+
+
 
     @Transactional
     public MenuItemDTO updateMenuItem(Long id, MenuItemInputDTO menuItemInputDTO) {

@@ -3,6 +3,7 @@ package nl.novi.eindopdrachtbackend.service;
 import nl.novi.eindopdrachtbackend.dto.MenuItemDTO;
 import nl.novi.eindopdrachtbackend.dto.MenuItemInputDTO;
 import nl.novi.eindopdrachtbackend.model.MenuItem;
+import nl.novi.eindopdrachtbackend.model.User;
 
 import java.util.List;
 
@@ -60,8 +61,16 @@ public interface MenuItemService {
      */
     MenuItemDTO getMenuItemById(Long id);
 
+    /**
+     * Create a new menu item for the logged-in owner's restaurant.
+     *
+     * @param menuItemInputDTO menu item input data
+     * @param restaurantId the ID of the restaurant
+     * @return created MenuItemDTO
+     */
+    MenuItemDTO createMenuItemForOwner(MenuItemInputDTO menuItemInputDTO, Long restaurantId);
 
-    MenuItemDTO createMenuItem(MenuItemInputDTO menuItemInputDTO);
+
     MenuItemDTO updateMenuItem(Long id, MenuItemInputDTO menuItemInputDTO);
     void deleteMenuItem(Long id);
     List<MenuItemDTO> findByNameIgnoreCase(String name);

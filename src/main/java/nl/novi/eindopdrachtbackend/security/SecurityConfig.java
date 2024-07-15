@@ -102,8 +102,8 @@ public class SecurityConfig {
                                 //                  MenuItem entity endpoints
                                 .requestMatchers(HttpMethod.GET, "/menu-items/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/menu-items/owner/**").hasAnyAuthority("ADMIN", "OWNER")
-                                .requestMatchers(HttpMethod.GET, "/menuItems/restaurant/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/menuItems/{id}").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/menu-items/restaurant/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/menu-items/{id}").permitAll()
 
 //                .requestMatchers("/**").hasAnyAuthority("ADMIN")
 

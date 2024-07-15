@@ -40,6 +40,10 @@ public class Restaurant {
     public Restaurant() {
     }
 
+    public Restaurant(Long id) {
+        this.id = id;
+    }
+
     public Restaurant(String name, String address, String phoneNumber) {
         this.name = name;
         this.address = address;
@@ -149,4 +153,6 @@ public class Restaurant {
     public void setMenuItems(Set<MenuItem> menuItems) {
         this.menuItems = menuItems;
     }
+
+    
 }
