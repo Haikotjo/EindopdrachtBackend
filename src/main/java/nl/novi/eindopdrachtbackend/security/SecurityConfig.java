@@ -109,6 +109,10 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/menu-items/owner/**").hasAnyAuthority("OWNER", "ADMIN")
 
                                 .requestMatchers(HttpMethod.PUT, "/menu-items/owner/**").hasAnyAuthority("OWNER", "ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/menu-items/admin/**").hasAuthority("ADMIN")
+
+                                .requestMatchers(HttpMethod.DELETE, "/menu-items/owner/**").hasAnyAuthority("OWNER", "ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/menu-items/admin/**").hasAuthority("ADMIN")
 
 
 //                .requestMatchers("/**").hasAnyAuthority("ADMIN")

@@ -189,7 +189,6 @@ public class MenuItemServiceImpl implements MenuItemService{
         menuItem.setDescription(menuItemInputDTO.getDescription());
         menuItem.setImage(menuItemInputDTO.getImage());
 
-        // Voeg nieuwe ingrediënten toe aan het menu-item
         Set<Ingredient> ingredients = new HashSet<>();
         for (Long ingredientId : menuItemInputDTO.getIngredientIds()) {
             Ingredient ingredient = ingredientRepository.findById(ingredientId)
@@ -202,21 +201,61 @@ public class MenuItemServiceImpl implements MenuItemService{
         return MenuItemMapper.toMenuItemDTO(updatedMenuItem);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MenuItemDTO updateMenuItemByAdmin(Long menuItemId, MenuItemInputDTO menuItemInputDTO) {
+        MenuItem menuItem = menuItemRepository.findById(menuItemId)
+                .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found for this id :: " + menuItemId));
 
+        menuItem.setName(menuItemInputDTO.getName());
+        menuItem.setPrice(menuItemInputDTO.getPrice());
+        menuItem.setDescription(menuItemInputDTO.getDescription());
+        menuItem.setImage(menuItemInputDTO.getImage());
 
+        Set<Ingredient> ingredients = new HashSet<>();
+        for (Long ingredientId : menuItemInputDTO.getIngredientIds()) {
+            Ingredient ingredient = ingredientRepository.findById(ingredientId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + ingredientId));
+            ingredients.add(ingredient);
+        }
+        menuItem.setIngredients(ingredients);
 
-
-
-
-
-
+        MenuItem updatedMenuItem = menuItemRepository.save(menuItem);
+        return MenuItemMapper.toMenuItemDTO(updatedMenuItem);
+    }
 
     @Override
-    public void deleteMenuItem(Long id) {
-        MenuItem menuItem = menuItemRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Menu Item not found for this id :: " + id));
+    public void deleteMenuItemForOwner(Long menuItemId, Long restaurantId) {
+        MenuItem menuItem = menuItemRepository.findById(menuItemId)
+                .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found for this id :: " + menuItemId));
+
+        if (!menuItem.getRestaurant().getId().equals(restaurantId)) {
+            throw new AccessDeniedException("You do not have permission to delete this menu item.");
+        }
+
+        // Verwijder verwijzingen naar het menu-item in de `menu_menu_item` tabel
+        menuItem.getMenus().forEach(menu -> menu.getMenuItems().remove(menuItem));
+        menuItem.getMenus().clear();
+
         menuItemRepository.delete(menuItem);
     }
+
+    @Override
+    public void deleteMenuItemByAdmin(Long menuItemId) {
+        MenuItem menuItem = menuItemRepository.findById(menuItemId)
+                .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found for this id :: " + menuItemId));
+
+        // Verwijder verwijzingen naar het menu-item in de `menu_menu_item` tabel
+        menuItem.getMenus().forEach(menu -> menu.getMenuItems().remove(menuItem));
+        menuItem.getMenus().clear();
+
+        menuItemRepository.delete(menuItem);
+    }
+
+
+
 
     @Override
     public List<MenuItemDTO> findByNameIgnoreCase(String name) {
@@ -227,15 +266,5 @@ public class MenuItemServiceImpl implements MenuItemService{
         return menuItem.stream()
                 .map(MenuItemMapper::toMenuItemDTO)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public void addIngredientToMenuItem(Long menuItemId, Long ingredientId) {
-        MenuItem menuItem = menuItemRepository.findById(menuItemId)
-                .orElseThrow(() -> new ResourceNotFoundException("Menu item not found for this id :: " + menuItemId));
-        Ingredient ingredient = ingredientRepository.findById(ingredientId)
-                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + ingredientId));
-        menuItem.addIngredient(ingredient);
-        menuItemRepository.save(menuItem);
     }
 }

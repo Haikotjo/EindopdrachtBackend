@@ -205,25 +205,58 @@ public class MenuItemController {
         return user;
     }
 
+    /**
+     * Update an existing menu item by an admin, including adding ingredients by ID.
+     *
+     * @param menuItemId the ID of the menu item to update
+     * @param menuItemInputDTO the menu item input data transfer object
+     * @return ResponseEntity containing the updated MenuItemDTO object
+     */
+    @PutMapping("/admin/{menuItemId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<MenuItemDTO> updateMenuItemByAdmin(
+            @PathVariable Long menuItemId,
+            @RequestBody MenuItemInputDTO menuItemInputDTO) {
+        MenuItemDTO updatedMenuItem = menuItemService.updateMenuItemByAdmin(menuItemId, menuItemInputDTO);
+        return new ResponseEntity<>(updatedMenuItem, HttpStatus.OK);
+    }
 
-
-
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMenuItem(@PathVariable Long id) {
-        menuItemService.deleteMenuItem(id);
+    /**
+     * Delete a menu item for the logged-in owner.
+     *
+     * @param menuItemId the ID of the menu item to delete
+     * @return ResponseEntity with the status of the operation
+     */
+    @DeleteMapping("/owner/{menuItemId}")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<Void> deleteMenuItemForOwner(@PathVariable Long menuItemId) {
+        User currentUser = getCurrentUser();
+        Restaurant restaurant = currentUser.getRestaurant(); // Haal het restaurant op van de huidige gebruiker
+        if (restaurant == null) {
+            throw new ResourceNotFoundException("No restaurant found for the current user.");
+        }
+        menuItemService.deleteMenuItemForOwner(menuItemId, restaurant.getId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    /**
+     * Delete a menu item by an admin.
+     *
+     * @param menuItemId the ID of the menu item to delete
+     * @return ResponseEntity with the status of the operation
+     */
+    @DeleteMapping("/admin/{menuItemId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Void> deleteMenuItemByAdmin(@PathVariable Long menuItemId) {
+        menuItemService.deleteMenuItemByAdmin(menuItemId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
 
     @GetMapping("/search")
     public ResponseEntity<List<MenuItemDTO>> findByNameIgnoreCase(@RequestParam String name) {
         List<MenuItemDTO> menuItems = menuItemService.findByNameIgnoreCase(name);
         return new ResponseEntity<>(menuItems, HttpStatus.OK);
-    }
-
-    @PostMapping("/{menuItemId}/addIngredient/{ingredientId}")
-    public ResponseEntity<Void> addIngredientToMenuItem(@PathVariable Long menuItemId, @PathVariable Long ingredientId) {
-        menuItemService.addIngredientToMenuItem(menuItemId, ingredientId);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
