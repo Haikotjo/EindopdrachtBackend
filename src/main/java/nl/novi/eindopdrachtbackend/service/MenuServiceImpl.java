@@ -13,6 +13,7 @@ import nl.novi.eindopdrachtbackend.repository.MenuRepository;
 import nl.novi.eindopdrachtbackend.repository.MenuItemRepository;
 import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
 import nl.novi.eindopdrachtbackend.repository.UserRepository;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -139,33 +140,38 @@ public class MenuServiceImpl implements MenuService {
         return MenuMapper.toMenuDTO(savedMenu);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MenuDTO updateMenuForOwner(Long menuId, MenuInputDTO menuInputDTO, Long restaurantId) {
+        Menu menu = menuRepository.findById(menuId)
+                .orElseThrow(() -> new ResourceNotFoundException("Menu not found for this id :: " + menuId));
 
-
-
-    @Transactional
-    public MenuDTO updateMenu(Long id, MenuInputDTO menuInputDTO) {
-        Menu existingMenu = menuRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Menu not found for this id :: " + id));
-
-        existingMenu.setName(menuInputDTO.getName());
-        existingMenu.setDescription(menuInputDTO.getDescription());
-
-        Set<MenuItem> currentMenuItems = existingMenu.getMenuItems();
-        Set<Long> newMenuItemIds =new HashSet<>(menuInputDTO.getMenuItemIds()) ;
-
-        currentMenuItems.removeIf(menuItem -> !newMenuItemIds.contains(menuItem.getId()));
-
-        for (Long menuItemId : newMenuItemIds) {
-            MenuItem menuItem = menuItemRepository.findById(menuItemId)
-                    .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found for this id :: " + menuItemId));
-            if (!currentMenuItems.contains(menuItem)) {
-                existingMenu.addMenuItem(menuItem);
-            }
+        if (!menu.getRestaurant().getId().equals(restaurantId)) {
+            throw new AccessDeniedException("You do not have permission to modify this menu.");
         }
 
-        Menu updatedMenu = menuRepository.save(existingMenu);
+        menu.setName(menuInputDTO.getName());
+        menu.setDescription(menuInputDTO.getDescription());
+
+        Set<MenuItem> menuItems = new HashSet<>();
+        for (Long menuItemId : menuInputDTO.getMenuItemIds()) {
+            MenuItem menuItem = menuItemRepository.findById(menuItemId)
+                    .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found for this id :: " + menuItemId));
+            menuItems.add(menuItem);
+        }
+        menu.setMenuItems(menuItems);
+
+        Menu updatedMenu = menuRepository.save(menu);
         return MenuMapper.toMenuDTO(updatedMenu);
     }
+
+
+
+
+
+
 
     @Override
     public void deleteMenu(Long id) {
