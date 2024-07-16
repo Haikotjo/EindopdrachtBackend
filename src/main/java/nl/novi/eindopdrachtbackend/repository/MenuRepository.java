@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface MenuRepository extends JpaRepository<Menu, Long> {
     /**
-     * Find all menus by the restaurant ID.
+     * Find all menus by the restaurant's ID.
      *
      * @param restaurantId the ID of the restaurant
      * @return list of Menu entities

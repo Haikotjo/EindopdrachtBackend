@@ -66,8 +66,39 @@ public class MenuServiceImpl implements MenuService {
         }
     }
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public List<MenuDTO> getAllMenusForRestaurant(Long restaurantId) {
+            try {
+                List<Menu> menus = menuRepository.findByRestaurant_Id(restaurantId);
+                if (menus.isEmpty()) {
+                    throw new ResourceNotFoundException("No menus found for restaurant with ID " + restaurantId);
+                }
+                return menus.stream()
+                        .map(MenuMapper::toMenuDTO)
+                        .collect(Collectors.toList());
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to retrieve menus for restaurant with ID " + restaurantId, e);
+            }
+        }
 
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MenuDTO getMenuById(Long id) {
+        try {
+            Menu menu = menuRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Menu not found for this id :: " + id));
+            return MenuMapper.toMenuDTO(menu);
+        } catch (ResourceNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve menu with id " + id, e);
+        }
+    }
 
 
 
@@ -111,13 +142,6 @@ public class MenuServiceImpl implements MenuService {
 
         Menu updatedMenu = menuRepository.save(existingMenu);
         return MenuMapper.toMenuDTO(updatedMenu);
-    }
-
-    @Override
-    public MenuDTO getMenuById(Long id) {
-        Menu menu = menuRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Menu not found for this id :: " + id));
-        return MenuMapper.toMenuDTO(menu);
     }
 
     @Override

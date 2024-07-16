@@ -57,16 +57,46 @@ public class MenuController {
         }
     }
 
-
-
-
-
-
-    @GetMapping("/{id}")
-    public ResponseEntity<MenuDTO> getMenuById(@PathVariable Long id) {
-        MenuDTO menu = menuService.getMenuById(id);
-        return new ResponseEntity<>(menu, HttpStatus.OK);
+    /**
+     * Get all menus for a specific restaurant.
+     *
+     * @param restaurantId restaurant ID
+     * @return ResponseEntity containing a list of MenuDTO objects
+     */
+    @GetMapping("/restaurant/{restaurantId}")
+    public ResponseEntity<List<MenuDTO>> getAllMenusForRestaurant(@PathVariable Long restaurantId) {
+        try {
+            List<MenuDTO> menus = menuService.getAllMenusForRestaurant(restaurantId);
+            return new ResponseEntity<>(menus, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
+    /**
+     * Endpoint to get a specific menu by its ID open for all.
+     *
+     * @param id the ID of the menu
+     * @return ResponseEntity containing the MenuDTO object for the specified ID
+     */
+    @GetMapping("/menu/{id}")
+    public ResponseEntity<MenuDTO> getMenuById(@PathVariable Long id) {
+        try {
+            MenuDTO menu = menuService.getMenuById(id);
+            return new ResponseEntity<>(menu, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+
+
 
     @PostMapping
     public ResponseEntity<ApiResponse> createMenu(@RequestBody MenuInputDTO menuInputDTO) {

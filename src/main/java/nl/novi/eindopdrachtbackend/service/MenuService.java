@@ -22,9 +22,25 @@ public interface MenuService {
      * @return list of MenuDTOs for the logged-in owner
      */
     List<MenuDTO> getAllMenusForLoggedInOwner(String email);
+
+    /**
+     * Get all menus for a specific restaurant.
+     *
+     * @param restaurantId restaurant ID
+     * @return list of MenuDTOs for the specified restaurant
+     */
+    List<MenuDTO> getAllMenusForRestaurant(Long restaurantId);
+
+    /**
+     * Get menu by ID.
+     *
+     * @param id menu ID
+     * @return MenuDTO for the specified ID
+     */
+    MenuDTO getMenuById(Long id);
+
     MenuDTO createMenu(MenuInputDTO menuInputDTO);
     MenuDTO updateMenu(Long id, MenuInputDTO menuInputDTO);
-    MenuDTO getMenuById(Long id);
     void deleteMenu(Long id);
     List<MenuDTO> findByNameIgnoreCase(String name);
     void addMenuItemToMenu(Long menuId, Long menuItemId);
