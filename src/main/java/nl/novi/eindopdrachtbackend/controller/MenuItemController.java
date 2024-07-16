@@ -255,6 +255,16 @@ public class MenuItemController {
         return new ResponseEntity<>(menuItems, HttpStatus.OK);
     }
 
+    /**
+     * Retrieve the currently authenticated user from the security context.
+     *
+     * This method fetches the email of the currently authenticated user from the security context,
+     * retrieves the corresponding User entity from the user repository, and returns the User object.
+     * If the user is not found, it throws a ResourceNotFoundException.
+     *
+     * @return the User object representing the currently authenticated user
+     * @throws ResourceNotFoundException if no user is found with the current authenticated email
+     */
     private User getCurrentUser() {
         String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
         User user = userRepository.findByEmail(currentUserEmail)
