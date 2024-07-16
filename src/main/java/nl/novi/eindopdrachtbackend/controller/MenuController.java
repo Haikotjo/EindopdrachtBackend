@@ -154,7 +154,21 @@ public class MenuController {
         return new ResponseEntity<>(updatedMenu, HttpStatus.OK);
     }
 
-
+    /**
+     * Update an existing menu by an admin, including adding menu items by ID.
+     *
+     * @param menuId the ID of the menu to update
+     * @param menuInputDTO the menu input data transfer object
+     * @return ResponseEntity containing the updated MenuDTO object
+     */
+    @PutMapping("/admin/{menuId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<MenuDTO> updateMenuByAdmin(
+            @PathVariable Long menuId,
+            @RequestBody MenuInputDTO menuInputDTO) {
+        MenuDTO updatedMenu = menuService.updateMenuByAdmin(menuId, menuInputDTO);
+        return new ResponseEntity<>(updatedMenu, HttpStatus.OK);
+    }
 
 
 

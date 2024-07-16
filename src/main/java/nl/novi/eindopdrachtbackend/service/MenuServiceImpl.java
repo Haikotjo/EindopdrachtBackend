@@ -167,7 +167,28 @@ public class MenuServiceImpl implements MenuService {
         return MenuMapper.toMenuDTO(updatedMenu);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MenuDTO updateMenuByAdmin(Long menuId, MenuInputDTO menuInputDTO) {
+        Menu menu = menuRepository.findById(menuId)
+                .orElseThrow(() -> new ResourceNotFoundException("Menu not found for this id :: " + menuId));
 
+        menu.setName(menuInputDTO.getName());
+        menu.setDescription(menuInputDTO.getDescription());
+
+        Set<MenuItem> menuItems = new HashSet<>();
+        for (Long menuItemId : menuInputDTO.getMenuItemIds()) {
+            MenuItem menuItem = menuItemRepository.findById(menuItemId)
+                    .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found for this id :: " + menuItemId));
+            menuItems.add(menuItem);
+        }
+        menu.setMenuItems(menuItems);
+
+        Menu updatedMenu = menuRepository.save(menu);
+        return MenuMapper.toMenuDTO(updatedMenu);
+    }
 
 
 

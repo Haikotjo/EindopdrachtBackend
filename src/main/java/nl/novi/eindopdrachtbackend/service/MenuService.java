@@ -66,6 +66,17 @@ public interface MenuService {
      * @return the updated MenuDTO
      */
     MenuDTO updateMenuForOwner(Long menuId, MenuInputDTO menuInputDTO, Long restaurantId);
+
+    /**
+     * Update an existing menu by an admin.
+     *
+     * @param menuId the ID of the menu to update
+     * @param menuInputDTO the menu input data
+     * @return the updated MenuDTO
+     */
+    MenuDTO updateMenuByAdmin(Long menuId, MenuInputDTO menuInputDTO);
+
+
     void deleteMenu(Long id);
     List<MenuDTO> findByNameIgnoreCase(String name);
     void addMenuItemToMenu(Long menuId, Long menuItemId);

@@ -125,6 +125,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/menu-items/owner/**").hasAnyAuthority("OWNER", "ADMIN")
 
                                 .requestMatchers(HttpMethod.PUT, "/menus/owner/**").hasAnyAuthority("OWNER", "ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/menu-items/admin/**").hasAuthority("ADMIN")
 
 
 //                .requestMatchers("/**").hasAnyAuthority("ADMIN")
