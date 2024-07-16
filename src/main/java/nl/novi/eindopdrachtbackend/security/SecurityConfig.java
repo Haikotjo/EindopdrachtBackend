@@ -121,6 +121,10 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/menus/restaurant/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/menus/menu/**").permitAll()
 
+                                .requestMatchers(HttpMethod.POST, "/menu-items/admin/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/menu-items/owner/**").hasAnyAuthority("OWNER", "ADMIN")
+
+
 //                .requestMatchers("/**").hasAnyAuthority("ADMIN")
 
                                 .anyRequest().authenticated()

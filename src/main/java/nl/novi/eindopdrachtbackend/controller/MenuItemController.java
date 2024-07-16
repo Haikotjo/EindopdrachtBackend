@@ -196,15 +196,6 @@ public class MenuItemController {
         return new ResponseEntity<>(updatedMenuItem, HttpStatus.OK);
     }
 
-    private User getCurrentUser() {
-        String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
-        User user = userRepository.findByEmail(currentUserEmail)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + currentUserEmail));
-        System.out.println("Current User Email: " + currentUserEmail);
-        System.out.println("Current User Roles: " + user.getRoles());
-        return user;
-    }
-
     /**
      * Update an existing menu item by an admin, including adding ingredients by ID.
      *
@@ -262,5 +253,14 @@ public class MenuItemController {
     public ResponseEntity<List<MenuItemDTO>> findByNameIgnoreCase(@RequestParam String name) {
         List<MenuItemDTO> menuItems = menuItemService.findByNameIgnoreCase(name);
         return new ResponseEntity<>(menuItems, HttpStatus.OK);
+    }
+
+    private User getCurrentUser() {
+        String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
+        User user = userRepository.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + currentUserEmail));
+        System.out.println("Current User Email: " + currentUserEmail);
+        System.out.println("Current User Roles: " + user.getRoles());
+        return user;
     }
 }

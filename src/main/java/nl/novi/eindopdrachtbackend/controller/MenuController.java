@@ -4,8 +4,12 @@ import nl.novi.eindopdrachtbackend.common.ApiResponse;
 import nl.novi.eindopdrachtbackend.dto.MenuDTO;
 import nl.novi.eindopdrachtbackend.dto.MenuInputDTO;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
+import nl.novi.eindopdrachtbackend.model.Restaurant;
 import nl.novi.eindopdrachtbackend.model.User;
+import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
+import nl.novi.eindopdrachtbackend.repository.UserRepository;
 import nl.novi.eindopdrachtbackend.security.SecurityUtils;
+import nl.novi.eindopdrachtbackend.service.MenuItemService;
 import nl.novi.eindopdrachtbackend.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,11 +23,15 @@ import java.util.List;
 @RequestMapping("/menus")
 public class MenuController {
 
-    @Autowired
-    private MenuService menuService;
 
-    public MenuController(MenuService menuService) {
+    private final MenuService menuService;
+    private final UserRepository userRepository;
+
+
+    @Autowired
+    public MenuController(MenuService menuService, UserRepository userRepository) {
         this.menuService = menuService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -93,17 +101,28 @@ public class MenuController {
         }
     }
 
-
-
-
-
-
-    @PostMapping
-    public ResponseEntity<ApiResponse> createMenu(@RequestBody MenuInputDTO menuInputDTO) {
-        MenuDTO createdMenuDTO = menuService.createMenu(menuInputDTO);
-        ApiResponse apiResponse = new ApiResponse(true, "Menu successfully created.", createdMenuDTO);
-        return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+    /**
+     * Create a new menu for the logged-in owner.
+     *
+     * @param menuInputDTO the menu input data transfer object
+     * @return ResponseEntity containing the created MenuDTO object
+     */
+    @PostMapping("/owner")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<MenuDTO> createMenuForOwner(@RequestBody MenuInputDTO menuInputDTO) {
+        User currentUser = getCurrentUser();
+        Restaurant restaurant = currentUser.getRestaurant();
+        if (restaurant == null) {
+            throw new ResourceNotFoundException("No restaurant found for the current user.");
+        }
+        MenuDTO newMenu = menuService.createMenuForOwner(menuInputDTO, restaurant.getId());
+        return new ResponseEntity<>(newMenu, HttpStatus.CREATED);
     }
+
+
+
+
+
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse> updateMenu(@PathVariable Long id, @RequestBody MenuInputDTO menuInputDTO) {
@@ -128,5 +147,14 @@ public class MenuController {
     public ResponseEntity<Void> addMenuItemToMenu(@PathVariable Long menuId, @PathVariable Long menuItemId) {
         menuService.addMenuItemToMenu(menuId, menuItemId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private User getCurrentUser() {
+        String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
+        User user = userRepository.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + currentUserEmail));
+        System.out.println("Current User Email: " + currentUserEmail);
+        System.out.println("Current User Roles: " + user.getRoles());
+        return user;
     }
 }

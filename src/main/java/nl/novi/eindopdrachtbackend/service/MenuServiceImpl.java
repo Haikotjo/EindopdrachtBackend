@@ -11,6 +11,7 @@ import nl.novi.eindopdrachtbackend.model.Restaurant;
 import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.repository.MenuRepository;
 import nl.novi.eindopdrachtbackend.repository.MenuItemRepository;
+import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
 import nl.novi.eindopdrachtbackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -25,11 +26,14 @@ public class MenuServiceImpl implements MenuService {
     private final MenuRepository menuRepository;
     private final MenuItemRepository menuItemRepository;
     private final UserRepository userRepository;
+    private final RestaurantRepository restaurantRepository;
 
-    public MenuServiceImpl(MenuRepository menuRepository, MenuItemRepository menuItemRepository, UserRepository userRepository) {
+
+    public MenuServiceImpl(MenuRepository menuRepository, MenuItemRepository menuItemRepository, UserRepository userRepository, RestaurantRepository restaurantRepository) {
         this.menuRepository = menuRepository;
         this.menuItemRepository = menuItemRepository;
         this.userRepository = userRepository;
+        this.restaurantRepository = restaurantRepository;
     }
 
 
@@ -101,23 +105,26 @@ public class MenuServiceImpl implements MenuService {
     }
 
 
-
-
-
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public MenuDTO createMenu(MenuInputDTO menuInputDTO) {
-        Menu menu = MenuMapper.toMenu(menuInputDTO);
-        if (menuInputDTO.getMenuItemIds() != null && !menuInputDTO.getMenuItemIds().isEmpty()) {
-            Set<MenuItem> menuItems = menuInputDTO.getMenuItemIds().stream()
-                    .map(id -> menuItemRepository.findById(id)
-                            .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found for this id :: " + id)))
-                    .collect(Collectors.toSet());
-            menu.setMenuItems(menuItems);
-        }
+    public MenuDTO createMenuForOwner(MenuInputDTO menuInputDTO, Long restaurantId) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for this id :: " + restaurantId));
+
+        Menu menu = new Menu();
+        menu.setName(menuInputDTO.getName());
+        menu.setDescription(menuInputDTO.getDescription());
+        menu.setRestaurant(restaurant);
+
         Menu savedMenu = menuRepository.save(menu);
         return MenuMapper.toMenuDTO(savedMenu);
     }
+
+
+
+
 
     @Transactional
     public MenuDTO updateMenu(Long id, MenuInputDTO menuInputDTO) {
