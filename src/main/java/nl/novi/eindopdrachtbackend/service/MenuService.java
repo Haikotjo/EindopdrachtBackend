@@ -76,8 +76,21 @@ public interface MenuService {
      */
     MenuDTO updateMenuByAdmin(Long menuId, MenuInputDTO menuInputDTO);
 
+    /**
+     * Delete a menu for the logged-in owner's restaurant.
+     *
+     * @param menuId the ID of the menu to delete
+     * @param restaurantId the ID of the restaurant
+     */
+    void deleteMenuForOwner(Long menuId, Long restaurantId);
 
-    void deleteMenu(Long id);
+    /**
+     * Delete a menu by an admin.
+     *
+     * @param menuId the ID of the menu to delete
+     */
+    void deleteMenuByAdmin(Long menuId);
+
     List<MenuDTO> findByNameIgnoreCase(String name);
     void addMenuItemToMenu(Long menuId, Long menuItemId);
 

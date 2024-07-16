@@ -120,12 +120,16 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/menus/owner/**").hasAnyAuthority("ADMIN", "OWNER")
                                 .requestMatchers(HttpMethod.GET, "/menus/restaurant/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/menus/menu/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/menus/search").permitAll()
 
                                 .requestMatchers(HttpMethod.POST, "/menu-items/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/menu-items/owner/**").hasAnyAuthority("OWNER", "ADMIN")
 
                                 .requestMatchers(HttpMethod.PUT, "/menus/owner/**").hasAnyAuthority("OWNER", "ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/menu-items/admin/**").hasAuthority("ADMIN")
+
+                                .requestMatchers(HttpMethod.DELETE, "/menus/owner/**").hasAnyAuthority("OWNER", "ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/menus/admin/**").hasAuthority("ADMIN")
 
 
 //                .requestMatchers("/**").hasAnyAuthority("ADMIN")

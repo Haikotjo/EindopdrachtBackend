@@ -170,13 +170,41 @@ public class MenuController {
         return new ResponseEntity<>(updatedMenu, HttpStatus.OK);
     }
 
-
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMenu(@PathVariable Long id) {
-        menuService.deleteMenu(id);
+    /**
+     * Delete a menu for the logged-in owner.
+     *
+     * @param menuId the ID of the menu to delete
+     * @return ResponseEntity with the status of the operation
+     */
+    @DeleteMapping("/owner/{menuId}")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<Void> deleteMenuForOwner(@PathVariable Long menuId) {
+        User currentUser = getCurrentUser();
+        Restaurant restaurant = currentUser.getRestaurant(); // Haal het restaurant op van de huidige gebruiker
+        if (restaurant == null) {
+            throw new ResourceNotFoundException("No restaurant found for the current user.");
+        }
+        menuService.deleteMenuForOwner(menuId, restaurant.getId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    /**
+     * Delete a menu by an admin.
+     *
+     * @param menuId the ID of the menu to delete
+     * @return ResponseEntity with the status of the operation
+     */
+    @DeleteMapping("/admin/{menuId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Void> deleteMenuByAdmin(@PathVariable Long menuId) {
+        menuService.deleteMenuByAdmin(menuId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+
+
+
 
     @GetMapping("/search")
     public ResponseEntity<List<MenuDTO>> findByNameIgnoreCase(@RequestParam String name) {

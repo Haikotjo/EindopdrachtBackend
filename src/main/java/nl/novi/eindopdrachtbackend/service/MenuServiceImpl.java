@@ -190,16 +190,33 @@ public class MenuServiceImpl implements MenuService {
         return MenuMapper.toMenuDTO(updatedMenu);
     }
 
-
-
-
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void deleteMenu(Long id) {
-        Menu menu = menuRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Menu not found for this id :: " + id));
+    public void deleteMenuForOwner(Long menuId, Long restaurantId) {
+        Menu menu = menuRepository.findById(menuId)
+                .orElseThrow(() -> new ResourceNotFoundException("Menu not found for this id :: " + menuId));
+
+        if (!menu.getRestaurant().getId().equals(restaurantId)) {
+            throw new AccessDeniedException("You do not have permission to delete this menu.");
+        }
+
         menuRepository.delete(menu);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteMenuByAdmin(Long menuId) {
+        Menu menu = menuRepository.findById(menuId)
+                .orElseThrow(() -> new ResourceNotFoundException("Menu not found for this id :: " + menuId));
+
+        menuRepository.delete(menu);
+    }
+
+
 
     @Override
     public List<MenuDTO> findByNameIgnoreCase(String name) {
