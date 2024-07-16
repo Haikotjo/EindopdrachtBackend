@@ -48,6 +48,16 @@ public interface MenuService {
      */
     MenuDTO createMenuForOwner(MenuInputDTO menuInputDTO, Long restaurantId);
 
+    /**
+     * Create a new menu for a specific restaurant by an admin.
+     *
+     * @param menuInputDTO the menu input data transfer object
+     * @param restaurantId the ID of the restaurant
+     * @return the created MenuDTO
+     */
+    MenuDTO createMenuForRestaurant(MenuInputDTO menuInputDTO, Long restaurantId);
+
+
     MenuDTO updateMenu(Long id, MenuInputDTO menuInputDTO);
     void deleteMenu(Long id);
     List<MenuDTO> findByNameIgnoreCase(String name);

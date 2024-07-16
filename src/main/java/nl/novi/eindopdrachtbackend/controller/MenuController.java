@@ -119,7 +119,19 @@ public class MenuController {
         return new ResponseEntity<>(newMenu, HttpStatus.CREATED);
     }
 
-
+    /**
+     * Create a new menu for a specific restaurant by an admin.
+     *
+     * @param restaurantId the ID of the restaurant
+     * @param menuInputDTO the menu input data transfer object
+     * @return ResponseEntity containing the created MenuDTO object
+     */
+    @PostMapping("/admin/{restaurantId}/menu")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<MenuDTO> createMenuForRestaurantByAdmin(@PathVariable Long restaurantId, @RequestBody MenuInputDTO menuInputDTO) {
+        MenuDTO newMenu = menuService.createMenuForRestaurant(menuInputDTO, restaurantId);
+        return new ResponseEntity<>(newMenu, HttpStatus.CREATED);
+    }
 
 
 
