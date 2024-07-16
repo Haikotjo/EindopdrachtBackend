@@ -91,7 +91,11 @@ public interface MenuService {
      */
     void deleteMenuByAdmin(Long menuId);
 
+    /**
+     * Find menus by name, ignoring case.
+     *
+     * @param name the name of the menu
+     * @return list of MenuDTOs
+     */
     List<MenuDTO> findByNameIgnoreCase(String name);
-    void addMenuItemToMenu(Long menuId, Long menuItemId);
-
 }

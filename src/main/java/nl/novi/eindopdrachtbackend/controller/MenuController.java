@@ -201,21 +201,16 @@ public class MenuController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-
-
-
-
-
+    /**
+     * Find menus by name, ignoring case.
+     *
+     * @param name the name of the menu
+     * @return ResponseEntity containing a list of MenuDTO objects
+     */
     @GetMapping("/search")
     public ResponseEntity<List<MenuDTO>> findByNameIgnoreCase(@RequestParam String name) {
         List<MenuDTO> menus = menuService.findByNameIgnoreCase(name);
         return new ResponseEntity<>(menus, HttpStatus.OK);
-    }
-
-    @PostMapping("/{menuId}/addMenuItem/{menuItemId}")
-    public ResponseEntity<Void> addMenuItemToMenu(@PathVariable Long menuId, @PathVariable Long menuItemId) {
-        menuService.addMenuItemToMenu(menuId, menuItemId);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private User getCurrentUser() {

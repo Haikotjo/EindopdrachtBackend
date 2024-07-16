@@ -216,12 +216,13 @@ public class MenuServiceImpl implements MenuService {
         menuRepository.delete(menu);
     }
 
-
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<MenuDTO> findByNameIgnoreCase(String name) {
         List<Menu> menus = menuRepository.findByNameIgnoreCase(name);
-        if (menus.isEmpty()) {
+        if (menus.isEmpty()){
             throw new ResourceNotFoundException("Menu not found with name: " + name);
         }
         return menus.stream()
@@ -229,14 +230,4 @@ public class MenuServiceImpl implements MenuService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    @Transactional
-    public void addMenuItemToMenu(Long menuId, Long menuItemId) {
-        Menu menu = menuRepository.findById(menuId)
-                .orElseThrow(() -> new ResourceNotFoundException("Menu not found for this id :: " + menuId));
-        MenuItem menuItem = menuItemRepository.findById(menuItemId)
-                .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found for this id :: " + menuItemId));
-        menu.addMenuItem(menuItem);
-        menuRepository.save(menu);
-    }
 }
