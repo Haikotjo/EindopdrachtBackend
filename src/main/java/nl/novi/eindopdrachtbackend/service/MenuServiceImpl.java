@@ -7,8 +7,11 @@ import nl.novi.eindopdrachtbackend.dto.MenuMapper;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.Menu;
 import nl.novi.eindopdrachtbackend.model.MenuItem;
+import nl.novi.eindopdrachtbackend.model.Restaurant;
+import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.repository.MenuRepository;
 import nl.novi.eindopdrachtbackend.repository.MenuItemRepository;
+import nl.novi.eindopdrachtbackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -21,11 +24,55 @@ public class MenuServiceImpl implements MenuService {
 
     private final MenuRepository menuRepository;
     private final MenuItemRepository menuItemRepository;
+    private final UserRepository userRepository;
 
-    public MenuServiceImpl(MenuRepository menuRepository, MenuItemRepository menuItemRepository) {
+    public MenuServiceImpl(MenuRepository menuRepository, MenuItemRepository menuItemRepository, UserRepository userRepository) {
         this.menuRepository = menuRepository;
         this.menuItemRepository = menuItemRepository;
+        this.userRepository = userRepository;
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<MenuDTO> getAllMenus() {
+        return menuRepository.findAll().stream()
+                .map(MenuMapper::toMenuDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<MenuDTO> getAllMenusForLoggedInOwner(String email) {
+        try {
+            User currentUser = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+            Restaurant restaurant = currentUser.getRestaurant();
+            if (restaurant == null) {
+                throw new ResourceNotFoundException("No restaurant found for the current user.");
+            }
+            List<Menu> menus = menuRepository.findByRestaurant_Id(restaurant.getId());
+            return menus.stream()
+                    .map(MenuMapper::toMenuDTO)
+                    .collect(Collectors.toList());
+        } catch (ResourceNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve menus for user with email " + email, e);
+        }
+    }
+
+
+
+
+
+
+
+
 
     @Override
     public MenuDTO createMenu(MenuInputDTO menuInputDTO) {
@@ -64,14 +111,6 @@ public class MenuServiceImpl implements MenuService {
 
         Menu updatedMenu = menuRepository.save(existingMenu);
         return MenuMapper.toMenuDTO(updatedMenu);
-    }
-
-    @Override
-    public List<MenuDTO> getAllMenus() {
-        List<Menu> menus = menuRepository.findAll();
-        return menus.stream()
-                .map(MenuMapper::toMenuDTO)
-                .collect(Collectors.toList());
     }
 
     @Override

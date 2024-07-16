@@ -115,6 +115,10 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "/menu-items/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/menu-items/search").permitAll()
 
+                                //                  Menu entity endpoints
+                                .requestMatchers(HttpMethod.GET, "/menus/admin/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/menus/owner/**").hasAnyAuthority("ADMIN", "OWNER")
+
 //                .requestMatchers("/**").hasAnyAuthority("ADMIN")
 
                                 .anyRequest().authenticated()

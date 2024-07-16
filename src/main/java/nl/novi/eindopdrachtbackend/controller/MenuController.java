@@ -3,10 +3,14 @@ package nl.novi.eindopdrachtbackend.controller;
 import nl.novi.eindopdrachtbackend.common.ApiResponse;
 import nl.novi.eindopdrachtbackend.dto.MenuDTO;
 import nl.novi.eindopdrachtbackend.dto.MenuInputDTO;
+import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
+import nl.novi.eindopdrachtbackend.model.User;
+import nl.novi.eindopdrachtbackend.security.SecurityUtils;
 import nl.novi.eindopdrachtbackend.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,11 +26,41 @@ public class MenuController {
         this.menuService = menuService;
     }
 
-    @GetMapping
+    /**
+     * Get all menus (Admin only)
+     *
+     * @return ResponseEntity containing a list of MenuDTO objects
+     */
+    @GetMapping("/admin/all")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<MenuDTO>> getAllMenus() {
         List<MenuDTO> menus = menuService.getAllMenus();
         return new ResponseEntity<>(menus, HttpStatus.OK);
     }
+
+    /**
+     * Endpoint for owners to retrieve their own menus.
+     *
+     * @return ResponseEntity containing a list of MenuDTO objects
+     */
+    @GetMapping("/owner")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<List<MenuDTO>> getAllMenusForLoggedInOwner() {
+        String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
+        try {
+            List<MenuDTO> menus = menuService.getAllMenusForLoggedInOwner(currentUserEmail);
+            return new ResponseEntity<>(menus, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<MenuDTO> getMenuById(@PathVariable Long id) {
