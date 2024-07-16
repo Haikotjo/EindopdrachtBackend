@@ -2,8 +2,6 @@ package nl.novi.eindopdrachtbackend.service;
 
 import nl.novi.eindopdrachtbackend.dto.MenuItemDTO;
 import nl.novi.eindopdrachtbackend.dto.MenuItemInputDTO;
-import nl.novi.eindopdrachtbackend.model.MenuItem;
-import nl.novi.eindopdrachtbackend.model.User;
 
 import java.util.List;
 
