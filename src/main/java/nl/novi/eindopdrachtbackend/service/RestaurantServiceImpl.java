@@ -4,10 +4,13 @@ import nl.novi.eindopdrachtbackend.dto.*;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.Restaurant;
 import nl.novi.eindopdrachtbackend.model.User;
+import nl.novi.eindopdrachtbackend.model.UserRole;
 import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
 import nl.novi.eindopdrachtbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.management.relation.Role;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,7 +96,7 @@ public class RestaurantServiceImpl implements RestaurantService {
      * {@inheritDoc}
      */
     @Override
-    public RestaurantDTO createRestaurantForOwner(RestaurantInputDTO restaurantInputDTO, Long userId) {
+    public RestaurantDTO createRestaurantForLoggedInOwner(RestaurantInputDTO restaurantInputDTO, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + userId));
 
@@ -106,6 +109,32 @@ public class RestaurantServiceImpl implements RestaurantService {
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
         return RestaurantMapper.toRestaurantDTO(savedRestaurant);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public RestaurantDTO createRestaurantForOwner(RestaurantInputDTO restaurantInputDTO, Long ownerId) {
+        User owner = userRepository.findById(ownerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Owner not found for this id :: " + ownerId));
+
+        // Controleer of de gebruiker de rol OWNER heeft
+        if (owner.getRoles().stream().noneMatch(role -> role.getRolename() == UserRole.OWNER)) {
+            throw new IllegalArgumentException("The specified user is not an OWNER");
+        }
+
+        Restaurant restaurant = new Restaurant();
+        restaurant.setName(restaurantInputDTO.getName());
+        restaurant.setAddress(restaurantInputDTO.getAddress());
+        restaurant.setPhoneNumber(restaurantInputDTO.getPhoneNumber());
+        restaurant.setOwner(owner);
+
+        Restaurant savedRestaurant = restaurantRepository.save(restaurant);
+        return RestaurantMapper.toRestaurantDTO(savedRestaurant);
+    }
+
+
+
 //
 //    @Override
 //    public RestaurantDTO updateRestaurant(Long id, RestaurantInputDTO restaurantInputDTO) {

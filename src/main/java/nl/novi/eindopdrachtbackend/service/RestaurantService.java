@@ -52,7 +52,17 @@ public interface RestaurantService {
      * @param userId the ID of the user who will own the restaurant
      * @return created RestaurantDTO
      */
+    RestaurantDTO createRestaurantForLoggedInOwner(RestaurantInputDTO restaurantInputDTO, Long userId);
+
+    /**
+     * Create a new restaurant for the logged-in owner.
+     *
+     * @param restaurantInputDTO restaurant input data
+     * @param userId the ID of the user who will own the restaurant
+     * @return created RestaurantDTO
+     */
     RestaurantDTO createRestaurantForOwner(RestaurantInputDTO restaurantInputDTO, Long userId);
+
 
 //    RestaurantDTO updateRestaurant(Long id, RestaurantInputDTO restaurantInputDTO);
 //    void deleteRestaurant(Long id);

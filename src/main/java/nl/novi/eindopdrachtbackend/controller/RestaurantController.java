@@ -115,11 +115,28 @@ public class RestaurantController {
      */
     @PostMapping("/owner")
     @PreAuthorize("hasAuthority('OWNER')")
-    public ResponseEntity<RestaurantDTO> createRestaurantForOwner(@RequestBody RestaurantInputDTO restaurantInputDTO) {
+    public ResponseEntity<RestaurantDTO> createRestaurantForLoggedInOwner(@RequestBody RestaurantInputDTO restaurantInputDTO) {
         User currentUser = getCurrentUser();
-        RestaurantDTO newRestaurant = restaurantService.createRestaurantForOwner(restaurantInputDTO, currentUser.getId());
+        RestaurantDTO newRestaurant = restaurantService.createRestaurantForLoggedInOwner(restaurantInputDTO, currentUser.getId());
         return new ResponseEntity<>(newRestaurant, HttpStatus.CREATED);
     }
+
+    /**
+     * Create a new restaurant for a specific owner by an admin.
+     *
+     * @param ownerId the ID of the owner
+     * @param restaurantInputDTO the restaurant input data transfer object
+     * @return ResponseEntity containing the created RestaurantDTO object
+     */
+    @PostMapping("/admin/{ownerId}/restaurant")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<RestaurantDTO> createRestaurantForOwnerByAdmin(@PathVariable Long ownerId, @RequestBody RestaurantInputDTO restaurantInputDTO) {
+        RestaurantDTO newRestaurant = restaurantService.createRestaurantForOwner(restaurantInputDTO, ownerId);
+        return new ResponseEntity<>(newRestaurant, HttpStatus.CREATED);
+    }
+
+
+
 //
 //    @PutMapping("/{id}")
 //    public ResponseEntity<RestaurantDTO> updateRestaurant(@PathVariable Long id, @RequestBody RestaurantInputDTO restaurantInputDTO) {
