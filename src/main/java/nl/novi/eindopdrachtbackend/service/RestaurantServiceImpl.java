@@ -133,6 +133,42 @@ public class RestaurantServiceImpl implements RestaurantService {
         return RestaurantMapper.toRestaurantDTO(savedRestaurant);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public RestaurantDTO updateRestaurantForOwner(RestaurantInputDTO restaurantInputDTO, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + userId));
+
+        Restaurant restaurant = user.getRestaurant();
+        if (restaurant == null) {
+            throw new ResourceNotFoundException("No restaurant found for the current user.");
+        }
+
+        restaurant.setName(restaurantInputDTO.getName());
+        restaurant.setAddress(restaurantInputDTO.getAddress());
+        restaurant.setPhoneNumber(restaurantInputDTO.getPhoneNumber());
+
+        Restaurant updatedRestaurant = restaurantRepository.save(restaurant);
+        return RestaurantMapper.toRestaurantDTO(updatedRestaurant);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public RestaurantDTO updateRestaurantForAdmin(RestaurantInputDTO restaurantInputDTO, Long restaurantId) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for this id :: " + restaurantId));
+
+        restaurant.setName(restaurantInputDTO.getName());
+        restaurant.setAddress(restaurantInputDTO.getAddress());
+        restaurant.setPhoneNumber(restaurantInputDTO.getPhoneNumber());
+
+        Restaurant updatedRestaurant = restaurantRepository.save(restaurant);
+        return RestaurantMapper.toRestaurantDTO(updatedRestaurant);
+    }
 
 
 //

@@ -3,6 +3,7 @@ package nl.novi.eindopdrachtbackend.service;
 import nl.novi.eindopdrachtbackend.dto.MenuDTO;
 import nl.novi.eindopdrachtbackend.dto.RestaurantDTO;
 import nl.novi.eindopdrachtbackend.dto.RestaurantInputDTO;
+import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.Restaurant;
 import java.util.List;
 
@@ -63,8 +64,26 @@ public interface RestaurantService {
      */
     RestaurantDTO createRestaurantForOwner(RestaurantInputDTO restaurantInputDTO, Long userId);
 
+    /**
+     * Update a restaurant's details for the logged-in owner.
+     *
+     * @param restaurantInputDTO the new restaurant details
+     * @param userId the ID of the logged-in owner
+     * @return the updated RestaurantDTO
+     * @throws ResourceNotFoundException if the restaurant or user is not found
+     */
+    RestaurantDTO updateRestaurantForOwner(RestaurantInputDTO restaurantInputDTO, Long userId);
 
-//    RestaurantDTO updateRestaurant(Long id, RestaurantInputDTO restaurantInputDTO);
+    /**
+     * Update a restaurant's details for a specific owner by an admin.
+     *
+     * @param restaurantInputDTO the new restaurant details
+     * @param restaurantId the ID of the restaurant to update
+     * @return the updated RestaurantDTO
+     * @throws ResourceNotFoundException if the restaurant or user is not found
+     */
+    RestaurantDTO updateRestaurantForAdmin(RestaurantInputDTO restaurantInputDTO, Long restaurantId);
+
 //    void deleteRestaurant(Long id);
 //    List<RestaurantDTO> findByNameIgnoreCase(String name);
 //    List<MenuDTO> getAllMenus();

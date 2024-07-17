@@ -135,14 +135,35 @@ public class RestaurantController {
         return new ResponseEntity<>(newRestaurant, HttpStatus.CREATED);
     }
 
+    /**
+     * Update the restaurant details for the logged-in owner.
+     *
+     * @param restaurantInputDTO the new restaurant details
+     * @return ResponseEntity containing the updated RestaurantDTO object
+     */
+    @PutMapping("/owner")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<RestaurantDTO> updateRestaurantForOwner(@RequestBody RestaurantInputDTO restaurantInputDTO) {
+        String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
+        User currentUser = userRepository.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + currentUserEmail));
+        RestaurantDTO updatedRestaurant = restaurantService.updateRestaurantForOwner(restaurantInputDTO, currentUser.getId());
+        return new ResponseEntity<>(updatedRestaurant, HttpStatus.OK);
+    }
 
-
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<RestaurantDTO> updateRestaurant(@PathVariable Long id, @RequestBody RestaurantInputDTO restaurantInputDTO) {
-//        RestaurantDTO updatedRestaurant = restaurantService.updateRestaurant(id, restaurantInputDTO);
-//        return new ResponseEntity<>(updatedRestaurant, HttpStatus.OK);
-//    }
+    /**
+     * Update the restaurant details for a specific owner by an admin.
+     *
+     * @param restaurantId the ID of the restaurant to update
+     * @param restaurantInputDTO the new restaurant details
+     * @return ResponseEntity containing the updated RestaurantDTO object
+     */
+    @PutMapping("/admin/{restaurantId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<RestaurantDTO> updateRestaurantForAdmin(@PathVariable Long restaurantId, @RequestBody RestaurantInputDTO restaurantInputDTO) {
+        RestaurantDTO updatedRestaurant = restaurantService.updateRestaurantForAdmin(restaurantInputDTO, restaurantId);
+        return new ResponseEntity<>(updatedRestaurant, HttpStatus.OK);
+    }
 //
 //    @DeleteMapping("/{id}")
 //    public ResponseEntity<Void> deleteRestaurant(@PathVariable Long id) {
