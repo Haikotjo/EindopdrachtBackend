@@ -1,10 +1,13 @@
 package nl.novi.eindopdrachtbackend.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Set;
 
 /**
  * Data Transfer Object for Restaurant.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RestaurantDTO {
     private Long id;
     private String name;
