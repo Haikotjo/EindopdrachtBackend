@@ -12,6 +12,7 @@ public class PasswordHashGenerator {
         String rawPassword5 = "ownerpassword2";
         String rawPassword6 = "ownerpassword3";
         String rawPassword7 = "adminpassword";
+        String rawPassword8 = "ownerpassword4";
 
         String encodedPassword1 = encoder.encode(rawPassword1);
         String encodedPassword2 = encoder.encode(rawPassword2);
@@ -20,6 +21,7 @@ public class PasswordHashGenerator {
         String encodedPassword5 = encoder.encode(rawPassword5);
         String encodedPassword6 = encoder.encode(rawPassword6);
         String encodedPassword7 = encoder.encode(rawPassword7);
+        String encodedPassword8 = encoder.encode(rawPassword8);
 
         System.out.println("John Doe's hashed password: " + encodedPassword1);
         System.out.println("Jane Smith's hashed password: " + encodedPassword2);
@@ -27,6 +29,7 @@ public class PasswordHashGenerator {
         System.out.println("Owner One's hashed password: " + encodedPassword4);
         System.out.println("Owner Two's hashed password: " + encodedPassword5);
         System.out.println("Owner Three's hashed password: " + encodedPassword6);
+        System.out.println("Owner Fours's hashed password: " + encodedPassword8);
         System.out.println("Admin User's hashed password: " + encodedPassword7);
     }
 }

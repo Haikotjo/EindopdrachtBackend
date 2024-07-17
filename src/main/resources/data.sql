@@ -12,7 +12,9 @@ INSERT INTO users (name, email, password, phone_number) VALUES ('Alice Johnson',
 INSERT INTO users (name, email, password, phone_number) VALUES ('Owner One', 'owner.one@example.com', '$2a$10$2q1rPfRqfs8braxU9c3WzeihkPD4jvILzFtWgeOiR3OnnkO4B9HWe', '1111111111');
 INSERT INTO users (name, email, password, phone_number) VALUES ('Owner Two', 'owner.two@example.com', '$2a$10$KTQEBBo.dZXZL6USfu/qV.wxt./HSi09KCB5crxQFAvpLCCwnzW7O', '2222222222');
 INSERT INTO users (name, email, password, phone_number) VALUES ('Owner Three', 'owner.three@example.com', '$2a$10$tMOde/XYW82ohctp6jkHjOMQQ3repa3vupD20/WfO2O94X6mv8Dfe', '3333333333');
+INSERT INTO users (name, email, password, phone_number) VALUES ('New Four', 'owner.four@example.com', '$2a$10$1ikl5iG5/RHdOb2.7gE0UumlZQcFwZIvCmgAzepLu4DOK85y8twC6', '4444444444');
 INSERT INTO users (name, email, password, phone_number) VALUES ('Admin User', 'admin.user@example.com', '$2a$10$5CVbOzUidUJMUYJkdlOMXuIggBw5/61Fa1dzM5CEB/8fs2BTPnCfO', '555-9999');
+
 
 -- Associate users with roles
 INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='john.doe@example.com'), 'CUSTOMER');
@@ -22,6 +24,7 @@ INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users W
 INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='owner.one@example.com'), 'OWNER');
 INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='owner.two@example.com'), 'OWNER');
 INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='owner.three@example.com'), 'OWNER');
+INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='owner.four@example.com'), 'OWNER');
 
 INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='admin.user@example.com'), 'ADMIN');
 
