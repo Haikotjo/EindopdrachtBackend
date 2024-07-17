@@ -134,6 +134,7 @@ public class SecurityConfig {
                                 //                Notification entity endpoints
                                 .requestMatchers(HttpMethod.GET, "/menus/restaurants/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/restaurants").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/restaurants/**").permitAll()
 
 //                .requestMatchers("/**").hasAnyAuthority("ADMIN")
 

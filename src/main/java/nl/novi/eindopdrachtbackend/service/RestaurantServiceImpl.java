@@ -57,6 +57,37 @@ public class RestaurantServiceImpl implements RestaurantService {
         return RestaurantMapper.toRestaurantDTO(restaurant);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public RestaurantDTO getRestaurantByIdForAdmin(Long id) {
+        try {
+            Restaurant restaurant = restaurantRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for this id :: " + id));
+            return RestaurantMapper.toRestaurantDTO(restaurant);
+        } catch (ResourceNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve restaurant with id " + id, e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public RestaurantDTO getRestaurantByIdPublic(Long id) {
+        try {
+            Restaurant restaurant = restaurantRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for this id :: " + id));
+            return RestaurantMapper.toSimpleRestaurantDTO(restaurant);
+        } catch (ResourceNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve restaurant with id " + id, e);
+        }
+    }
 //
 //    @Override
 //    public RestaurantDTO createRestaurant(RestaurantInputDTO restaurantInputDTO) {

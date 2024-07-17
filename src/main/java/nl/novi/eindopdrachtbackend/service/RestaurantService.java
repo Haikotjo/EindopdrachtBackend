@@ -29,6 +29,22 @@ public interface RestaurantService {
      */
     RestaurantDTO getRestaurantForLoggedInOwner(String email);
 
+    /**
+     * Get restaurant by ID with full details for admin.
+     *
+     * @param id restaurant ID
+     * @return RestaurantDTO for the specified ID
+     */
+    RestaurantDTO getRestaurantByIdForAdmin(Long id);
+
+    /**
+     * Get restaurant by ID with simple details for public access.
+     *
+     * @param id restaurant ID
+     * @return RestaurantDTO for the specified ID
+     */
+    RestaurantDTO getRestaurantByIdPublic(Long id);
+
 //    RestaurantDTO createRestaurant(RestaurantInputDTO restaurantInputDTO);
 //    RestaurantDTO updateRestaurant(Long id, RestaurantInputDTO restaurantInputDTO);
 //    void deleteRestaurant(Long id);

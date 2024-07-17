@@ -70,6 +70,43 @@ public class RestaurantController {
         }
     }
 
+    /**
+     * Endpoint to get a specific restaurant by its ID with full details (Admin only).
+     *
+     * @param id the ID of the restaurant
+     * @return ResponseEntity containing the RestaurantDTO object for the specified ID
+     */
+    @GetMapping("/admin/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<RestaurantDTO> getRestaurantByIdForAdmin(@PathVariable Long id) {
+        try {
+            RestaurantDTO restaurant = restaurantService.getRestaurantByIdForAdmin(id);
+            return new ResponseEntity<>(restaurant, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Endpoint to get a specific restaurant by its ID with simple details (Public).
+     *
+     * @param id the ID of the restaurant
+     * @return ResponseEntity containing the RestaurantDTO object for the specified ID
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<RestaurantDTO> getRestaurantByIdPublic(@PathVariable Long id) {
+        try {
+            RestaurantDTO restaurant = restaurantService.getRestaurantByIdPublic(id);
+            return new ResponseEntity<>(restaurant, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 //
 //    @PostMapping
 //    public ResponseEntity<RestaurantDTO> createRestaurant(@RequestBody RestaurantInputDTO restaurantInputDTO) {
