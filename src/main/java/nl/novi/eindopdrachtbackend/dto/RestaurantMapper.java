@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 public class RestaurantMapper {
 
     /**
-     * Converts a Restaurant entity to a RestaurantDTO.
+     * Converts a Restaurant entity to a detailed RestaurantDTO.
      *
      * @param restaurant the Restaurant entity
-     * @return the RestaurantDTO
+     * @return the detailed RestaurantDTO
      */
     public static RestaurantDTO toRestaurantDTO(Restaurant restaurant) {
         RestaurantDTO dto = new RestaurantDTO();
@@ -35,6 +35,26 @@ public class RestaurantMapper {
 
         dto.setOrders(restaurant.getOrders().stream()
                 .map(OrderMapper::toOrderDTO)
+                .collect(Collectors.toSet()));
+
+        return dto;
+    }
+
+    /**
+     * Converts a Restaurant entity to a simplified RestaurantDTO.
+     *
+     * @param restaurant the Restaurant entity
+     * @return the simplified RestaurantDTO
+     */
+    public static RestaurantDTO toSimpleRestaurantDTO(Restaurant restaurant) {
+        RestaurantDTO dto = new RestaurantDTO();
+        dto.setId(restaurant.getId());
+        dto.setName(restaurant.getName());
+        dto.setAddress(restaurant.getAddress());
+        dto.setPhoneNumber(restaurant.getPhoneNumber());
+
+        dto.setMenus(restaurant.getMenus().stream()
+                .map(MenuMapper::toMenuDTO)
                 .collect(Collectors.toSet()));
 
         return dto;

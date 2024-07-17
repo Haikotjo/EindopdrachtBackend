@@ -63,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = OrderMapper.fromInputDTO(orderInputDTO, customer, restaurant, deliveryAddress, menuItems);
         order = orderRepository.save(order);
-        return OrderMapper.toDTO(order);
+        return OrderMapper.toOrderDTO(order);
     }
 
     @Override
@@ -94,13 +94,13 @@ public class OrderServiceImpl implements OrderService {
         order.setMenuItems(menuItems);
 
         order = orderRepository.save(order);
-        return OrderMapper.toDTO(order);
+        return OrderMapper.toOrderDTO(order);
     }
 
     @Override
     public List<OrderDTO> getAllOrders() {
         return orderRepository.findAll().stream()
-                .map(OrderMapper::toDTO)
+                .map(OrderMapper::toOrderDTO)
                 .collect(Collectors.toList());
     }
 
@@ -108,7 +108,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO getOrderById(Long id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found for this id :: " + id));
-        return OrderMapper.toDTO(order);
+        return OrderMapper.toOrderDTO(order);
     }
 
     @Override
@@ -121,14 +121,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDTO> findOrdersByCustomerId(Long customerId) {
         return orderRepository.findOrdersByCustomerId(customerId).stream()
-                .map(OrderMapper::toDTO)
+                .map(OrderMapper::toOrderDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<OrderDTO> findOrdersByRestaurantId(Long restaurantId) {
         return orderRepository.findOrdersByRestaurantId(restaurantId).stream()
-                .map(OrderMapper::toDTO)
+                .map(OrderMapper::toOrderDTO)
                 .collect(Collectors.toList());
     }
 
@@ -139,7 +139,7 @@ public class OrderServiceImpl implements OrderService {
 
         return orderRepository.findAll().stream()
                 .filter(order -> order.getOrderDateTime().isAfter(startOfDay) && order.getOrderDateTime().isBefore(endOfDay))
-                .map(OrderMapper::toDTO)
+                .map(OrderMapper::toOrderDTO)
                 .collect(Collectors.toList());
     }
 
@@ -151,7 +151,7 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findAll().stream()
                 .filter(order -> order.getRestaurant().getId().equals(restaurantId) &&
                         order.getOrderDateTime().isAfter(startOfDay) && order.getOrderDateTime().isBefore(endOfDay))
-                .map(OrderMapper::toDTO)
+                .map(OrderMapper::toOrderDTO)
                 .collect(Collectors.toList());
     }
 

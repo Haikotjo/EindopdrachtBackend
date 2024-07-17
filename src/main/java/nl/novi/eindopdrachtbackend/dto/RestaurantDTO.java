@@ -23,7 +23,7 @@ public class RestaurantDTO {
     }
 
     /**
-     * Constructor for RestaurantDTO.
+     * Constructor for RestaurantDTO with all fields.
      *
      * @param id          the ID of the restaurant
      * @param name        the name of the restaurant
@@ -41,6 +41,21 @@ public class RestaurantDTO {
         this.owner = owner;
         this.menus = menus;
         this.orders = orders;
+    }
+
+    /**
+     * Constructor for simplified RestaurantDTO.
+     *
+     * @param name        the name of the restaurant
+     * @param address     the address of the restaurant
+     * @param phoneNumber the phone number of the restaurant
+     * @param menus       the set of menus offered by the restaurant
+     */
+    public RestaurantDTO(String name, String address, String phoneNumber, Set<MenuDTO> menus) {
+        this.name = name;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.menus = menus;
     }
 
     // Getters and Setters

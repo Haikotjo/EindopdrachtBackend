@@ -131,6 +131,9 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "/menus/owner/**").hasAnyAuthority("OWNER", "ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/menus/admin/**").hasAuthority("ADMIN")
 
+                                //                Notification entity endpoints
+                                .requestMatchers(HttpMethod.GET, "/menus/restaurants/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/restaurants").permitAll()
 
 //                .requestMatchers("/**").hasAnyAuthority("ADMIN")
 

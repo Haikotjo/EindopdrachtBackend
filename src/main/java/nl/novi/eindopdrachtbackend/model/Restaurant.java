@@ -79,6 +79,15 @@ public class Restaurant {
     }
 
     /**
+     * Constructor used when creating a restaurant with specified ID.
+     *
+     * @param id the ID of the restaurant
+     */
+    public Restaurant(Long id) {
+        this.id = id;
+    }
+
+    /**
      * Constructor used for detailed restaurant creation.
      *
      * @param name        the name of the restaurant

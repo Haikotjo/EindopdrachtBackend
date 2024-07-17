@@ -33,11 +33,11 @@ public class UserMapper {
         }
 
         if (user.getRestaurant() != null) {
-            dto.setRestaurant(RestaurantMapper.toDTO(user.getRestaurant()));
+            dto.setRestaurant(RestaurantMapper.toRestaurantDTO(user.getRestaurant()));
         }
 
         if (user.getOrders() != null) {
-            dto.setOrders(user.getOrders().stream().map(OrderMapper::toDTO).collect(Collectors.toList()));
+            dto.setOrders(user.getOrders().stream().map(OrderMapper::toOrderDTO).collect(Collectors.toList()));
         }
 
         // Voeg de lijst van IngredientDTO toe
