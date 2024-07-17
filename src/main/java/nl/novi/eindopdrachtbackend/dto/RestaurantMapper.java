@@ -4,9 +4,18 @@ import nl.novi.eindopdrachtbackend.model.Restaurant;
 
 import java.util.stream.Collectors;
 
+/**
+ * Mapper class for converting between Restaurant entities and DTOs.
+ */
 public class RestaurantMapper {
 
-    public static RestaurantDTO toDTO(Restaurant restaurant) {
+    /**
+     * Converts a Restaurant entity to a RestaurantDTO.
+     *
+     * @param restaurant the Restaurant entity
+     * @return the RestaurantDTO
+     */
+    public static RestaurantDTO toRestaurantDTO(Restaurant restaurant) {
         RestaurantDTO dto = new RestaurantDTO();
         dto.setId(restaurant.getId());
         dto.setName(restaurant.getName());
@@ -20,14 +29,24 @@ public class RestaurantMapper {
             dto.setOwner(ownerDTO);
         }
 
-        dto.setMenus(restaurant.getMenus().stream().map(MenuMapper::toMenuDTO).collect(Collectors.toSet()));
-        dto.setOrders(restaurant.getOrders().stream().map(OrderMapper::toDTO).collect(Collectors.toSet()));
+        dto.setMenus(restaurant.getMenus().stream()
+                .map(MenuMapper::toMenuDTO)
+                .collect(Collectors.toSet()));
 
+        dto.setOrders(restaurant.getOrders().stream()
+                .map(OrderMapper::toOrderDTO)
+                .collect(Collectors.toSet()));
 
         return dto;
     }
 
-    public static Restaurant fromInputDTO(RestaurantInputDTO inputDTO) {
+    /**
+     * Converts a RestaurantInputDTO to a Restaurant entity.
+     *
+     * @param inputDTO the RestaurantInputDTO
+     * @return the Restaurant entity
+     */
+    public static Restaurant toRestaurant(RestaurantInputDTO inputDTO) {
         Restaurant restaurant = new Restaurant();
         restaurant.setName(inputDTO.getName());
         restaurant.setAddress(inputDTO.getAddress());

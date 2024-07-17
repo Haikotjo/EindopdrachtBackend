@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class OrderMapper {
 
     // Convert Order entity to OrderDTO
-    public static OrderDTO toDTO(Order order) {
+    public static OrderDTO toOrderDTO(Order order) {
         DeliveryAddressDTO deliveryAddressDTO = DeliveryAddressMapper.toDeliveryAddressDTO(order.getDeliveryAddress());
         List<MenuItemDTO> menuItemDTOs = order.getMenuItems().stream()
                 .map(MenuItemMapper::toMenuItemDTO)
@@ -48,7 +48,7 @@ public class OrderMapper {
 
     public static List<OrderDTO> toOrderDTOList(List<Order> orders) {
         return orders.stream()
-                .map(OrderMapper::toDTO)
+                .map(OrderMapper::toOrderDTO)
                 .collect(Collectors.toList());
     }
 }
