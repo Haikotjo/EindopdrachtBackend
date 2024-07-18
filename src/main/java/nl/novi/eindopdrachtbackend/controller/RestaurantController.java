@@ -203,12 +203,18 @@ public class RestaurantController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-//
-//    @GetMapping("/search/by-name")
-//    public ResponseEntity<List<RestaurantDTO>> getRestaurantsByName(@RequestParam String name) {
-//        List<RestaurantDTO> restaurants = restaurantService.findByNameIgnoreCase(name);
-//        return new ResponseEntity<>(restaurants, HttpStatus.OK);
-//    }
+
+    /**
+     * Get restaurants by name (case insensitive).
+     *
+     * @param name the name of the restaurant
+     * @return ResponseEntity containing a list of RestaurantDTO objects matching the given name
+     */
+    @GetMapping("/search")
+    public ResponseEntity<List<RestaurantDTO>> getRestaurantsByName(@RequestParam String name) {
+        List<RestaurantDTO> restaurants = restaurantService.findByNameIgnoreCase(name);
+        return new ResponseEntity<>(restaurants, HttpStatus.OK);
+    }
 
 
     /**

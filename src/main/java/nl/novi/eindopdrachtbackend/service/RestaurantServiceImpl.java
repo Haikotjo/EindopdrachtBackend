@@ -11,7 +11,6 @@ import nl.novi.eindopdrachtbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.management.relation.Role;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -121,7 +120,6 @@ public class RestaurantServiceImpl implements RestaurantService {
         User owner = userRepository.findById(ownerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Owner not found for this id :: " + ownerId));
 
-        // Controleer of de gebruiker de rol OWNER heeft
         if (owner.getRoles().stream().noneMatch(role -> role.getRolename() == UserRole.OWNER)) {
             throw new IllegalArgumentException("The specified user is not an OWNER");
         }
@@ -208,13 +206,13 @@ public class RestaurantServiceImpl implements RestaurantService {
         restaurantRepository.delete(restaurant);
     }
 
-
-
-//
-//    @Override
-//    public List<RestaurantDTO> findByNameIgnoreCase(String name) {
-//        return restaurantRepository.findByNameIgnoreCase(name).stream()
-//                .map(RestaurantMapper::toDTO)
-//                .collect(Collectors.toList());
-//    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<RestaurantDTO> findByNameIgnoreCase(String name) {
+        return restaurantRepository.findByNameIgnoreCase(name).stream()
+                .map(RestaurantMapper::toRestaurantDTO)
+                .collect(Collectors.toList());
+    }
 }

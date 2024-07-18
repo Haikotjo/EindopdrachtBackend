@@ -1,10 +1,8 @@
 package nl.novi.eindopdrachtbackend.service;
 
-import nl.novi.eindopdrachtbackend.dto.MenuDTO;
 import nl.novi.eindopdrachtbackend.dto.RestaurantDTO;
 import nl.novi.eindopdrachtbackend.dto.RestaurantInputDTO;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
-import nl.novi.eindopdrachtbackend.model.Restaurant;
 import nl.novi.eindopdrachtbackend.model.User;
 
 import java.util.List;
@@ -101,6 +99,11 @@ public interface RestaurantService {
     void deleteRestaurantByOwner(User owner);
 
 
-
-//    List<RestaurantDTO> findByNameIgnoreCase(String name);
+    /**
+     * Find restaurants by name, case insensitive.
+     *
+     * @param name the name of the restaurant
+     * @return a list of RestaurantDTO objects matching the given name
+     */
+    List<RestaurantDTO> findByNameIgnoreCase(String name);
 }
