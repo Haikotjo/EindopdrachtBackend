@@ -5,6 +5,8 @@ import nl.novi.eindopdrachtbackend.dto.RestaurantDTO;
 import nl.novi.eindopdrachtbackend.dto.RestaurantInputDTO;
 import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.Restaurant;
+import nl.novi.eindopdrachtbackend.model.User;
+
 import java.util.List;
 
 public interface RestaurantService {
@@ -84,7 +86,21 @@ public interface RestaurantService {
      */
     RestaurantDTO updateRestaurantForAdmin(RestaurantInputDTO restaurantInputDTO, Long restaurantId);
 
-//    void deleteRestaurant(Long id);
+    /**
+     * Delete a restaurant by admin.
+     *
+     * @param restaurantId the ID of the restaurant to delete
+     */
+    void deleteRestaurantByAdmin(Long restaurantId);
+
+    /**
+     * Delete the restaurant of the logged-in owner.
+     *
+     * @param owner the owner of the restaurant
+     */
+    void deleteRestaurantByOwner(User owner);
+
+
+
 //    List<RestaurantDTO> findByNameIgnoreCase(String name);
-//    List<MenuDTO> getAllMenus();
 }

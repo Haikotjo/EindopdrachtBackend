@@ -1,6 +1,7 @@
 package nl.novi.eindopdrachtbackend.repository;
 
 import nl.novi.eindopdrachtbackend.model.Notification;
+import nl.novi.eindopdrachtbackend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,4 +20,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
      * @return a list of notifications associated with the specified user
      */
     List<Notification> findByUserId(Long userId);
+
+    List<Notification> findByUser(User user);
 }

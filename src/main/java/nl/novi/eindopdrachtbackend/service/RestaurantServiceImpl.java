@@ -5,6 +5,7 @@ import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
 import nl.novi.eindopdrachtbackend.model.Restaurant;
 import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.model.UserRole;
+import nl.novi.eindopdrachtbackend.repository.NotificationRepository;
 import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
 import nl.novi.eindopdrachtbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,13 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
     private final UserRepository userRepository;
+    private final NotificationRepository notificationRepository;
 
     @Autowired
-    public RestaurantServiceImpl(RestaurantRepository restaurantRepository, UserRepository userRepository) {
+    public RestaurantServiceImpl(RestaurantRepository restaurantRepository, UserRepository userRepository, NotificationRepository notificationRepository) {
         this.restaurantRepository = restaurantRepository;
         this.userRepository = userRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     /**
@@ -170,25 +173,43 @@ public class RestaurantServiceImpl implements RestaurantService {
         return RestaurantMapper.toRestaurantDTO(updatedRestaurant);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteRestaurantByAdmin(Long restaurantId) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for this id :: " + restaurantId));
+        User owner = restaurant.getOwner();
 
-//
-//    @Override
-//    public RestaurantDTO updateRestaurant(Long id, RestaurantInputDTO restaurantInputDTO) {
-//        Restaurant existingRestaurant = restaurantRepository.findById(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for this id :: " + id));
-//        existingRestaurant.setName(restaurantInputDTO.getName());
-//        existingRestaurant.setAddress(restaurantInputDTO.getAddress());
-//        existingRestaurant.setPhoneNumber(restaurantInputDTO.getPhoneNumber());
-//        existingRestaurant = restaurantRepository.save(existingRestaurant);
-//        return RestaurantMapper.toDTO(existingRestaurant);
-//    }
-//
-//    @Override
-//    public void deleteRestaurant(Long id) {
-//        Restaurant existingRestaurant = restaurantRepository.findById(id)
-//                        .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id: " + id));
-//        restaurantRepository.delete(existingRestaurant);
-//    }
+        // Remove references to the owner in notifications
+        notificationRepository.findByUser(owner).forEach(notification -> {
+            notification.setUser(null);
+            notificationRepository.save(notification);
+        });
+
+        restaurantRepository.delete(restaurant);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteRestaurantByOwner(User owner) {
+        Restaurant restaurant = restaurantRepository.findByOwner(owner)
+                .orElseThrow(() -> new ResourceNotFoundException("No restaurant found for the current owner."));
+
+        // Remove references to the owner in notifications
+        notificationRepository.findByUser(owner).forEach(notification -> {
+            notification.setUser(null);
+            notificationRepository.save(notification);
+        });
+
+        restaurantRepository.delete(restaurant);
+    }
+
+
+
 //
 //    @Override
 //    public List<RestaurantDTO> findByNameIgnoreCase(String name) {

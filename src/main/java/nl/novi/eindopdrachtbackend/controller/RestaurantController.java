@@ -164,12 +164,45 @@ public class RestaurantController {
         RestaurantDTO updatedRestaurant = restaurantService.updateRestaurantForAdmin(restaurantInputDTO, restaurantId);
         return new ResponseEntity<>(updatedRestaurant, HttpStatus.OK);
     }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteRestaurant(@PathVariable Long id) {
-//        restaurantService.deleteRestaurant(id);
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//    }
+
+    /**
+     * Delete a restaurant by admin.
+     *
+     * @param restaurantId the ID of the restaurant to delete
+     * @return ResponseEntity with status
+     */
+    @DeleteMapping("/admin/{restaurantId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Void> deleteRestaurantByAdmin(@PathVariable Long restaurantId) {
+        try {
+            restaurantService.deleteRestaurantByAdmin(restaurantId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    /**
+     * Delete the restaurant of the logged-in owner.
+     *
+     * @return ResponseEntity with status
+     */
+    @DeleteMapping("/owner")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<Void> deleteRestaurantByOwner() {
+        try {
+            User currentUser = getCurrentUser();
+            restaurantService.deleteRestaurantByOwner(currentUser);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 //
 //    @GetMapping("/search/by-name")
 //    public ResponseEntity<List<RestaurantDTO>> getRestaurantsByName(@RequestParam String name) {
