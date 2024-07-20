@@ -112,18 +112,18 @@ public class UserController {
     }
 
     /**
-     * Update user for own id (authenticated users)
+     * Update user details for the current authenticated user
      *
-     * @param id the ID of the user
      * @param userInputDTO the new user details
      * @return ResponseEntity containing the updated UserDTO object
      */
-    @PutMapping("/{id}")
+    @PutMapping("/profile")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'OWNER', 'CUSTOMER')")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody @Valid UserInputDTO userInputDTO) {
-        UserDTO updatedUser = userService.updateUser(id, userInputDTO);
+    public ResponseEntity<UserDTO> updateUser(@RequestBody @Valid UserInputDTO userInputDTO) {
+        UserDTO updatedUser = userService.updateUser(userInputDTO);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
+
 
     /**
      * Update user for all id's (ADMIN only)

@@ -104,26 +104,20 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public UserDTO updateUser(Long id, UserInputDTO userInputDTO) {
+    public UserDTO updateUser(UserInputDTO userInputDTO) {
         String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
         User currentUser = userRepository.findByEmail(currentUserEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Current user not found"));
 
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        currentUser.setName(userInputDTO.getName());
+        currentUser.setEmail(userInputDTO.getEmail());
+        currentUser.setPhoneNumber(userInputDTO.getPhoneNumber());
+        currentUser.setPassword(passwordEncoder.encode(userInputDTO.getPassword())); // Ensure password is encoded
+        userRepository.save(currentUser);
 
-        if (!user.getEmail().equals(currentUserEmail)) {
-            throw new AccessDeniedException("You do not have permission to update this user");
-        }
-
-        user.setName(userInputDTO.getName());
-        user.setEmail(userInputDTO.getEmail());
-        user.setPhoneNumber(userInputDTO.getPhoneNumber());
-        user.setPassword(userInputDTO.getPassword()); // Assuming password is already encoded
-        userRepository.save(user);
-
-        return UserMapper.toUserDTO(user);
+        return UserMapper.toUserDTO(currentUser);
     }
+
 
     /**
      * {@inheritDoc}

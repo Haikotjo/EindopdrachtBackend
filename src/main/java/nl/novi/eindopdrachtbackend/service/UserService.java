@@ -65,7 +65,7 @@ public interface UserService {
      * @return the updated UserDTO
      * @throws ResourceNotFoundException if the user is not found
      */
-    UserDTO updateUser(Long id, UserInputDTO userInputDTO);
+    UserDTO updateUser(UserInputDTO userInputDTO);
 
     /**
      * Update user details for admin.
