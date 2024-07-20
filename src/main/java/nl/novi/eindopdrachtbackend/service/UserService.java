@@ -18,12 +18,12 @@ public interface UserService {
     List<UserDTO> getAllUsers();
 
     /**
-     * Get user by ID.
+     * Get user by ID for the logged-in user.
      *
-     * @param id user ID
-     * @return UserDTO for the specified ID
+     * @param email email of the logged-in user
+     * @return UserDTO for the logged-in user
      */
-    UserDTO getUserById(Long id);
+    UserDTO getUserById(String email);
 
     /**
      * Get user by ID for admin.

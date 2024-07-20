@@ -2,7 +2,11 @@ package nl.novi.eindopdrachtbackend.controller;
 
 import jakarta.validation.Valid;
 import nl.novi.eindopdrachtbackend.dto.*;
+import nl.novi.eindopdrachtbackend.exception.ResourceNotFoundException;
+import nl.novi.eindopdrachtbackend.model.User;
 import nl.novi.eindopdrachtbackend.model.UserRole;
+import nl.novi.eindopdrachtbackend.repository.UserRepository;
+import nl.novi.eindopdrachtbackend.security.SecurityUtils;
 import nl.novi.eindopdrachtbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,11 +20,17 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
+    private final UserService userService;
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserService userService;
+    public UserController(UserService userService, UserRepository userRepository) {
+        this.userService = userService;
+        this.userRepository = userRepository;
+    }
 
     /**
-     * Get all users by ID with full information (ADMIN only)
+     * Get all Users (Admin only)
      *
      * @return ResponseEntity containing a list of UserDTO objects
      */
@@ -47,15 +57,22 @@ public class UserController {
     /**
      * Get user by ID with basic information for authenticated users
      *
-     * @param id the ID of the user
-     * @return ResponseEntity containing the UserDTO object for the specified ID
+     * @return ResponseEntity containing the UserDTO object for the authenticated user
      */
-    @GetMapping("/{id}")
+    @GetMapping("/profile")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'OWNER', 'CUSTOMER')")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
-        UserDTO userDTO = userService.getUserById(id);
-        return new ResponseEntity<>(userDTO, HttpStatus.OK);
+    public ResponseEntity<UserDTO> getUserProfile() {
+        String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
+        try {
+            UserDTO userDTO = userService.getUserById(currentUserEmail);
+            return new ResponseEntity<>(userDTO, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
 
     /**
      * Post new ADMIN user (ADMIN only)
@@ -186,5 +203,24 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> getUsersByRole(@RequestParam UserRole role) {
         List<UserDTO> users = userService.findByRole(role);
         return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    /**
+     * Retrieve the currently authenticated user from the security context.
+     *
+     * This method fetches the email of the currently authenticated user from the security context,
+     * retrieves the corresponding User entity from the user repository, and returns the User object.
+     * If the user is not found, it throws a ResourceNotFoundException.
+     *
+     * @return the User object representing the currently authenticated user
+     * @throws ResourceNotFoundException if no user is found with the current authenticated email
+     */
+    private User getCurrentUser() {
+        String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
+        User user = userRepository.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + currentUserEmail));
+        System.out.println("Current User Email: " + currentUserEmail);
+        System.out.println("Current User Roles: " + user.getRoles());
+        return user;
     }
 }

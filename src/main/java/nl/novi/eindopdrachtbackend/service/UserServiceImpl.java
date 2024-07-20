@@ -52,19 +52,10 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public UserDTO getUserById(Long id) {
-        String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
-        User currentUser = userRepository.findByEmail(currentUserEmail)
-                .orElseThrow(() -> new ResourceNotFoundException("Current user not found"));
-
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
-
-        if (!user.getEmail().equals(currentUserEmail)) {
-            throw new AccessDeniedException("You do not have permission to view this user");
-        }
-
-        return UserMapper.toUserDTO(user);
+    public UserDTO getUserById(String email) {
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
+        return UserMapper.toUserDTO(currentUser);
     }
 
     /**
