@@ -154,15 +154,14 @@ public class UserController {
     }
 
     /**
-     * Delete user (authenticated users)
+     * Delete the currently authenticated user.
      *
-     * @param id the ID of the user to delete
      * @return ResponseEntity with status
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/profile")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'OWNER', 'CUSTOMER')")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+    public ResponseEntity<Void> deleteCurrentUser() {
+        userService.deleteUser();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

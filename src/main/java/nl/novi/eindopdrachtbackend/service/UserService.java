@@ -78,11 +78,10 @@ public interface UserService {
     UserDTO updateUserForAdmin(Long id, UserInputDTO userInputDTO);
 
     /**
-     * Delete a user.
-     *
-     * @param id the ID of the user to delete
+     * Delete the currently authenticated user.
      */
-    void deleteUser(Long id);
+    void deleteUser();
+
 
     /**
      * Delete a user for admin.

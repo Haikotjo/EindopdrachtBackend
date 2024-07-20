@@ -59,7 +59,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/users/**").authenticated()
                                 .requestMatchers(HttpMethod.PUT, "/users/profile").authenticated()
-                                .requestMatchers(HttpMethod.DELETE, "/users/**").authenticated()
+                                .requestMatchers(HttpMethod.DELETE, "/users/profile").authenticated()
                                 .requestMatchers(HttpMethod.GET, "/users/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/users/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/users/admin/**").hasAuthority("ADMIN")

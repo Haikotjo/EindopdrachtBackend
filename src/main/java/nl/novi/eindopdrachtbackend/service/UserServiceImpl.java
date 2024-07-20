@@ -156,20 +156,14 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUser() {
         String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
         User currentUser = userRepository.findByEmail(currentUserEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("Current user not found"));
 
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
-
-        if (!user.getEmail().equals(currentUserEmail)) {
-            throw new AccessDeniedException("You do not have permission to delete this user");
-        }
-
-        userRepository.delete(user);
+        userRepository.delete(currentUser);
     }
+
 
     /**
      * {@inheritDoc}
