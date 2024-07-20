@@ -33,9 +33,11 @@ public class RestaurantMapper {
                 .map(MenuMapper::toMenuDTO)
                 .collect(Collectors.toSet()));
 
-        dto.setOrders(restaurant.getOrders().stream()
-                .map(OrderMapper::toOrderDTO)
-                .collect(Collectors.toSet()));
+        if (restaurant.getOrders() != null && !restaurant.getOrders().isEmpty()) {
+            dto.setOrders(restaurant.getOrders().stream()
+                    .map(OrderMapper::toOrderDTO)
+                    .collect(Collectors.toSet()));
+        }
 
         return dto;
     }

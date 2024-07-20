@@ -28,7 +28,9 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // Get all users (ADMIN only) - Endpoint: GET /users
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream()
@@ -36,7 +38,9 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-    // Get user by ID with full information (ADMIN only) - Endpoint: GET /users/admin/{id}
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserDTO getUserByIdForAdmin(Long id) {
         User user = userRepository.findById(id)
@@ -44,7 +48,9 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toFullUserDTO(user);
     }
 
-    // Get user by ID with basic information for authenticated users - Endpoint: GET /users/{id}
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserDTO getUserById(Long id) {
         String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
@@ -54,16 +60,16 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
-        // Controleer of de huidige gebruiker zijn eigen gegevens probeert op te halen
         if (!user.getEmail().equals(currentUserEmail)) {
             throw new AccessDeniedException("You do not have permission to view this user");
         }
 
-        // Als de huidige gebruiker zijn eigen gegevens probeert op te halen
         return UserMapper.toUserDTO(user);
     }
 
-    // Post new ADMIN user (ADMIN only) - Endpoint: POST /users/admin
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserDTO createAdmin(UserInputDTO userInputDTO) {
         User user = UserMapper.toUser(userInputDTO);
@@ -75,7 +81,9 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserDTO(user);
     }
 
-    // Post new CUSTOMER user (public access) - Endpoint: POST /users/customer
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserDTO createCustomer(UserInputDTO userInputDTO) {
         User user = UserMapper.toUser(userInputDTO);
@@ -87,7 +95,9 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserDTO(user);
     }
 
-    // Post new OWNER user (public access) - Endpoint: POST /users/owner
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserDTO createOwner(UserInputDTO userInputDTO) {
         User user = UserMapper.toUser(userInputDTO);
@@ -99,7 +109,9 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserDTO(user);
     }
 
-    // Update user for own id (authenticated users) - Endpoint: PUT /users/{id}
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserDTO updateUser(Long id, UserInputDTO userInputDTO) {
         String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
@@ -117,14 +129,14 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userInputDTO.getEmail());
         user.setPhoneNumber(userInputDTO.getPhoneNumber());
         user.setPassword(userInputDTO.getPassword()); // Assuming password is already encoded
-        // Andere velden bijwerken indien nodig
-
         userRepository.save(user);
 
         return UserMapper.toUserDTO(user);
     }
 
-    // Update user for all id's (ADMIN only) - Endpoint: PUT /users/admin/{id}
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserDTO updateUserForAdmin(Long id, UserInputDTO userInputDTO) {
         User user = userRepository.findById(id)
@@ -134,14 +146,14 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userInputDTO.getEmail());
         user.setPhoneNumber(userInputDTO.getPhoneNumber());
         user.setPassword(userInputDTO.getPassword()); // Assuming password is already encoded
-        // Andere velden bijwerken indien nodig
-
         userRepository.save(user);
 
         return UserMapper.toUserDTO(user);
     }
 
-    // Update user role for all id's (ADMIN only) - Endpoint: PUT /users/{id}/role
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserDTO updateUserRole(Long id, UserRoleUpdateDTO userRoleUpdateDTO) {
         User existingUser = userRepository.findById(id)
@@ -155,7 +167,9 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toUserDTO(existingUser);
     }
 
-    // Delete user for own id (authenticated users) - Endpoint: DELETE /users/{id}
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteUser(Long id) {
         String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
@@ -172,7 +186,9 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
-    // Delete user for all id's (ADMIN only) - Endpoint: DELETE /users/admin/{id}
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deleteUserForAdmin(Long id) {
         User user = userRepository.findById(id)
@@ -180,7 +196,9 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
-    // Search for user by email (ADMIN only) - Endpoint: GET /users/search/by-email
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserDTO findByEmail(String email) {
         return userRepository.findByEmail(email)
@@ -188,7 +206,9 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
 
-    // Search by role (ADMIN only) - Endpoint: GET /users/search/by-role
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UserDTO> findByRole(UserRole role) {
         List<UserDTO> users = userRepository.findByRole(role).stream()

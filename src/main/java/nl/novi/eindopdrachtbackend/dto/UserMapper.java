@@ -47,8 +47,10 @@ public class UserMapper {
             dto.setRestaurant(RestaurantMapper.toRestaurantDTO(user.getRestaurant()));
         }
 
-        if (user.getOrders() != null) {
-            dto.setOrders(user.getOrders().stream().map(OrderMapper::toOrderDTO).collect(Collectors.toList()));
+        if (user.getOrders() != null && !user.getOrders().isEmpty()) {
+            dto.setOrders(user.getOrders().stream()
+                    .map(OrderMapper::toOrderDTO)
+                    .collect(Collectors.toList()));
         }
 
         if (user.getIngredients() != null) {
