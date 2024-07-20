@@ -5,11 +5,17 @@ import java.util.stream.Collectors;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * Mapper class for converting between User entities and DTOs.
+ */
 public class UserMapper {
 
-    // Convert User entity to UserDTO
-
-    // For basic information
+    /**
+     * Converts a User entity to a basic UserDTO.
+     *
+     * @param user the User entity
+     * @return the basic UserDTO
+     */
     public static UserDTO toUserDTO(User user) {
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());
@@ -19,15 +25,20 @@ public class UserMapper {
         return dto;
     }
 
-    // For full information
+    /**
+     * Converts a User entity to a detailed UserDTO.
+     *
+     * @param user the User entity
+     * @return the detailed UserDTO
+     */
     public static UserDTO toFullUserDTO(User user) {
         UserDTO dto = new UserDTO();
-
         dto.setId(user.getId());
         dto.setName(user.getName());
         dto.setEmail(user.getEmail());
         dto.setRoles(user.getRoles().stream().map(role -> role.getRolename().name()).collect(Collectors.toList()));
         dto.setPhoneNumber(user.getPhoneNumber());
+
         if (user.getDeliveryAddress() != null) {
             dto.setDeliveryAddress(DeliveryAddressMapper.toDeliveryAddressDTO(user.getDeliveryAddress()));
         }
@@ -40,7 +51,6 @@ public class UserMapper {
             dto.setOrders(user.getOrders().stream().map(OrderMapper::toOrderDTO).collect(Collectors.toList()));
         }
 
-        // Voeg de lijst van IngredientDTO toe
         if (user.getIngredients() != null) {
             dto.setIngredients(user.getIngredients().stream()
                     .map(IngredientMapper::toOwnerIngredientDTO)
@@ -50,7 +60,12 @@ public class UserMapper {
         return dto;
     }
 
-    // Convert UserInputDTO to User entity
+    /**
+     * Converts a UserInputDTO to a User entity.
+     *
+     * @param inputDTO the UserInputDTO
+     * @return the User entity
+     */
     public static User toUser(UserInputDTO inputDTO) {
         List<Role> roles = new ArrayList<>();
         if (inputDTO.getRoles() != null) {
@@ -59,7 +74,6 @@ public class UserMapper {
                 roles.add(role);
             }
         }
-
         return new User(inputDTO.getName(), inputDTO.getEmail(), inputDTO.getPassword(), roles, inputDTO.getPhoneNumber());
     }
 }
