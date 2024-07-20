@@ -122,6 +122,16 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "/restaurants/owner").hasAnyAuthority("OWNER", "ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/restaurants/admin/**").hasAuthority("ADMIN")
 
+                                // DeliveryAddress entity endpoints
+                                .requestMatchers(HttpMethod.GET, "/address/admin/all").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/address/admin/{id}").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/address/customer").hasAuthority("CUSTOMER")
+                                .requestMatchers(HttpMethod.POST, "/address/admin/{userId}/address").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/address/customer").hasAuthority("CUSTOMER")
+                                .requestMatchers(HttpMethod.PUT, "/address/admin/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/address/customer").hasAuthority("CUSTOMER")
+                                .requestMatchers(HttpMethod.DELETE, "/address/admin/{id}").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/address/customer").hasAuthority("CUSTOMER")
 
 //                .requestMatchers("/**").hasAnyAuthority("ADMIN")
 
