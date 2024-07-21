@@ -146,7 +146,19 @@ public class OrderController {
         }
     }
 
-
+    /**
+     * Create a new order for the logged-in customer or admin.
+     *
+     * @param orderInputDTO the order data transfer object
+     * @return ResponseEntity containing the created OrderDTO object
+     */
+    @PostMapping
+    @PreAuthorize("hasAuthority('CUSTOMER') or hasAuthority('ADMIN')")
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderInputDTO orderInputDTO) {
+        User currentUser = getCurrentUser();
+        OrderDTO newOrder = orderService.createOrder(currentUser.getId(), orderInputDTO);
+        return new ResponseEntity<>(newOrder, HttpStatus.CREATED);
+    }
 
 
 

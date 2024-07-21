@@ -130,31 +130,33 @@ public class OrderServiceImpl implements OrderService {
         return OrderMapper.toOrderDTO(order);
     }
 
+    @Override
+    public OrderDTO createOrder(Long customerId, OrderInputDTO orderInputDTO) {
+        User customer = userRepository.findById(customerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + customerId));
+        Restaurant restaurant = restaurantRepository.findById(orderInputDTO.getRestaurantId())
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id: " + orderInputDTO.getRestaurantId()));
+        DeliveryAddress deliveryAddress = deliveryAddressRepository.findById(orderInputDTO.getDeliveryAddressId())
+                .orElseThrow(() -> new ResourceNotFoundException("Delivery address not found with id: " + orderInputDTO.getDeliveryAddressId()));
+
+        Set<MenuItem> menuItems = orderInputDTO.getMenuItemIds().stream()
+                .map(menuItemId -> menuItemRepository.findById(menuItemId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Menu item not found with id: " + menuItemId)))
+                .collect(Collectors.toSet());
+
+        Order order = new Order(customer, restaurant, deliveryAddress, orderInputDTO.isFulfilled());
+        order.setMenuItems(menuItems);
+        Order savedOrder = orderRepository.save(order);
+
+        return OrderMapper.toOrderDTO(savedOrder);
+    }
 
 
 
-//    @Override
-//    public OrderDTO createOrder(OrderInputDTO orderInputDTO) {
-//        User customer = userRepository.findById(orderInputDTO.getCustomerId())
-//                .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + orderInputDTO.getCustomerId()));
-//
-//        Restaurant restaurant = restaurantRepository.findById(orderInputDTO.getRestaurantId())
-//                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for this id :: " + orderInputDTO.getRestaurantId()));
-//
-//        DeliveryAddress deliveryAddress = deliveryAddressRepository.findById(orderInputDTO.getDeliveryAddressId())
-//                .orElseThrow(() -> new ResourceNotFoundException("DeliveryAddress not found for this id :: " + orderInputDTO.getDeliveryAddressId()));
-//
-//        Set<MenuItem> menuItems = new HashSet<>();
-//        for (Long menuItemId : orderInputDTO.getMenuItemIds()) {
-//            MenuItem menuItem = menuItemRepository.findById(menuItemId)
-//                    .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found for this id :: " + menuItemId));
-//            menuItems.add(menuItem);
-//        }
-//
-//        Order order = OrderMapper.fromInputDTO(orderInputDTO, customer, restaurant, deliveryAddress, menuItems);
-//        order = orderRepository.save(order);
-//        return OrderMapper.toOrderDTO(order);
-//    }
+
+
+
+
 //
 //    @Override
 //    public OrderDTO updateOrder(Long id, OrderInputDTO orderInputDTO) {

@@ -56,9 +56,16 @@ public interface OrderService {
      */
     OrderDTO getOrderByIdForOwner(Long orderId, Long ownerId);
 
+    /**
+     * Create a new order for the logged-in user (customer or admin).
+     *
+     * @param userId the ID of the logged-in user
+     * @param orderInputDTO the order data transfer object
+     * @return the created OrderDTO
+     */
+    OrderDTO createOrder(Long userId, OrderInputDTO orderInputDTO);
 
 
-//    OrderDTO createOrder(OrderInputDTO orderInputDTO);
 //    OrderDTO updateOrder(Long id, OrderInputDTO orderInputDTO);
 //    void deleteOrder(Long id);
 //    List<OrderDTO> findOrdersByCustomerId(Long customerId);

@@ -142,6 +142,8 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/orders/customer").hasAuthority("CUSTOMER")
                                 .requestMatchers(HttpMethod.GET, "/orders/owner").hasAuthority("OWNER")
 
+                                .requestMatchers(HttpMethod.POST).hasAnyAuthority("ADMIN", "CUSTOMER")
+
 //                .requestMatchers("/**").hasAnyAuthority("ADMIN")
 
                                 .anyRequest().authenticated()
