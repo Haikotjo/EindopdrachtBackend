@@ -11,10 +11,22 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Mapper class for converting between Order entities and DTOs.
+ */
 public class OrderMapper {
 
-    // Convert Order entity to OrderDTO
+    /**
+     * Converts an Order entity to an OrderDTO.
+     *
+     * @param order the Order entity
+     * @return the OrderDTO
+     */
     public static OrderDTO toOrderDTO(Order order) {
+        if (order == null) {
+            return null;
+        }
+
         DeliveryAddressDTO deliveryAddressDTO = DeliveryAddressMapper.toDeliveryAddressDTO(order.getDeliveryAddress());
         List<MenuItemDTO> menuItemDTOs = order.getMenuItems().stream()
                 .map(MenuItemMapper::toMenuItemDTO)
@@ -34,8 +46,21 @@ public class OrderMapper {
         );
     }
 
-    // Convert OrderInputDTO to Order entity
+    /**
+     * Converts an OrderInputDTO to an Order entity.
+     *
+     * @param inputDTO the OrderInputDTO
+     * @param customer the User entity representing the customer
+     * @param restaurant the Restaurant entity
+     * @param deliveryAddress the DeliveryAddress entity
+     * @param menuItems the set of MenuItem entities
+     * @return the Order entity
+     */
     public static Order fromInputDTO(OrderInputDTO inputDTO, User customer, Restaurant restaurant, DeliveryAddress deliveryAddress, Set<MenuItem> menuItems) {
+        if (inputDTO == null || customer == null || restaurant == null || deliveryAddress == null || menuItems == null) {
+            return null;
+        }
+
         Order order = new Order();
         order.setFulfilled(inputDTO.isFulfilled());
         order.setCustomer(customer);
@@ -46,7 +71,17 @@ public class OrderMapper {
         return order;
     }
 
+    /**
+     * Converts a list of Order entities to a list of OrderDTOs.
+     *
+     * @param orders the list of Order entities
+     * @return the list of OrderDTOs
+     */
     public static List<OrderDTO> toOrderDTOList(List<Order> orders) {
+        if (orders == null) {
+            return null;
+        }
+
         return orders.stream()
                 .map(OrderMapper::toOrderDTO)
                 .collect(Collectors.toList());
