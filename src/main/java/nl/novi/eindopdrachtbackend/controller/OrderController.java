@@ -160,6 +160,36 @@ public class OrderController {
         return new ResponseEntity<>(newOrder, HttpStatus.CREATED);
     }
 
+    /**
+     * Update an order for a customer.
+     *
+     * @param orderId the ID of the order to update
+     * @param orderInputDTO the order data to update
+     * @return ResponseEntity containing the updated OrderDTO object
+     */
+    @PutMapping("/customer/{orderId}")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
+    public ResponseEntity<OrderDTO> updateOrderForCustomer(@PathVariable Long orderId, @RequestBody OrderInputDTO orderInputDTO) {
+        User currentUser = getCurrentUser();
+        OrderDTO updatedOrder = orderService.updateOrderForCustomer(orderId, orderInputDTO, currentUser.getId());
+        return new ResponseEntity<>(updatedOrder, HttpStatus.OK);
+    }
+
+    /**
+     * Update an order for an admin.
+     *
+     * @param orderId the ID of the order to update
+     * @param orderInputDTO the order data to update
+     * @return ResponseEntity containing the updated OrderDTO object
+     */
+    @PutMapping("/admin/{orderId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<OrderDTO> updateOrderForAdmin(@PathVariable Long orderId, @RequestBody OrderInputDTO orderInputDTO) {
+        OrderDTO updatedOrder = orderService.updateOrderForAdmin(orderId, orderInputDTO);
+        return new ResponseEntity<>(updatedOrder, HttpStatus.OK);
+    }
+
+
 
 
 //

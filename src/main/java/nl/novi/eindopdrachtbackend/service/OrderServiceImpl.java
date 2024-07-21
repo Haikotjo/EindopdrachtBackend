@@ -151,7 +151,42 @@ public class OrderServiceImpl implements OrderService {
         return OrderMapper.toOrderDTO(savedOrder);
     }
 
+    @Override
+    public OrderDTO updateOrderForCustomer(Long orderId, OrderInputDTO orderInputDTO, Long customerId) {
+        Order order = orderRepository.findByIdAndCustomerId(orderId, customerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found for this id :: " + orderId + " and customer id :: " + customerId));
 
+        updateOrderFields(order, orderInputDTO);
+        Order updatedOrder = orderRepository.save(order);
+        return OrderMapper.toOrderDTO(updatedOrder);
+    }
+
+    @Override
+    public OrderDTO updateOrderForAdmin(Long orderId, OrderInputDTO orderInputDTO) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found for this id :: " + orderId));
+
+        updateOrderFields(order, orderInputDTO);
+        Order updatedOrder = orderRepository.save(order);
+        return OrderMapper.toOrderDTO(updatedOrder);
+    }
+
+    private void updateOrderFields(Order order, OrderInputDTO orderInputDTO) {
+        order.setFulfilled(orderInputDTO.isFulfilled());
+
+        Restaurant restaurant = restaurantRepository.findById(orderInputDTO.getRestaurantId())
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for this id :: " + orderInputDTO.getRestaurantId()));
+        order.setRestaurant(restaurant);
+
+        DeliveryAddress deliveryAddress = deliveryAddressRepository.findById(orderInputDTO.getDeliveryAddressId())
+                .orElseThrow(() -> new ResourceNotFoundException("Delivery address not found for this id :: " + orderInputDTO.getDeliveryAddressId()));
+        order.setDeliveryAddress(deliveryAddress);
+
+        Set<MenuItem> menuItems = new HashSet<>(menuItemRepository.findAllById(orderInputDTO.getMenuItemIds()));
+        order.setMenuItems(menuItems);
+
+        order.setOrderDateTime(LocalDateTime.now());
+    }
 
 
 

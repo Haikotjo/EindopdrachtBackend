@@ -66,7 +66,26 @@ public interface OrderService {
     OrderDTO createOrder(Long userId, OrderInputDTO orderInputDTO);
 
 
-//    OrderDTO updateOrder(Long id, OrderInputDTO orderInputDTO);
+    /**
+     * Update an order for a customer.
+     *
+     * @param orderId the ID of the order to update
+     * @param orderInputDTO the order data to update
+     * @param customerId the ID of the customer
+     * @return updated OrderDTO
+     */
+    OrderDTO updateOrderForCustomer(Long orderId, OrderInputDTO orderInputDTO, Long customerId);
+
+    /**
+     * Update an order for an admin.
+     *
+     * @param orderId the ID of the order to update
+     * @param orderInputDTO the order data to update
+     * @return updated OrderDTO
+     */
+    OrderDTO updateOrderForAdmin(Long orderId, OrderInputDTO orderInputDTO);
+
+
 //    void deleteOrder(Long id);
 //    List<OrderDTO> findOrdersByCustomerId(Long customerId);
 //    List<OrderDTO> findOrdersByRestaurantId(Long restaurantId);
