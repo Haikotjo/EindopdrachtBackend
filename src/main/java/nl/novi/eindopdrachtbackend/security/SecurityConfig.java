@@ -126,7 +126,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/address/admin/all").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/address/admin/{id}").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/address/customer").hasAuthority("CUSTOMER")
-                                .requestMatchers(HttpMethod.POST, "/address/admin/{userId}/address").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/address/admin/{userId}").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/address/customer").hasAuthority("CUSTOMER")
                                 .requestMatchers(HttpMethod.PUT, "/address/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/address/customer").hasAuthority("CUSTOMER")

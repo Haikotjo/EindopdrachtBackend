@@ -87,7 +87,7 @@ public class DeliveryAddressController {
      * @param addressDTO the delivery address data transfer object
      * @return ResponseEntity containing the created DeliveryAddressDTO object
      */
-    @PostMapping("/admin/{userId}/address")
+    @PostMapping("/admin/{userId}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<DeliveryAddressDTO> createDeliveryAddressForUserByAdmin(@PathVariable Long userId, @RequestBody DeliveryAddressInputDTO addressDTO) {
         DeliveryAddressDTO newAddress = deliveryAddressService.createDeliveryAddressForUser(userId, addressDTO);
