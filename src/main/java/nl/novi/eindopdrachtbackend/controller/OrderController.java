@@ -208,58 +208,32 @@ public class OrderController {
         }
     }
 
+    /**
+     * Generate a printable version of the order for the logged-in owner.
+     *
+     * @param id the ID of the order to print
+     * @return ResponseEntity containing the printable order string
+     */
+    @GetMapping("/{id}/print")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<String> printOrder(@PathVariable Long id) {
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println("Received request to print order with id: " + id);
+        String printableOrder = orderService.generatePrintableOrder(id, now);
+        System.out.println("Generated printable order: " + printableOrder);
+        return new ResponseEntity<>(printableOrder, HttpStatus.OK);
+    }
 
-//
-//
-//    @PostMapping
-//    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderInputDTO orderInputDTO) {
-//        OrderDTO createdOrder = orderService.createOrder(orderInputDTO);
-//        return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
-//    }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<OrderDTO> updateOrder(@PathVariable Long id, @RequestBody OrderInputDTO orderInputDTO) {
-//        OrderDTO updatedOrder = orderService.updateOrder(id, orderInputDTO);
-//        return new ResponseEntity<>(updatedOrder, HttpStatus.OK);
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
-//        orderService.deleteOrder(id);
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//    }
-//
-//    @GetMapping("/customer/{customerId}")
-//    public ResponseEntity<List<OrderDTO>> findOrdersByCustomerId(@PathVariable Long customerId) {
-//        List<OrderDTO> orders = orderService.findOrdersByCustomerId(customerId);
-//        return new ResponseEntity<>(orders, HttpStatus.OK);
-//    }
-//
-//    @GetMapping("/restaurant/{restaurantId}")
-//    public ResponseEntity<List<OrderDTO>> findOrdersByRestaurantId(@PathVariable Long restaurantId) {
-//        List<OrderDTO> orders = orderService.findOrdersByRestaurantId(restaurantId);
-//        return new ResponseEntity<>(orders, HttpStatus.OK);
-//    }
+
 //    @GetMapping("/restaurant/{restaurantId}/print")
 //    public ResponseEntity<String> printOrdersByRestaurantAndDate(@PathVariable Long restaurantId, @RequestParam String date) {
 //        LocalDateTime localDate = LocalDateTime.parse(date + "T00:00:00");
 //        String summary = orderService.generatePrintableDailySummary(restaurantId, localDate);
 //        return new ResponseEntity<>(summary, HttpStatus.OK);
 //    }
-//
-//    @GetMapping("/{id}/print")
-//    public ResponseEntity<String> printOrder(@PathVariable Long id) {
-//        LocalDateTime now = LocalDateTime.now();
-//        System.out.println("Received request to print order with id: " + id);
-//        String printableOrder = orderService.generatePrintableOrder(id, now);
-//        System.out.println("Generated printable order: " + printableOrder);
-//        return new ResponseEntity<>(printableOrder, HttpStatus.OK);
-//    }
-//
-//
-//
-//
-//
+
+
+
     /**
      * Retrieve the currently authenticated user from the security context.
      *

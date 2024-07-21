@@ -210,32 +210,29 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.delete(order);
     }
 
+    @Override
+    public String generatePrintableOrder(Long orderId, LocalDateTime date) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found for this id :: " + orderId));
+        User customer = userRepository.findById(order.getCustomer().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + order.getCustomer().getId()));
+        Restaurant restaurant = restaurantRepository.findById(order.getRestaurant().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for this id :: " + order.getRestaurant().getId()));
 
+        StringBuilder printableOrder = new StringBuilder();
+        printableOrder.append("Beste ").append(customer.getName()).append(",\n");
+        printableOrder.append("Bedankt voor uw bestelling bij ").append(restaurant.getName()).append(".\n");
+        printableOrder.append("Uw bestelling:\n");
 
+        for (MenuItem item : order.getMenuItems()) {
+            printableOrder.append(item.getName()).append(" - €").append(item.getPrice()).append("\n");
+        }
 
-//    @Override
-//    public String generatePrintableOrder(Long orderId, LocalDateTime date) {
-//        Order order = orderRepository.findById(orderId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Order not found for this id :: " + orderId));
-//        User customer = userRepository.findById(order.getCustomer().getId())
-//                .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + order.getCustomer().getId()));
-//        Restaurant restaurant = restaurantRepository.findById(order.getRestaurant().getId())
-//                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for this id :: " + order.getRestaurant().getId()));
-//
-//        StringBuilder printableOrder = new StringBuilder();
-//        printableOrder.append("Beste ").append(customer.getName()).append(",\n");
-//        printableOrder.append("Bedankt voor uw bestelling bij ").append(restaurant.getName()).append(".\n");
-//        printableOrder.append("Uw bestelling:\n");
-//
-//        for (MenuItem item : order.getMenuItems()) {
-//            printableOrder.append(item.getName()).append(" - €").append(item.getPrice()).append("\n");
-//        }
-//
-//        printableOrder.append("Totaal: €").append(order.getTotalPrice()).append("\n");
-//        printableOrder.append("Datum en tijd: ").append(order.getOrderDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))).append("\n");
-//
-//        return printableOrder.toString();
-//    }
+        printableOrder.append("Totaal: €").append(order.getTotalPrice()).append("\n");
+        printableOrder.append("Datum en tijd: ").append(order.getOrderDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))).append("\n");
+
+        return printableOrder.toString();
+    }
 //
 //    @Override
 //    public String generatePrintableDailySummary(Long restaurantId, LocalDateTime date) {

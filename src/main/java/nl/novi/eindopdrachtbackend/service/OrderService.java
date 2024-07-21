@@ -92,15 +92,16 @@ public interface OrderService {
      */
     void deleteOrder(Long id);
 
+    /**
+     * Generate a printable version of the order.
+     *
+     * @param orderId the ID of the order
+     * @param date the date and time for the order
+     * @return a formatted string representing the printable order
+     */
+    String generatePrintableOrder(Long orderId, LocalDateTime date);
 
-//    List<OrderDTO> findOrdersByDate(LocalDateTime date);
-//
-//    String getUserNameById(Long userId);
-//
-//    String getRestaurantNameById(Long restaurantId);
-//
-//    String generatePrintableOrder(Long orderId, LocalDateTime date);
-//    List<OrderDTO> findOrdersByRestaurantAndDate(Long restaurantId, LocalDateTime date);
+
 //
 //    String generatePrintableDailySummary(Long restaurantId, LocalDateTime date);
     }
