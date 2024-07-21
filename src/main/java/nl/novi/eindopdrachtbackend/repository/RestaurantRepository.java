@@ -16,5 +16,19 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
      */
     List<Restaurant> findByNameIgnoreCase(String name);
 
+    /**
+     * Find a restaurant by its owner.
+     *
+     * @param owner the owner of the restaurant
+     * @return an Optional containing the Restaurant entity
+     */
     Optional<Restaurant> findByOwner(User owner);
+
+    /**
+     * Find a restaurant by the owner's ID.
+     *
+     * @param ownerId the ID of the owner
+     * @return an Optional containing the Restaurant entity
+     */
+    Optional<Restaurant> findByOwnerId(Long ownerId);
 }
