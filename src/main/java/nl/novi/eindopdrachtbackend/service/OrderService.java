@@ -85,10 +85,14 @@ public interface OrderService {
      */
     OrderDTO updateOrderForAdmin(Long orderId, OrderInputDTO orderInputDTO);
 
+    /**
+     * Delete an order by its ID.
+     *
+     * @param id the ID of the order to delete
+     */
+    void deleteOrder(Long id);
 
-//    void deleteOrder(Long id);
-//    List<OrderDTO> findOrdersByCustomerId(Long customerId);
-//    List<OrderDTO> findOrdersByRestaurantId(Long restaurantId);
+
 //    List<OrderDTO> findOrdersByDate(LocalDateTime date);
 //
 //    String getUserNameById(Long userId);

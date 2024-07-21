@@ -130,6 +130,9 @@ public class OrderServiceImpl implements OrderService {
         return OrderMapper.toOrderDTO(order);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public OrderDTO createOrder(Long customerId, OrderInputDTO orderInputDTO) {
         User customer = userRepository.findById(customerId)
@@ -151,6 +154,9 @@ public class OrderServiceImpl implements OrderService {
         return OrderMapper.toOrderDTO(savedOrder);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public OrderDTO updateOrderForCustomer(Long orderId, OrderInputDTO orderInputDTO, Long customerId) {
         Order order = orderRepository.findByIdAndCustomerId(orderId, customerId)
@@ -161,6 +167,9 @@ public class OrderServiceImpl implements OrderService {
         return OrderMapper.toOrderDTO(updatedOrder);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public OrderDTO updateOrderForAdmin(Long orderId, OrderInputDTO orderInputDTO) {
         Order order = orderRepository.findById(orderId)
@@ -171,6 +180,9 @@ public class OrderServiceImpl implements OrderService {
         return OrderMapper.toOrderDTO(updatedOrder);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     private void updateOrderFields(Order order, OrderInputDTO orderInputDTO) {
         order.setFulfilled(orderInputDTO.isFulfilled());
 
@@ -188,100 +200,19 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderDateTime(LocalDateTime.now());
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteOrder(Long id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found for this id :: " + id));
+        orderRepository.delete(order);
+    }
 
 
 
 
-//
-//    @Override
-//    public OrderDTO updateOrder(Long id, OrderInputDTO orderInputDTO) {
-//        Order order = orderRepository.findById(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("Order not found for this id :: " + id));
-//
-//        User customer = userRepository.findById(orderInputDTO.getCustomerId())
-//                .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + orderInputDTO.getCustomerId()));
-//
-//        Restaurant restaurant = restaurantRepository.findById(orderInputDTO.getRestaurantId())
-//                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for this id :: " + orderInputDTO.getRestaurantId()));
-//
-//        DeliveryAddress deliveryAddress = deliveryAddressRepository.findById(orderInputDTO.getDeliveryAddressId())
-//                .orElseThrow(() -> new ResourceNotFoundException("DeliveryAddress not found for this id :: " + orderInputDTO.getDeliveryAddressId()));
-//
-//        Set<MenuItem> menuItems = new HashSet<>();
-//        for (Long menuItemId : orderInputDTO.getMenuItemIds()) {
-//            MenuItem menuItem = menuItemRepository.findById(menuItemId)
-//                    .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found for this id :: " + menuItemId));
-//            menuItems.add(menuItem);
-//        }
-//
-//        order.setFulfilled(orderInputDTO.isFulfilled());
-//        order.setCustomer(customer);
-//        order.setRestaurant(restaurant);
-//        order.setDeliveryAddress(deliveryAddress);
-//        order.setMenuItems(menuItems);
-//
-//        order = orderRepository.save(order);
-//        return OrderMapper.toOrderDTO(order);
-//    }
-//
-//    @Override
-//    public void deleteOrder(Long id) {
-//        Order order = orderRepository.findById(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("Order not found for this id :: " + id));
-//        orderRepository.delete(order);
-//    }
-//
-//    @Override
-//    public List<OrderDTO> findOrdersByCustomerId(Long customerId) {
-//        return orderRepository.findOrdersByCustomerId(customerId).stream()
-//                .map(OrderMapper::toOrderDTO)
-//                .collect(Collectors.toList());
-//    }
-//
-//    @Override
-//    public List<OrderDTO> findOrdersByRestaurantId(Long restaurantId) {
-//        return orderRepository.findOrdersByRestaurantId(restaurantId).stream()
-//                .map(OrderMapper::toOrderDTO)
-//                .collect(Collectors.toList());
-//    }
-//
-//    @Override
-//    public List<OrderDTO> findOrdersByDate(LocalDateTime date) {
-//        LocalDateTime startOfDay = date.toLocalDate().atStartOfDay();
-//        LocalDateTime endOfDay = date.toLocalDate().atTime(23, 59, 59);
-//
-//        return orderRepository.findAll().stream()
-//                .filter(order -> order.getOrderDateTime().isAfter(startOfDay) && order.getOrderDateTime().isBefore(endOfDay))
-//                .map(OrderMapper::toOrderDTO)
-//                .collect(Collectors.toList());
-//    }
-//
-//    @Override
-//    public List<OrderDTO> findOrdersByRestaurantAndDate(Long restaurantId, LocalDateTime date) {
-//        LocalDateTime startOfDay = date.toLocalDate().atStartOfDay();
-//        LocalDateTime endOfDay = date.toLocalDate().atTime(23, 59, 59);
-//
-//        return orderRepository.findAll().stream()
-//                .filter(order -> order.getRestaurant().getId().equals(restaurantId) &&
-//                        order.getOrderDateTime().isAfter(startOfDay) && order.getOrderDateTime().isBefore(endOfDay))
-//                .map(OrderMapper::toOrderDTO)
-//                .collect(Collectors.toList());
-//    }
-//
-//    @Override
-//    public String getUserNameById(Long userId) {
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + userId));
-//        return user.getName();
-//    }
-//
-//    @Override
-//    public String getRestaurantNameById(Long restaurantId) {
-//        Restaurant restaurant = restaurantRepository.findById(restaurantId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for this id :: " + restaurantId));
-//        return restaurant.getName();
-//    }
-//
 //    @Override
 //    public String generatePrintableOrder(Long orderId, LocalDateTime date) {
 //        Order order = orderRepository.findById(orderId)
