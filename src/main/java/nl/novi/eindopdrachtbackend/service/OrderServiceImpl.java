@@ -210,6 +210,9 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.delete(order);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String generatePrintableOrder(Long orderId, LocalDateTime date) {
         Order order = orderRepository.findById(orderId)
@@ -233,26 +236,41 @@ public class OrderServiceImpl implements OrderService {
 
         return printableOrder.toString();
     }
-//
-//    @Override
-//    public String generatePrintableDailySummary(Long restaurantId, LocalDateTime date) {
-//        List<OrderDTO> orders = findOrdersByRestaurantAndDate(restaurantId, date);
-//
-//        StringBuilder summary = new StringBuilder();
-//        summary.append("Orders van ").append(date.toLocalDate()).append(" bij restaurant ID ").append(restaurantId).append(":\n\n");
-//
-//        double totalDayRevenue = 0.0;
-//        for (OrderDTO order : orders) {
-//            summary.append("Order ID: ").append(order.getId()).append("\n");
-//            for (MenuItemDTO item : order.getMenuItems()) {
-//                summary.append(item.getName()).append(" - €").append(item.getPrice()).append("\n");
-//            }
-//            summary.append("Totaal voor deze order: €").append(order.getTotalPrice()).append("\n\n");
-//            totalDayRevenue += order.getTotalPrice();
-//        }
-//
-//        summary.append("Totaal omzet van de dag: €").append(totalDayRevenue).append("\n");
-//
-//        return summary.toString();
-//    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String generatePrintableDailySummary(Long ownerId, LocalDateTime date) {
+        User owner = userRepository.findById(ownerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Owner not found for this id :: " + ownerId));
+
+        Restaurant restaurant = restaurantRepository.findByOwnerId(ownerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found for owner id :: " + ownerId));
+
+        LocalDateTime startOfDay = date.toLocalDate().atStartOfDay();
+        LocalDateTime endOfDay = startOfDay.plusDays(1);
+
+        List<Order> orders = orderRepository.findByRestaurantIdAndOrderDateTimeBetween(restaurant.getId(), startOfDay, endOfDay);
+        List<OrderDTO> orderDTOs = orders.stream()
+                .map(OrderMapper::toOrderDTO)
+                .collect(Collectors.toList());
+
+        StringBuilder summary = new StringBuilder();
+        summary.append("Orders van ").append(date.toLocalDate()).append(" bij restaurant ").append(restaurant.getName()).append(":\n\n");
+
+        double totalDayRevenue = 0.0;
+        for (OrderDTO order : orderDTOs) {
+            summary.append("Order ID: ").append(order.getId()).append("\n");
+            for (MenuItemDTO item : order.getMenuItems()) {
+                summary.append(item.getName()).append(" - €").append(item.getPrice()).append("\n");
+            }
+            summary.append("Totaal voor deze order: €").append(order.getTotalPrice()).append("\n\n");
+            totalDayRevenue += order.getTotalPrice();
+        }
+
+        summary.append("Totaal omzet van de dag: €").append(totalDayRevenue).append("\n");
+
+        return summary.toString();
+    }
 }

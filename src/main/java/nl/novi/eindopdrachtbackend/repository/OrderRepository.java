@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,4 +52,14 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
      * @return an Optional containing the Order entity if found
      */
     Optional<Order> findByIdAndRestaurantOwnerId(Long id, Long ownerId);
+
+    /**
+     * Find orders by restaurant ID and order date time between start and end of the day.
+     *
+     * @param restaurantId the ID of the restaurant
+     * @param startOfDay the start of the day
+     * @param endOfDay the end of the day
+     * @return a list of Order entities
+     */
+    List<Order> findByRestaurantIdAndOrderDateTimeBetween(Long restaurantId, LocalDateTime startOfDay, LocalDateTime endOfDay);
 }

@@ -101,8 +101,13 @@ public interface OrderService {
      */
     String generatePrintableOrder(Long orderId, LocalDateTime date);
 
-
-//
-//    String generatePrintableDailySummary(Long restaurantId, LocalDateTime date);
+    /**
+     * Generate a printable summary of orders for a specific restaurant on a given date.
+     *
+     * @param ownerId the ID of the owner
+     * @param date the date for which the summary is to be generated
+     * @return a formatted string representing the daily summary of orders
+     */
+    String generatePrintableDailySummary(Long ownerId, LocalDateTime date);
     }
 

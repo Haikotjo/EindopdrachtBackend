@@ -225,14 +225,20 @@ public class OrderController {
     }
 
 
-//    @GetMapping("/restaurant/{restaurantId}/print")
-//    public ResponseEntity<String> printOrdersByRestaurantAndDate(@PathVariable Long restaurantId, @RequestParam String date) {
-//        LocalDateTime localDate = LocalDateTime.parse(date + "T00:00:00");
-//        String summary = orderService.generatePrintableDailySummary(restaurantId, localDate);
-//        return new ResponseEntity<>(summary, HttpStatus.OK);
-//    }
-
-
+    /**
+     * Generate a printable summary of orders for the logged-in owner's restaurant on a given date.
+     *
+     * @param date the date for which the summary is to be generated (format: yyyy-MM-dd)
+     * @return ResponseEntity containing the printable summary string
+     */
+    @GetMapping("/restaurant/print")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<String> printOrdersByRestaurantAndDate(@RequestParam String date) {
+        LocalDateTime localDate = LocalDateTime.parse(date + "T00:00:00");
+        Long ownerId = SecurityUtils.getCurrentAuthenticatedUserId();
+        String summary = orderService.generatePrintableDailySummary(ownerId, localDate);
+        return new ResponseEntity<>(summary, HttpStatus.OK);
+    }
 
     /**
      * Retrieve the currently authenticated user from the security context.
