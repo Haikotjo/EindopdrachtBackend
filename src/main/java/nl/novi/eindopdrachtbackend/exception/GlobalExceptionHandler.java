@@ -13,31 +13,56 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * GlobalExceptionHandler is responsible for handling exceptions globally across the application.
+ * It handles various exceptions and returns appropriate HTTP responses.
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Handle ResourceNotFoundException
+    /**
+     * Handles ResourceNotFoundException and returns a 404 Not Found response.
+     *
+     * @param ex the exception
+     * @return a ResponseEntity containing the ApiResponse
+     */
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
         ApiResponse apiResponse = new ApiResponse(false, ex.getMessage(), null);
         return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
     }
 
-    // Handle AccessDeniedException
+    /**
+     * Handles AccessDeniedException and returns a 403 Forbidden response.
+     *
+     * @param ex the exception
+     * @return a ResponseEntity containing the ApiResponse
+     */
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse> handleAccessDeniedException(AccessDeniedException ex) {
         ApiResponse apiResponse = new ApiResponse(false, ex.getMessage(), null);
         return new ResponseEntity<>(apiResponse, HttpStatus.FORBIDDEN);
     }
 
-    // Handle RoleNotFoundException
+    /**
+     * Handles RoleNotFoundException and returns a 404 Not Found response.
+     *
+     * @param ex the exception
+     * @return a ResponseEntity containing the ApiResponse
+     */
     @ExceptionHandler(RoleNotFoundException.class)
     public ResponseEntity<ApiResponse> handleRoleNotFoundException(RoleNotFoundException ex) {
         ApiResponse apiResponse = new ApiResponse(false, ex.getMessage(), null);
         return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
     }
 
-    // Handle validation exceptions for method arguments (e.g., @Valid)
+    /**
+     * Handles MethodArgumentNotValidException and returns a 400 Bad Request response.
+     * This method extracts field errors from the exception and includes them in the response.
+     *
+     * @param ex the exception
+     * @return a ResponseEntity containing the ApiResponse with validation errors
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -50,7 +75,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
 
-    // Handle type mismatch exceptions for method arguments (e.g., invalid role)
+    /**
+     * Handles MethodArgumentTypeMismatchException and returns a 400 Bad Request response.
+     * This method provides an error message indicating the invalid role.
+     *
+     * @param ex the exception
+     * @return a ResponseEntity containing the ApiResponse with an error message
+     */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
         String message = "Invalid role: " + ex.getValue();
@@ -58,7 +89,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
 
-    // Handle IllegalArgumentException
+    /**
+     * Handles IllegalArgumentException and returns a 400 Bad Request response.
+     *
+     * @param ex the exception
+     * @return a ResponseEntity containing the ApiResponse
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
         ApiResponse apiResponse = new ApiResponse(false, ex.getMessage(), null);

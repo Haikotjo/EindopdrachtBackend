@@ -24,7 +24,9 @@ public class IngredientMapper {
         dto.setSupplier(ingredient.getSupplier());
         dto.setExpirationDate(ingredient.getExpirationDate());
         dto.setDescription(ingredient.getDescription());
-        ingredient.getOwner().getId();
+        if (ingredient.getOwner() != null) {
+            dto.setOwnerId(ingredient.getOwner().getId());
+        }
         return dto;
     }
 

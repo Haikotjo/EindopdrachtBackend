@@ -13,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -70,9 +68,8 @@ public class IngredientController {
     }
 
     /**
-     * Endpoint for admin to retrieve all ingredients for a specific owner.
+     * Endpoint for the owner to retrieve all ingredients for themselves.
      *
-     * @param ownerId the ID of the owner
      * @return ResponseEntity containing a list of IngredientDTO objects
      */
     @GetMapping("/owner")
@@ -140,9 +137,15 @@ public class IngredientController {
     @PostMapping("/owner")
     @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<IngredientDTO> createIngredientForOwner(@RequestBody IngredientInputDTO ingredientInputDTO) {
-        User currentUser = getCurrentUser();
-        IngredientDTO newIngredient = ingredientService.createIngredientForOwner(ingredientInputDTO, currentUser);
-        return new ResponseEntity<>(newIngredient, HttpStatus.CREATED);
+        try {
+            User currentUser = getCurrentUser();
+            IngredientDTO newIngredient = ingredientService.createIngredientForOwner(ingredientInputDTO, currentUser);
+            return new ResponseEntity<>(newIngredient, HttpStatus.CREATED);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -175,9 +178,15 @@ public class IngredientController {
     @PutMapping("/owner/{id}")
     @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<IngredientDTO> updateIngredientForOwner(@PathVariable Long id, @RequestBody IngredientInputDTO ingredientInputDTO) {
-        User currentUser = getCurrentUser();
-        IngredientDTO updatedIngredient = ingredientService.updateIngredientForOwner(id, ingredientInputDTO, currentUser.getId());
-        return new ResponseEntity<>(updatedIngredient, HttpStatus.OK);
+        try {
+            User currentUser = getCurrentUser();
+            IngredientDTO updatedIngredient = ingredientService.updateIngredientForOwner(id, ingredientInputDTO, currentUser.getId());
+            return new ResponseEntity<>(updatedIngredient, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -190,9 +199,15 @@ public class IngredientController {
     @PutMapping("/admin/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<IngredientDTO> updateIngredientForAdmin(@PathVariable Long id, @RequestBody IngredientInputDTO ingredientInputDTO) {
-        Long ownerId = ingredientInputDTO.getOwnerId(); // Verondersteld dat ownerId is toegevoegd aan IngredientInputDTO
-        IngredientDTO updatedIngredient = ingredientService.updateIngredientForAdmin(id, ingredientInputDTO, ownerId);
-        return new ResponseEntity<>(updatedIngredient, HttpStatus.OK);
+        try {
+            Long ownerId = ingredientInputDTO.getOwnerId(); // Verondersteld dat ownerId is toegevoegd aan IngredientInputDTO
+            IngredientDTO updatedIngredient = ingredientService.updateIngredientForAdmin(id, ingredientInputDTO, ownerId);
+            return new ResponseEntity<>(updatedIngredient, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -204,9 +219,17 @@ public class IngredientController {
     @DeleteMapping("/owner/{id}")
     @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<Void> deleteIngredientForOwner(@PathVariable Long id) {
-        User currentUser = getCurrentUser();
-        ingredientService.deleteIngredientForOwner(id, currentUser);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            User currentUser = getCurrentUser();
+            ingredientService.deleteIngredientForOwner(id, currentUser);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (AccessDeniedException e) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -218,18 +241,32 @@ public class IngredientController {
     @DeleteMapping("/admin/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteIngredientForAdmin(@PathVariable Long id) {
-        ingredientService.deleteIngredientForAdmin(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            ingredientService.deleteIngredientForAdmin(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
-     * Private method to get the currently authenticated user.
+     * Retrieve the currently authenticated user from the security context.
      *
-     * @return the current user
+     * This method fetches the email of the currently authenticated user from the security context,
+     * retrieves the corresponding User entity from the user repository, and returns the User object.
+     * If the user is not found, it throws a ResourceNotFoundException.
+     *
+     * @return the User object representing the currently authenticated user
+     * @throws ResourceNotFoundException if no user is found with the current authenticated email
      */
     private User getCurrentUser() {
         String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
-        return userRepository.findByEmail(currentUserEmail)
+        User user = userRepository.findByEmail(currentUserEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + currentUserEmail));
+        System.out.println("Current User Email: " + currentUserEmail);
+        System.out.println("Current User Roles: " + user.getRoles());
+        return user;
     }
 }
