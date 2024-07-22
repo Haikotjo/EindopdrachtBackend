@@ -1,150 +1,263 @@
-//package nl.novi.eindopdrachtbackend.controller;
-//
-//import static org.hamcrest.Matchers.hasSize;
-//import static org.mockito.BDDMockito.*;
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-//
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import nl.novi.eindopdrachtbackend.dto.IngredientDTO;
-//import nl.novi.eindopdrachtbackend.dto.IngredientInputDTO;
-//import nl.novi.eindopdrachtbackend.dto.IngredientMapper;
-//import nl.novi.eindopdrachtbackend.model.Ingredient;
-//import nl.novi.eindopdrachtbackend.service.IngredientService;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.MockitoAnnotations;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-//import org.springframework.boot.test.mock.mockito.MockBean;
-//import org.springframework.http.MediaType;
-//import org.springframework.test.web.servlet.MockMvc;
-//import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-//import java.lang.reflect.Field;
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//public class IngredientControllerTest {
-//
-//    @Mock
-//    private IngredientService ingredientService;
-//
-//    @InjectMocks
-//    private IngredientController ingredientController;
-//
-//    private MockMvc mockMvc;
-//
-//    @BeforeEach
-//    void setUp() {
-//        MockitoAnnotations.openMocks(this);
-//        mockMvc = MockMvcBuilders.standaloneSetup(ingredientController).build();
-//    }
-//
-//    @Test
-//    public void testGetAllIngredients() throws Exception {
-//        List<IngredientDTO> ingredients = new ArrayList<>();
-//        IngredientDTO tomatoDTO = new IngredientDTO();
-//        tomatoDTO.setId(1L);
-//        tomatoDTO.setName("Tomato");
-//        tomatoDTO.setQuantity(10);
-//
-//        ingredients.add(tomatoDTO);
-//
-//        when(ingredientService.getAllIngredients()).thenReturn(ingredients);
-//
-//        mockMvc.perform(get("/ingredients"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$", hasSize(1)))
-//                .andExpect(jsonPath("$[0].id").value(1L))
-//                .andExpect(jsonPath("$[0].name").value("Tomato"))
-//                .andExpect(jsonPath("$[0].quantity").value(10));
-//    }
-//
-//    @Test
-//    void testGetIngredientById() throws Exception {
-//        // Arrange
-//        IngredientDTO mockIngredientDTO = new IngredientDTO();
-//        mockIngredientDTO.setId(1L);
-//        mockIngredientDTO.setName("Tomato");
-//        mockIngredientDTO.setQuantity(10);
-//
-//        when(ingredientService.getIngredientById(anyLong())).thenReturn(mockIngredientDTO);
-//
-//        // Act & Assert
-//        mockMvc.perform(get("/ingredients/{id}", 1L)
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.name").value("Tomato"));
-//    }
-//
-//    @Test
-//    void testCreateIngredient() throws Exception {
-//        IngredientDTO tomatoDTO = new IngredientDTO();
-//        tomatoDTO.setName("Tomato");
-//        tomatoDTO.setQuantity(10);
-//
-//        IngredientInputDTO inputDTO = new IngredientInputDTO();
-//        inputDTO.setName("Tomato");
-//        inputDTO.setQuantity(10);
-//
-//        when(ingredientService.createIngredient(any(IngredientInputDTO.class))).thenReturn(tomatoDTO);
-//
-//        mockMvc.perform(post("/ingredients")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(new ObjectMapper().writeValueAsString(inputDTO)))
-//                .andExpect(status().isCreated())
-//                .andExpect(jsonPath("$.data.name").value("Tomato"))
-//                .andExpect(jsonPath("$.data.quantity").value(10));
-//    }
-//
-//    @Test
-//    public void testUpdateIngredient() throws Exception {
-//        // Arrange
-//        Long id = 1L;
-//        IngredientInputDTO inputDTO = new IngredientInputDTO();
-//        inputDTO.setName("Updated Tomato");
-//        inputDTO.setQuantity(20);
-//
-//        IngredientDTO updatedIngredientDTO = new IngredientDTO();
-//        updatedIngredientDTO.setId(id);
-//        updatedIngredientDTO.setName("Updated Tomato");
-//        updatedIngredientDTO.setQuantity(20);
-//
-//        when(ingredientService.updateIngredient(eq(id), any(IngredientInputDTO.class))).thenReturn(updatedIngredientDTO);
-//
-//        // Act & Assert
-//        mockMvc.perform(put("/ingredients/{id}", id)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(new ObjectMapper().writeValueAsString(inputDTO)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.data.id").value(1L))
-//                .andExpect(jsonPath("$.data.name").value("Updated Tomato"))
-//                .andExpect(jsonPath("$.data.quantity").value(20));
-//    }
-//
-//    @Test
-//    public void testDeleteIngredient() throws Exception {
-//        // Arrange
-//        Long id = 1L;
-//        doNothing().when(ingredientService).deleteIngredient(id);
-//
-//        // Act & Assert
-//        mockMvc.perform(delete("/ingredients/{id}", id))
-//                .andExpect(status().isNoContent());  // Verwacht No Content status
-//
-//        verify(ingredientService).deleteIngredient(id);
-//    }
-//
-//
-//    private void setField(Object object, String fieldName, Object value) {
-//        try {
-//            Field field = object.getClass().getDeclaredField(fieldName);
-//            field.setAccessible(true);
-//            field.set(object, value);
-//        } catch (NoSuchFieldException | IllegalAccessException e) {
-//            throw new RuntimeException("Failed to set field value via reflection", e);
-//        }
-//    }
-//}
+package nl.novi.eindopdrachtbackend.controller;
+
+import nl.novi.eindopdrachtbackend.dto.IngredientDTO;
+import nl.novi.eindopdrachtbackend.dto.IngredientInputDTO;
+import nl.novi.eindopdrachtbackend.model.User;
+import nl.novi.eindopdrachtbackend.repository.UserRepository;
+import nl.novi.eindopdrachtbackend.security.SecurityUtils;
+import nl.novi.eindopdrachtbackend.service.IngredientService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.lenient;
+
+
+@ExtendWith(MockitoExtension.class)
+class IngredientControllerTest {
+
+    @Mock
+    private IngredientService ingredientService;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private IngredientController ingredientController;
+
+    private User user;
+    private IngredientDTO ingredientDTO;
+    private IngredientInputDTO ingredientInputDTO;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        user = new User();
+        setId(user, 1L);
+        user.setEmail("test@example.com");
+
+        ingredientDTO = new IngredientDTO();
+        setId(ingredientDTO, 1L);
+        ingredientDTO.setName("Test Ingredient");
+
+        ingredientInputDTO = new IngredientInputDTO();
+        ingredientInputDTO.setName("Test Ingredient Input");
+        ingredientInputDTO.setOwnerId(1L);
+    }
+
+    private void setId(Object target, Long id) throws Exception {
+        Field field = target.getClass().getDeclaredField("id");
+        field.setAccessible(true);
+        field.set(target, id);
+    }
+
+    @Test
+    void testGetAllIngredients() {
+        when(ingredientService.getAllIngredients()).thenReturn(List.of(ingredientDTO));
+
+        ResponseEntity<List<IngredientDTO>> response = ingredientController.getAllIngredients();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        verify(ingredientService, times(1)).getAllIngredients();
+    }
+
+    @Test
+    void testGetAllIngredientsForOwner() {
+        when(ingredientService.getAllIngredientsForOwner(anyLong())).thenReturn(List.of(ingredientDTO));
+
+        ResponseEntity<List<IngredientDTO>> response = ingredientController.getAllIngredientsForOwner(1L);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        verify(ingredientService, times(1)).getAllIngredientsForOwner(anyLong());
+    }
+
+    @Test
+    void testGetAllIngredientsForLoggedInOwner() {
+        // Mocking SecurityUtils.getCurrentAuthenticatedUserEmail() static method
+        try (MockedStatic<SecurityUtils> mockedSecurityUtils = mockStatic(SecurityUtils.class)) {
+            mockedSecurityUtils.when(SecurityUtils::getCurrentAuthenticatedUserEmail).thenReturn("test@example.com");
+
+            // Lenient mocking for UserRepository.findByEmail() method
+            lenient().when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
+
+            // Mocking IngredientService.getAllIngredientsForLoggedInOwner() method
+            when(ingredientService.getAllIngredientsForLoggedInOwner(anyString())).thenReturn(List.of(ingredientDTO));
+
+            // Calling the controller method
+            ResponseEntity<List<IngredientDTO>> response = ingredientController.getAllIngredientsForLoggedInOwner();
+
+            // Verifying the response
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals(1, response.getBody().size());
+
+            // Verifying the mocked interactions
+            verify(ingredientService, times(1)).getAllIngredientsForLoggedInOwner(anyString());
+        }
+    }
+
+    @Test
+    void testGetIngredientByIdForAdmin() {
+        when(ingredientService.getIngredientByIdForAdmin(anyLong(), anyLong())).thenReturn(ingredientDTO);
+
+        ResponseEntity<IngredientDTO> response = ingredientController.getIngredientByIdForAdmin(1L, 1L);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(ingredientDTO, response.getBody());
+        verify(ingredientService, times(1)).getIngredientByIdForAdmin(anyLong(), anyLong());
+    }
+
+    @Test
+    void testGetIngredientByIdForOwner() {
+        // Mocking SecurityUtils.getCurrentAuthenticatedUserEmail() static method
+        try (MockedStatic<SecurityUtils> mockedSecurityUtils = mockStatic(SecurityUtils.class)) {
+            mockedSecurityUtils.when(SecurityUtils::getCurrentAuthenticatedUserEmail).thenReturn("test@example.com");
+
+            // Mocking UserRepository.findByEmail() method
+            when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
+
+            // Mocking IngredientService.getIngredientByIdForOwner() method
+            when(ingredientService.getIngredientByIdForOwner(anyLong(), anyLong())).thenReturn(ingredientDTO);
+
+            // Calling the controller method
+            ResponseEntity<IngredientDTO> response = ingredientController.getIngredientByIdForOwner(1L);
+
+            // Verifying the response
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals(ingredientDTO, response.getBody());
+
+            // Verifying the mocked interactions
+            verify(ingredientService, times(1)).getIngredientByIdForOwner(anyLong(), anyLong());
+        }
+    }
+
+    @Test
+    void testCreateIngredientForOwner() {
+        // Mocking SecurityUtils.getCurrentAuthenticatedUserEmail() static method
+        try (MockedStatic<SecurityUtils> mockedSecurityUtils = mockStatic(SecurityUtils.class)) {
+            mockedSecurityUtils.when(SecurityUtils::getCurrentAuthenticatedUserEmail).thenReturn("test@example.com");
+
+            // Mocking UserRepository.findByEmail() method
+            when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
+
+            // Mocking IngredientService.createIngredientForOwner() method
+            when(ingredientService.createIngredientForOwner(any(IngredientInputDTO.class), any(User.class))).thenReturn(ingredientDTO);
+
+            // Calling the controller method
+            ResponseEntity<IngredientDTO> response = ingredientController.createIngredientForOwner(ingredientInputDTO);
+
+            // Verifying the response
+            assertEquals(HttpStatus.CREATED, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals(ingredientDTO, response.getBody());
+
+            // Verifying the mocked interactions
+            verify(ingredientService, times(1)).createIngredientForOwner(any(IngredientInputDTO.class), any(User.class));
+        }
+    }
+
+
+    @Test
+    void testCreateIngredientForAdmin() {
+        when(ingredientService.createIngredientForAdmin(any(IngredientInputDTO.class), anyLong())).thenReturn(ingredientDTO);
+
+        ResponseEntity<IngredientDTO> response = ingredientController.createIngredientForAdmin(ingredientInputDTO);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(ingredientDTO, response.getBody());
+        verify(ingredientService, times(1)).createIngredientForAdmin(any(IngredientInputDTO.class), anyLong());
+    }
+
+    @Test
+    void testUpdateIngredientForOwner() {
+        // Mocking SecurityUtils.getCurrentAuthenticatedUserEmail() static method
+        try (MockedStatic<SecurityUtils> mockedSecurityUtils = mockStatic(SecurityUtils.class)) {
+            mockedSecurityUtils.when(SecurityUtils::getCurrentAuthenticatedUserEmail).thenReturn("test@example.com");
+
+            // Mocking UserRepository.findByEmail() method
+            when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
+
+            // Mocking IngredientService.updateIngredientForOwner() method
+            when(ingredientService.updateIngredientForOwner(anyLong(), any(IngredientInputDTO.class), anyLong())).thenReturn(ingredientDTO);
+
+            // Calling the controller method
+            ResponseEntity<IngredientDTO> response = ingredientController.updateIngredientForOwner(1L, ingredientInputDTO);
+
+            // Verifying the response
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals(ingredientDTO, response.getBody());
+
+            // Verifying the mocked interactions
+            verify(ingredientService, times(1)).updateIngredientForOwner(anyLong(), any(IngredientInputDTO.class), anyLong());
+        }
+    }
+
+
+    @Test
+    void testUpdateIngredientForAdmin() {
+        when(ingredientService.updateIngredientForAdmin(anyLong(), any(IngredientInputDTO.class), anyLong())).thenReturn(ingredientDTO);
+
+        ResponseEntity<IngredientDTO> response = ingredientController.updateIngredientForAdmin(1L, ingredientInputDTO);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(ingredientDTO, response.getBody());
+        verify(ingredientService, times(1)).updateIngredientForAdmin(anyLong(), any(IngredientInputDTO.class), anyLong());
+    }
+
+    @Test
+    void testDeleteIngredientForOwner() {
+        // Mocking SecurityUtils.getCurrentAuthenticatedUserEmail() static method
+        try (MockedStatic<SecurityUtils> mockedSecurityUtils = mockStatic(SecurityUtils.class)) {
+            mockedSecurityUtils.when(SecurityUtils::getCurrentAuthenticatedUserEmail).thenReturn("test@example.com");
+
+            // Mocking UserRepository.findByEmail() method
+            when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
+
+            // Mocking IngredientService.deleteIngredientForOwner() method
+            doNothing().when(ingredientService).deleteIngredientForOwner(anyLong(), any(User.class));
+
+            // Calling the controller method
+            ResponseEntity<Void> response = ingredientController.deleteIngredientForOwner(1L);
+
+            // Verifying the response
+            assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
+            // Verifying the mocked interactions
+            verify(ingredientService, times(1)).deleteIngredientForOwner(anyLong(), any(User.class));
+        }
+    }
+
+
+    @Test
+    void testDeleteIngredientForAdmin() {
+        doNothing().when(ingredientService).deleteIngredientForAdmin(anyLong());
+
+        ResponseEntity<Void> response = ingredientController.deleteIngredientForAdmin(1L);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(ingredientService, times(1)).deleteIngredientForAdmin(anyLong());
+    }
+}
