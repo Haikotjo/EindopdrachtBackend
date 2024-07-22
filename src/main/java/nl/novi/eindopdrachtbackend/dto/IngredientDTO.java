@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import nl.novi.eindopdrachtbackend.model.Ingredient;
 
+import java.time.LocalDate;
+
 /**
  * Data Transfer Object for Ingredient.
  */
@@ -14,7 +16,7 @@ public class IngredientDTO {
     private String unit;
     private int quantity;
     private String supplier;
-    private String expirationDate;
+    private LocalDate expirationDate;
     private String description;
     private Long ownerId;
 
@@ -56,7 +58,7 @@ public class IngredientDTO {
         this.description = description;
     }
 
-    public IngredientDTO(Long id, String name, double cost, int quantity, String unit, String supplier, String expirationDate, String description, Long ownerId) {
+    public IngredientDTO(Long id, String name, double cost, int quantity, String unit, String supplier, LocalDate expirationDate, String description, Long ownerId) {
         this.id = id;
         this.name = name;
         this.cost = cost;
@@ -183,7 +185,7 @@ public class IngredientDTO {
      *
      * @return the expiration date of the ingredient
      */
-    public String getExpirationDate() {
+    public LocalDate getExpirationDate() {
         return expirationDate;
     }
 
@@ -192,7 +194,7 @@ public class IngredientDTO {
      *
      * @param expirationDate the expiration date of the ingredient
      */
-    public void setExpirationDate(String expirationDate) {
+    public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
 

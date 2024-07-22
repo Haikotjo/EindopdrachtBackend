@@ -1,6 +1,8 @@
 package nl.novi.eindopdrachtbackend.model;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,7 +48,7 @@ public class Ingredient {
     /**
      * The expiration date of the ingredient.
      */
-    private String expirationDate;
+    private LocalDate expirationDate;
 
     /**
      * The description of the ingredient.
@@ -100,7 +102,7 @@ public class Ingredient {
      * @param menuItems     the set of menu items that use this ingredient
      * @param owner         the owner of the ingredient
      */
-    public Ingredient(String name, int quantity, String unit, double cost, String supplier, String expirationDate, String description, Set<MenuItem> menuItems, User owner) {
+    public Ingredient(String name, int quantity, String unit, double cost, String supplier, LocalDate expirationDate, String description, Set<MenuItem> menuItems, User owner) {
         this.name = name;
         this.quantity = quantity;
         this.unit = unit;
@@ -218,7 +220,7 @@ public class Ingredient {
      *
      * @return the expiration date of the ingredient
      */
-    public String getExpirationDate() {
+    public LocalDate getExpirationDate() {
         return expirationDate;
     }
 
@@ -227,7 +229,7 @@ public class Ingredient {
      *
      * @param expirationDate the expiration date of the ingredient
      */
-    public void setExpirationDate(String expirationDate) {
+    public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
 

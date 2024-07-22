@@ -3,6 +3,8 @@ package nl.novi.eindopdrachtbackend.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDate;
+
 /**
  * Data Transfer Object for creating or updating an Ingredient.
  */
@@ -14,7 +16,7 @@ public class IngredientInputDTO {
     @NotNull
     private Double cost;
     private String supplier;
-    private String expirationDate;
+    private LocalDate expirationDate;
     private String description;
     private Long ownerId;
 
@@ -115,7 +117,7 @@ public class IngredientInputDTO {
      *
      * @return the expiration date of the ingredient
      */
-    public String getExpirationDate() {
+    public LocalDate getExpirationDate() {
         return expirationDate;
     }
 
@@ -124,7 +126,7 @@ public class IngredientInputDTO {
      *
      * @param expirationDate the expiration date of the ingredient
      */
-    public void setExpirationDate(String expirationDate) {
+    public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
 

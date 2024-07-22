@@ -51,7 +51,8 @@ public class ExpirationDateCheckerService {
      * @return true if the ingredient is expiring soon, false otherwise
      */
     private boolean isExpiringSoon(Ingredient ingredient) {
-        LocalDate expirationDate = LocalDate.parse(ingredient.getExpirationDate());
+        LocalDate expirationDate = ingredient.getExpirationDate();
         return expirationDate.minusDays(EXPIRATION_WARNING_DAYS).isBefore(LocalDate.now());
     }
+
 }
