@@ -69,12 +69,16 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/{userId}/restaurants").hasAnyAuthority("ADMIN", "OWNER")
 
                                 // Notification entity endpoints
+                                .requestMatchers(HttpMethod.GET, "/notifications/all").hasAnyAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/notifications/**").hasAnyAuthority("ADMIN", "OWNER")
                                 .requestMatchers(HttpMethod.POST, "/notifications/**").hasAnyAuthority("ADMIN", "OWNER")
                                 .requestMatchers(HttpMethod.PUT, "/notifications/**").hasAnyAuthority("ADMIN", "OWNER")
                                 .requestMatchers(HttpMethod.DELETE, "/notifications/**").hasAnyAuthority("ADMIN", "OWNER")
                                 .requestMatchers(HttpMethod.GET, "/notifications/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/notifications/owner/**").hasAuthority("OWNER")
+
+                                // Notification test endpoints
+                                .requestMatchers(HttpMethod.GET, "/test/check-expiration-dates").permitAll()
 
                                 // Ingredient entity endpoints
                                 .requestMatchers(HttpMethod.GET, "/ingredients/admin/**").hasAuthority("ADMIN")

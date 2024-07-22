@@ -32,7 +32,7 @@ public class NotificationController {
      *
      * @return ResponseEntity containing a list of NotificationDTO objects
      */
-    @GetMapping
+    @GetMapping("/admin/all")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<NotificationDTO>> getAllNotifications() {
         List<NotificationDTO> notifications = notificationService.getAllNotifications();
