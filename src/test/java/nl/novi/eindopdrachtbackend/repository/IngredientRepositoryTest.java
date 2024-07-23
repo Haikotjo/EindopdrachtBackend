@@ -1,77 +1,79 @@
 package nl.novi.eindopdrachtbackend.repository;
 
 import nl.novi.eindopdrachtbackend.model.Ingredient;
+import nl.novi.eindopdrachtbackend.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Field;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
+@DataJpaTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@Transactional
 public class IngredientRepositoryTest {
 
-    @Mock
+    @Autowired
     private IngredientRepository ingredientRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    private User owner;
     private Ingredient ingredient;
 
     @BeforeEach
-    public void setup() throws NoSuchFieldException, IllegalAccessException {
-        MockitoAnnotations.openMocks(this);
-        ingredient = new Ingredient();
-        ingredient.setName("Salt");
-        ingredient.setQuantity(5);
-        ingredient.setExpirationDate(LocalDate.of(2025, 1, 1));
+    public void setup() {
+        // Gebruik de bestaande eigenaar uit data.sql
+        owner = userRepository.findByEmail("owner.one@example.com").orElseThrow(() -> new RuntimeException("Owner not found"));
 
-        // Use reflection to set the id
-        Field idField = Ingredient.class.getDeclaredField("id");
-        idField.setAccessible(true);
-        idField.set(ingredient, 1L);
+        // Maak een nieuw ingredient aan en koppel het aan de bestaande eigenaar
+        ingredient = new Ingredient();
+        ingredient.setName("New Ingredient");
+        ingredient.setQuantity(5);
+        ingredient.setUnit("kg");
+        ingredient.setCost(2.0);
+        ingredient.setSupplier("Supplier2");
+        ingredient.setExpirationDate(LocalDate.of(2025, 1, 1));
+        ingredient.setDescription("New ingredient description");
+        ingredient.setOwner(owner);
+
+        ingredientRepository.save(ingredient);
     }
 
     @Test
     public void testFindLowStockIngredients() {
-        when(ingredientRepository.findLowStockIngredients(10)).thenReturn(Arrays.asList(ingredient));
         List<Ingredient> lowStockIngredients = ingredientRepository.findLowStockIngredients(10);
         assertNotNull(lowStockIngredients);
-        assertEquals(1, lowStockIngredients.size());
-        assertEquals("Salt", lowStockIngredients.get(0).getName());
+        assertFalse(lowStockIngredients.isEmpty());
     }
 
     @Test
     public void testFindExpiringIngredients() {
-        LocalDate date = LocalDate.parse("2025-01-01");
-        when(ingredientRepository.findExpiringIngredients(date)).thenReturn(Arrays.asList(ingredient));
-        List<Ingredient> expiringIngredients = ingredientRepository.findExpiringIngredients(date);
+        LocalDate expirationWarningDate = LocalDate.of(2025, 1, 1);
+        List<Ingredient> expiringIngredients = ingredientRepository.findExpiringIngredients(expirationWarningDate);
         assertNotNull(expiringIngredients);
-        assertEquals(1, expiringIngredients.size());
-        assertEquals("Salt", expiringIngredients.get(0).getName());
+        assertFalse(expiringIngredients.isEmpty());
     }
 
     @Test
     public void testFindByOwner_Id() {
-        Long ownerId = 1L;
-        when(ingredientRepository.findByOwner_Id(ownerId)).thenReturn(Arrays.asList(ingredient));
-        List<Ingredient> ingredients = ingredientRepository.findByOwner_Id(ownerId);
+        List<Ingredient> ingredients = ingredientRepository.findByOwner_Id(owner.getId());
         assertNotNull(ingredients);
-        assertEquals(1, ingredients.size());
-        assertEquals("Salt", ingredients.get(0).getName());
+        assertFalse(ingredients.isEmpty());
     }
 
     @Test
     public void testFindByIdAndOwner_Id() {
-        Long ownerId = 1L;
-        when(ingredientRepository.findByIdAndOwner_Id(1L, ownerId)).thenReturn(Optional.of(ingredient));
-        Optional<Ingredient> foundIngredient = ingredientRepository.findByIdAndOwner_Id(1L, ownerId);
+        Optional<Ingredient> foundIngredient = ingredientRepository.findByIdAndOwner_Id(ingredient.getId(), owner.getId());
         assertTrue(foundIngredient.isPresent());
-        assertEquals("Salt", foundIngredient.get().getName());
+        assertEquals("New Ingredient", foundIngredient.get().getName());
     }
 }

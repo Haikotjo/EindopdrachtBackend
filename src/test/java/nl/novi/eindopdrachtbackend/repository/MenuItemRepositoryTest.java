@@ -7,90 +7,78 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
+@DataJpaTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@Transactional
 public class MenuItemRepositoryTest {
 
-    @Mock
+    @Autowired
     private MenuItemRepository menuItemRepository;
 
-    private MenuItem menuItem;
-    private Restaurant restaurant;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RestaurantRepository restaurantRepository;
+
     private User owner;
+    private Restaurant restaurant;
+    private MenuItem menuItem;
 
     @BeforeEach
-    public void setup() throws NoSuchFieldException, IllegalAccessException {
-        MockitoAnnotations.openMocks(this);
-        owner = new User();
-        setField(owner, "id", 1L);
-
-        restaurant = new Restaurant();
-        setField(restaurant, "id", 1L);
-        restaurant.setOwner(owner);
+    public void setup() {
+        owner = userRepository.findByEmail("owner.one@example.com").orElseThrow(() -> new RuntimeException("Owner not found"));
+        restaurant = restaurantRepository.findByOwner(owner).orElseThrow(() -> new RuntimeException("Restaurant not found"));
 
         menuItem = new MenuItem();
-        menuItem.setName("Pizza");
+        menuItem.setName("New Pizza");
         menuItem.setPrice(12.5);
         menuItem.setDescription("Delicious cheese pizza");
         menuItem.setImage("image_url");
         menuItem.setRestaurant(restaurant);
-
-        // Use reflection to set the id
-        Field idField = MenuItem.class.getDeclaredField("id");
-        idField.setAccessible(true);
-        idField.set(menuItem, 1L);
-    }
-
-    private void setField(Object targetObject, String fieldName, Object value) throws NoSuchFieldException, IllegalAccessException {
-        Field field = targetObject.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
-        field.set(targetObject, value);
+        menuItemRepository.save(menuItem);
     }
 
     @Test
     public void testFindByRestaurant_Owner_Id() {
-        Long ownerId = 1L;
-        when(menuItemRepository.findByRestaurant_Owner_Id(ownerId)).thenReturn(Arrays.asList(menuItem));
+        Long ownerId = owner.getId();
         List<MenuItem> menuItems = menuItemRepository.findByRestaurant_Owner_Id(ownerId);
         assertNotNull(menuItems);
-        assertEquals(1, menuItems.size());
-        assertEquals("Pizza", menuItems.get(0).getName());
+        assertFalse(menuItems.isEmpty());
     }
 
     @Test
     public void testFindByRestaurant_Id() {
-        Long restaurantId = 1L;
-        when(menuItemRepository.findByRestaurant_Id(restaurantId)).thenReturn(Arrays.asList(menuItem));
+        Long restaurantId = restaurant.getId();
         List<MenuItem> menuItems = menuItemRepository.findByRestaurant_Id(restaurantId);
         assertNotNull(menuItems);
-        assertEquals(1, menuItems.size());
-        assertEquals("Pizza", menuItems.get(0).getName());
+        assertFalse(menuItems.isEmpty());
     }
 
     @Test
     public void testFindByIdAndRestaurant_Owner_Id() {
-        Long ownerId = 1L;
-        when(menuItemRepository.findByIdAndRestaurant_Owner_Id(1L, ownerId)).thenReturn(Optional.of(menuItem));
-        Optional<MenuItem> foundMenuItem = menuItemRepository.findByIdAndRestaurant_Owner_Id(1L, ownerId);
+        Long ownerId = owner.getId();
+        Optional<MenuItem> foundMenuItem = menuItemRepository.findByIdAndRestaurant_Owner_Id(menuItem.getId(), ownerId);
         assertTrue(foundMenuItem.isPresent());
-        assertEquals("Pizza", foundMenuItem.get().getName());
+        assertEquals("New Pizza", foundMenuItem.get().getName());
     }
 
     @Test
     public void testFindByNameIgnoreCase() {
-        when(menuItemRepository.findByNameIgnoreCase("pizza")).thenReturn(Arrays.asList(menuItem));
-        List<MenuItem> menuItems = menuItemRepository.findByNameIgnoreCase("pizza");
+        List<MenuItem> menuItems = menuItemRepository.findByNameIgnoreCase("new pizza");
         assertNotNull(menuItems);
-        assertEquals(1, menuItems.size());
-        assertEquals("Pizza", menuItems.get(0).getName());
+        assertFalse(menuItems.isEmpty());
+        assertEquals("New Pizza", menuItems.get(0).getName());
     }
 }
