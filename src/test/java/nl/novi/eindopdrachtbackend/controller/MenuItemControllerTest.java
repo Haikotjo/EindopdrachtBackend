@@ -1,175 +1,303 @@
-//package nl.novi.eindopdrachtbackend.controller;
-//
-//import static org.hamcrest.Matchers.hasSize;
-//import static org.mockito.BDDMockito.*;
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-//
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import nl.novi.eindopdrachtbackend.dto.MenuItemDTO;
-//import nl.novi.eindopdrachtbackend.dto.MenuItemInputDTO;
-//import nl.novi.eindopdrachtbackend.service.MenuItemService;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.MockitoAnnotations;
-//import org.springframework.http.MediaType;
-//import org.springframework.test.web.servlet.MockMvc;
-//import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//public class MenuItemControllerTest {
-//
-//    @Mock
-//    private MenuItemService menuItemService;
-//
-//    @InjectMocks
-//    private MenuItemController menuItemController;
-//
-//    private MockMvc mockMvc;
-//
-//    @BeforeEach
-//    void setUp() {
-//        MockitoAnnotations.openMocks(this);
-//        mockMvc = MockMvcBuilders.standaloneSetup(menuItemController).build();
-//    }
-//
-//    @Test
-//    public void testGetAllMenuItems() throws Exception {
-//        List<MenuItemDTO> menuItems = new ArrayList<>();
-//        MenuItemDTO pizzaDTO = new MenuItemDTO();
-//        pizzaDTO.setId(1L);
-//        pizzaDTO.setName("Pizza");
-//        pizzaDTO.setPrice(15.99);
-//        pizzaDTO.setDescription("Delicious cheese pizza");
-//        pizzaDTO.setImage("pizza.jpg");
-//
-//        menuItems.add(pizzaDTO);
-//
-//        when(menuItemService.getAllMenuItems()).thenReturn(menuItems);
-//
-//        mockMvc.perform(get("/menuItems"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$", hasSize(1)))
-//                .andExpect(jsonPath("$[0].id").value(1L))
-//                .andExpect(jsonPath("$[0].name").value("Pizza"))
-//                .andExpect(jsonPath("$[0].price").value(15.99))
-//                .andExpect(jsonPath("$[0].description").value("Delicious cheese pizza"));
-//    }
-//
-//    @Test
-//    void testGetMenuItemById() throws Exception {
-//        MenuItemDTO pizzaDTO = new MenuItemDTO();
-//        pizzaDTO.setId(1L);
-//        pizzaDTO.setName("Pizza");
-//        pizzaDTO.setPrice(15.99);
-//        pizzaDTO.setDescription("Delicious cheese pizza");
-//
-//        when(menuItemService.getMenuItemById(anyLong())).thenReturn(pizzaDTO);
-//
-//        mockMvc.perform(get("/menuItems/{id}", 1L)
-//                        .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.name").value("Pizza"))
-//                .andExpect(jsonPath("$.price").value(15.99))
-//                .andExpect(jsonPath("$.description").value("Delicious cheese pizza"));
-//    }
-//
-//    @Test
-//    public void testCreateMenuItem() throws Exception {
-//        MenuItemInputDTO inputDTO = new MenuItemInputDTO();
-//        inputDTO.setName("Burger");
-//        inputDTO.setPrice(12.99);
-//        inputDTO.setDescription("Beef burger");
-//
-//        MenuItemDTO createdMenuItemDTO = new MenuItemDTO();
-//        createdMenuItemDTO.setId(2L);
-//        createdMenuItemDTO.setName("Burger");
-//        createdMenuItemDTO.setPrice(12.99);
-//        createdMenuItemDTO.setDescription("Beef burger");
-//
-//        when(menuItemService.createMenuItem(any(MenuItemInputDTO.class))).thenReturn(createdMenuItemDTO);
-//
-//        mockMvc.perform(post("/menuItems")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(new ObjectMapper().writeValueAsString(inputDTO)))
-//                .andExpect(status().isCreated())
-//                .andExpect(jsonPath("$.data.name").value("Burger"))
-//                .andExpect(jsonPath("$.data.price").value(12.99))
-//                .andExpect(jsonPath("$.data.description").value("Beef burger"));
-//    }
-//
-//    @Test
-//    public void testUpdateMenuItem() throws Exception {
-//        Long id = 1L;
-//        MenuItemInputDTO inputDTO = new MenuItemInputDTO();
-//        inputDTO.setName("Updated Pizza");
-//        inputDTO.setPrice(16.99);
-//        inputDTO.setDescription("Pizza with extra cheese");
-//
-//        MenuItemDTO updatedMenuItemDTO = new MenuItemDTO();
-//        updatedMenuItemDTO.setId(id);
-//        updatedMenuItemDTO.setName("Updated Pizza");
-//        updatedMenuItemDTO.setPrice(16.99);
-//        updatedMenuItemDTO.setDescription("Pizza with extra cheese");
-//
-//        when(menuItemService.updateMenuItem(eq(id), any(MenuItemInputDTO.class))).thenReturn(updatedMenuItemDTO);
-//
-//        mockMvc.perform(put("/menuItems/{id}", id)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(new ObjectMapper().writeValueAsString(inputDTO)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.data.name").value("Updated Pizza"))
-//                .andExpect(jsonPath("$.data.price").value(16.99))
-//                .andExpect(jsonPath("$.data.description").value("Pizza with extra cheese"));
-//    }
-//
-//    @Test
-//    public void testDeleteMenuItem() throws Exception {
-//        Long id = 1L;
-//        doNothing().when(menuItemService).deleteMenuItem(id);
-//
-//        mockMvc.perform(delete("/menuItems/{id}", id))
-//                .andExpect(status().isNoContent());
-//
-//        verify(menuItemService).deleteMenuItem(id);
-//    }
-//
-//    @Test
-//    public void testFindByNameIgnoreCase() throws Exception {
-//        List<MenuItemDTO> menuItems = new ArrayList<>();
-//        MenuItemDTO burgerDTO = new MenuItemDTO();
-//        burgerDTO.setId(2L);
-//        burgerDTO.setName("Burger");
-//        burgerDTO.setPrice(12.99);
-//        burgerDTO.setDescription("Beef burger");
-//        burgerDTO.setImage("burger.jpg");
-//        menuItems.add(burgerDTO);
-//
-//        when(menuItemService.findByNameIgnoreCase("burger")).thenReturn(menuItems);
-//
-//        mockMvc.perform(get("/menuItems/search?name=burger"))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$", hasSize(1)))
-//                .andExpect(jsonPath("$[0].id").value(2L))
-//                .andExpect(jsonPath("$[0].name").value("Burger"))
-//                .andExpect(jsonPath("$[0].price").value(12.99))
-//                .andExpect(jsonPath("$[0].description").value("Beef burger"));
-//    }
-//
-//    @Test
-//    public void testAddIngredientToMenuItem() throws Exception {
-//        Long menuItemId = 1L;
-//        Long ingredientId = 1L;
-//
-//        doNothing().when(menuItemService).addIngredientToMenuItem(menuItemId, ingredientId);
-//
-//        mockMvc.perform(post("/menuItems/{menuItemId}/addIngredient/{ingredientId}", menuItemId, ingredientId))
-//                .andExpect(status().isOk());
-//
-//        verify(menuItemService).addIngredientToMenuItem(menuItemId, ingredientId);
-//    }
-//}
+package nl.novi.eindopdrachtbackend.controller;
+
+import nl.novi.eindopdrachtbackend.dto.MenuItemDTO;
+import nl.novi.eindopdrachtbackend.dto.MenuItemInputDTO;
+import nl.novi.eindopdrachtbackend.model.Restaurant;
+import nl.novi.eindopdrachtbackend.model.User;
+import nl.novi.eindopdrachtbackend.repository.UserRepository;
+import nl.novi.eindopdrachtbackend.security.SecurityUtils;
+import nl.novi.eindopdrachtbackend.service.MenuItemService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class MenuItemControllerTest {
+
+    @Mock
+    private MenuItemService menuItemService;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private MenuItemController menuItemController;
+
+    private User user;
+    private Restaurant restaurant;
+    private MenuItemDTO menuItemDTO;
+    private MenuItemInputDTO menuItemInputDTO;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        user = new User();
+        setField(user, "id", 1L);
+        user.setEmail("test@example.com");
+
+        restaurant = new Restaurant();
+        setField(restaurant, "id", 1L);
+        restaurant.setName("Test Restaurant");
+        user.setRestaurant(restaurant);
+
+        menuItemDTO = new MenuItemDTO();
+        setField(menuItemDTO, "id", 1L);
+        menuItemDTO.setName("Test MenuItem");
+
+        menuItemInputDTO = new MenuItemInputDTO();
+        menuItemInputDTO.setName("Test MenuItem Input");
+        menuItemInputDTO.setDescription("Test Description");
+        menuItemInputDTO.setPrice(10.0);
+    }
+
+    private void setField(Object target, String fieldName, Object value) {
+        try {
+            Field field = target.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(target, value);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void testGetAllMenuItems() {
+        when(menuItemService.getAllMenuItems()).thenReturn(List.of(menuItemDTO));
+
+        ResponseEntity<List<MenuItemDTO>> response = menuItemController.getAllMenuItems();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        verify(menuItemService, times(1)).getAllMenuItems();
+    }
+
+    @Test
+    void testGetAllMenuItemsForOwner() {
+        when(menuItemService.getAllMenuItemsForOwner(anyLong())).thenReturn(List.of(menuItemDTO));
+
+        ResponseEntity<List<MenuItemDTO>> response = menuItemController.getAllMenuItemsForOwner(1L);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        verify(menuItemService, times(1)).getAllMenuItemsForOwner(anyLong());
+    }
+
+    @Test
+    void testGetAllMenuItemsForLoggedInOwner() {
+        // Mocking SecurityUtils.getCurrentAuthenticatedUserEmail() static method
+        try (MockedStatic<SecurityUtils> mockedSecurityUtils = mockStatic(SecurityUtils.class)) {
+            mockedSecurityUtils.when(SecurityUtils::getCurrentAuthenticatedUserEmail).thenReturn("test@example.com");
+
+            // Lenient mocking for UserRepository.findByEmail() method
+            lenient().when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
+
+            // Mocking MenuItemService.getAllMenuItemsForLoggedInOwner() method
+            when(menuItemService.getAllMenuItemsForLoggedInOwner(anyString())).thenReturn(List.of(menuItemDTO));
+
+            // Calling the controller method
+            ResponseEntity<List<MenuItemDTO>> response = menuItemController.getAllMenuItemsForLoggedInOwner();
+
+            // Verifying the response
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals(1, response.getBody().size());
+
+            // Verifying the mocked interactions
+            verify(menuItemService, times(1)).getAllMenuItemsForLoggedInOwner(anyString());
+        }
+    }
+
+    @Test
+    void testGetAllMenuItemsForRestaurant() {
+        when(menuItemService.getAllMenuItemsForRestaurant(anyLong())).thenReturn(List.of(menuItemDTO));
+
+        ResponseEntity<List<MenuItemDTO>> response = menuItemController.getAllMenuItemsForRestaurant(1L);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        verify(menuItemService, times(1)).getAllMenuItemsForRestaurant(anyLong());
+    }
+
+    @Test
+    void testGetMenuItemByIdForOwner() {
+        // Mocking SecurityUtils.getCurrentAuthenticatedUserEmail() static method
+        try (MockedStatic<SecurityUtils> mockedSecurityUtils = mockStatic(SecurityUtils.class)) {
+            mockedSecurityUtils.when(SecurityUtils::getCurrentAuthenticatedUserEmail).thenReturn("test@example.com");
+
+            // Mocking UserRepository.findByEmail() method
+            when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
+
+            // Mocking MenuItemService.getMenuItemByIdForOwner() method
+            when(menuItemService.getMenuItemByIdForOwner(anyLong(), anyLong())).thenReturn(menuItemDTO);
+
+            // Calling the controller method
+            ResponseEntity<MenuItemDTO> response = menuItemController.getMenuItemByIdForOwner(1L);
+
+            // Verifying the response
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals(menuItemDTO, response.getBody());
+
+            // Verifying the mocked interactions
+            verify(menuItemService, times(1)).getMenuItemByIdForOwner(anyLong(), anyLong());
+        }
+    }
+
+    @Test
+    void testGetMenuItemById() {
+        when(menuItemService.getMenuItemById(anyLong())).thenReturn(menuItemDTO);
+
+        ResponseEntity<MenuItemDTO> response = menuItemController.getMenuItemById(1L);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(menuItemDTO, response.getBody());
+        verify(menuItemService, times(1)).getMenuItemById(anyLong());
+    }
+
+    @Test
+    void testCreateMenuItemForOwner() {
+        // Mocking SecurityUtils.getCurrentAuthenticatedUserEmail() static method
+        try (MockedStatic<SecurityUtils> mockedSecurityUtils = mockStatic(SecurityUtils.class)) {
+            mockedSecurityUtils.when(SecurityUtils::getCurrentAuthenticatedUserEmail).thenReturn("test@example.com");
+
+            // Mocking UserRepository.findByEmail() method
+            when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
+
+            // Mocking MenuItemService.createMenuItemForOwner() method
+            when(menuItemService.createMenuItemForOwner(any(MenuItemInputDTO.class), anyLong())).thenReturn(menuItemDTO);
+
+            // Calling the controller method
+            ResponseEntity<MenuItemDTO> response = menuItemController.createMenuItemForOwner(menuItemInputDTO);
+
+            // Verifying the response
+            assertEquals(HttpStatus.CREATED, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals(menuItemDTO, response.getBody());
+
+            // Verifying the mocked interactions
+            verify(menuItemService, times(1)).createMenuItemForOwner(any(MenuItemInputDTO.class), anyLong());
+        }
+    }
+
+    @Test
+    void testCreateMenuItemForRestaurantByAdmin() {
+        when(menuItemService.createMenuItemForRestaurant(any(MenuItemInputDTO.class), anyLong())).thenReturn(menuItemDTO);
+
+        ResponseEntity<MenuItemDTO> response = menuItemController.createMenuItemForRestaurantByAdmin(1L, menuItemInputDTO);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(menuItemDTO, response.getBody());
+        verify(menuItemService, times(1)).createMenuItemForRestaurant(any(MenuItemInputDTO.class), anyLong());
+    }
+
+    @Test
+    void testUpdateMenuItemForOwner() {
+        // Mocking SecurityUtils.getCurrentAuthenticatedUserEmail() static method
+        try (MockedStatic<SecurityUtils> mockedSecurityUtils = mockStatic(SecurityUtils.class)) {
+            mockedSecurityUtils.when(SecurityUtils::getCurrentAuthenticatedUserEmail).thenReturn("test@example.com");
+
+            // Mocking UserRepository.findByEmail() method
+            when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
+
+            // Mocking MenuItemService.updateMenuItemForOwner() method
+            when(menuItemService.updateMenuItemForOwner(anyLong(), any(MenuItemInputDTO.class), anyLong())).thenReturn(menuItemDTO);
+
+            // Calling the controller method
+            ResponseEntity<MenuItemDTO> response = menuItemController.updateMenuItemForOwner(1L, menuItemInputDTO);
+
+            // Verifying the response
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
+            assertEquals(menuItemDTO, response.getBody());
+
+            // Verifying the mocked interactions
+            verify(menuItemService, times(1)).updateMenuItemForOwner(anyLong(), any(MenuItemInputDTO.class), anyLong());
+        }
+    }
+
+    @Test
+    void testUpdateMenuItemByAdmin() {
+        when(menuItemService.updateMenuItemByAdmin(anyLong(), any(MenuItemInputDTO.class))).thenReturn(menuItemDTO);
+
+        ResponseEntity<MenuItemDTO> response = menuItemController.updateMenuItemByAdmin(1L, menuItemInputDTO);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(menuItemDTO, response.getBody());
+        verify(menuItemService, times(1)).updateMenuItemByAdmin(anyLong(), any(MenuItemInputDTO.class));
+    }
+
+    @Test
+    void testDeleteMenuItemForOwner() {
+        // Mocking SecurityUtils.getCurrentAuthenticatedUserEmail() static method
+        try (MockedStatic<SecurityUtils> mockedSecurityUtils = mockStatic(SecurityUtils.class)) {
+            mockedSecurityUtils.when(SecurityUtils::getCurrentAuthenticatedUserEmail).thenReturn("test@example.com");
+
+            // Mocking UserRepository.findByEmail() method
+            User mockUser = new User();
+            setField(mockUser, "id", 1L);
+            mockUser.setEmail("test@example.com");
+
+            // Voeg een restaurant toe aan de mockUser
+            Restaurant mockRestaurant = new Restaurant();
+            setField(mockRestaurant, "id", 1L);
+            mockUser.setRestaurant(mockRestaurant);
+
+            when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(mockUser));
+
+            // Mocking MenuItemService.deleteMenuItemForOwner() method
+            doNothing().when(menuItemService).deleteMenuItemForOwner(anyLong(), anyLong());
+
+            // Calling the controller method
+            ResponseEntity<Void> response = menuItemController.deleteMenuItemForOwner(1L);
+
+            // Verifying the response
+            assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+
+            // Verifying the mocked interactions
+            verify(menuItemService, times(1)).deleteMenuItemForOwner(anyLong(), anyLong());
+        }
+    }
+
+    @Test
+    void testDeleteMenuItemByAdmin() {
+        doNothing().when(menuItemService).deleteMenuItemByAdmin(anyLong());
+
+        ResponseEntity<Void> response = menuItemController.deleteMenuItemByAdmin(1L);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(menuItemService, times(1)).deleteMenuItemByAdmin(anyLong());
+    }
+
+    @Test
+    void testFindByNameIgnoreCase() {
+        when(menuItemService.findByNameIgnoreCase(anyString())).thenReturn(List.of(menuItemDTO));
+
+        ResponseEntity<List<MenuItemDTO>> response = menuItemController.findByNameIgnoreCase("Test MenuItem");
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        verify(menuItemService, times(1)).findByNameIgnoreCase(anyString());
+    }
+}

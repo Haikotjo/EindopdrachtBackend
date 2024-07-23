@@ -1,49 +1,56 @@
-//package nl.novi.eindopdrachtbackend.integration;
-//
-//import jakarta.transaction.Transactional;
-//import nl.novi.eindopdrachtbackend.model.Menu;
-//import nl.novi.eindopdrachtbackend.model.Restaurant;
-//import nl.novi.eindopdrachtbackend.repository.MenuRepository;
-//import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
-//import org.junit.jupiter.api.AfterEach;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import static org.junit.jupiter.api.Assertions.assertTrue;
-//
-//@SpringBootTest
-//class RestaurantMenuRelationTest {
-//
-//    @Autowired
-//    private RestaurantRepository restaurantRepository;
-//
-//    @Autowired
-//    private MenuRepository menuRepository;
-//
-//    private Restaurant savedRestaurant;
-//    private Menu savedMenu;
-//
-//    @Test
-//    @Transactional
-//    public void testRestaurantMenuRelation() {
-//        // Make Restaurant
-//        Restaurant restaurant = new Restaurant();
-//        restaurant.setName("The Good Food Place");
-//        restaurant.setAddress("123 Main St");
-//        restaurant.setPhoneNumber("555-1234");
-//        savedRestaurant = restaurantRepository.save(restaurant);
-//
-//        // Make Menu
-//        Menu menu = new Menu();
-//        menu.setName("Spring Specials");
-//        menu.setDescription("Seasonal dishes for spring");
-//
-//        // Insert Menu to Restaurant
-//        savedRestaurant.getMenus().add(menu);
-//        savedMenu = menuRepository.save(menu);
-//
-//        // Get saved Restaurant and verify relation
-//        Restaurant retrievedRestaurant = restaurantRepository.findById(savedRestaurant.getId()).orElseThrow();
-//        assertTrue(retrievedRestaurant.getMenus().contains(savedMenu), "The menu is not linked to the restaurant.");
-//    }
-//}
+package nl.novi.eindopdrachtbackend.integration;
+
+import jakarta.transaction.Transactional;
+import nl.novi.eindopdrachtbackend.model.Menu;
+import nl.novi.eindopdrachtbackend.model.Restaurant;
+import nl.novi.eindopdrachtbackend.repository.MenuRepository;
+import nl.novi.eindopdrachtbackend.repository.RestaurantRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@SpringBootTest
+class RestaurantMenuRelationTest {
+
+    @Autowired
+    private RestaurantRepository restaurantRepository;
+
+    @Autowired
+    private MenuRepository menuRepository;
+
+    private Restaurant restaurant;
+
+    @BeforeEach
+    public void setup() {
+        restaurant = new Restaurant();
+        restaurant.setName("Test Restaurant");
+        restaurant = restaurantRepository.save(restaurant);
+    }
+
+    @Test
+    @Transactional
+    public void testRestaurantMenuRelation() {
+        // Maak een Menu aan
+        Menu menu = new Menu();
+        menu.setName("Dinner Menu");
+        menu.setDescription("Evening menu with multiple courses");
+        menu.setRestaurant(restaurant); // Koppel het menu aan het restaurant
+        menu = menuRepository.save(menu);
+
+        // Voeg Menu toe aan Restaurant
+        Set<Menu> menus = new HashSet<>(restaurant.getMenus());
+        menus.add(menu);
+        restaurant.setMenus(menus);
+        restaurant = restaurantRepository.save(restaurant);
+
+        // Controleer de relatie
+        Restaurant savedRestaurant = restaurantRepository.findById(restaurant.getId()).get();
+        assertTrue(savedRestaurant.getMenus().contains(menu));
+    }
+}
