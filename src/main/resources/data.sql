@@ -1,93 +1,233 @@
-
-
 -- Insert roles
-INSERT INTO roles (rolename) VALUES ('CUSTOMER');
-INSERT INTO roles (rolename) VALUES ('OWNER');
-INSERT INTO roles (rolename) VALUES ('ADMIN');
+INSERT INTO roles (rolename)
+VALUES (''CUSTOMER'');
+INSERT INTO roles (rolename)
+VALUES (''OWNER'');
+INSERT INTO roles (rolename)
+VALUES (''ADMIN'');
 
 -- Insert users
-INSERT INTO users (name, email, password, phone_number) VALUES ('John Doe', 'john.doe@example.com', '$2a$10$l8Aw3v4sJpSHWUjtXUdkO.v766JvM6Ro9vrQ3IogQOU1U88Tu46ky', '1234567890');
-INSERT INTO users (name, email, password, phone_number) VALUES ('Jane Smith', 'jane.smith@example.com', '$2a$10$K6pbGwTYnNmWSM1kiLfJvOxbEnxy7K1hCAi0rIJ9d3OzICW3sUI1y', '0987654321');
-INSERT INTO users (name, email, password, phone_number) VALUES ('Alice Johnson', 'alice.johnson@example.com', '$2a$10$HS5wLdrmMRuBgF9d18Tbnux/Lqe4Zu25xc87qlSyLTqmlzrqGgXS2', '1122334455');
-INSERT INTO users (name, email, password, phone_number) VALUES ('Owner One', 'owner.one@example.com', '$2a$10$2q1rPfRqfs8braxU9c3WzeihkPD4jvILzFtWgeOiR3OnnkO4B9HWe', '1111111111');
-INSERT INTO users (name, email, password, phone_number) VALUES ('Owner Two', 'owner.two@example.com', '$2a$10$KTQEBBo.dZXZL6USfu/qV.wxt./HSi09KCB5crxQFAvpLCCwnzW7O', '2222222222');
-INSERT INTO users (name, email, password, phone_number) VALUES ('Owner Three', 'owner.three@example.com', '$2a$10$tMOde/XYW82ohctp6jkHjOMQQ3repa3vupD20/WfO2O94X6mv8Dfe', '3333333333');
-INSERT INTO users (name, email, password, phone_number) VALUES ('New Four', 'owner.four@example.com', '$2a$10$1ikl5iG5/RHdOb2.7gE0UumlZQcFwZIvCmgAzepLu4DOK85y8twC6', '4444444444');
-INSERT INTO users (name, email, password, phone_number) VALUES ('Admin User', 'admin.user@example.com', '$2a$10$5CVbOzUidUJMUYJkdlOMXuIggBw5/61Fa1dzM5CEB/8fs2BTPnCfO', '555-9999');
-
+INSERT INTO users (name, email, password, phone_number)
+VALUES (''John Doe'', ''john.doe@example.com'', ''$2a$10$l8Aw3v4sJpSHWUjtXUdkO.v766JvM6Ro9vrQ3IogQOU1U88Tu46ky'',
+        ''1234567890 '');
+INSERT INTO users (name, email, password, phone_number)
+VALUES (''Jane Smith'', ''jane.smith@example.com'', ''$2a$10$K6pbGwTYnNmWSM1kiLfJvOxbEnxy7K1hCAi0rIJ9d3OzICW3sUI1y'',
+        ''0987654321 '');
+INSERT INTO users (name, email, password, phone_number)
+VALUES (''Alice Johnson'', ''alice.johnson@example.com'',
+        ''$2a$10$HS5wLdrmMRuBgF9d18Tbnux/Lqe4Zu25xc87qlSyLTqmlzrqGgXS2'', ''1122334455 '');
+INSERT INTO users (name, email, password, phone_number)
+VALUES (''Owner One'', ''owner.one@example.com'', ''$2a$10$2q1rPfRqfs8braxU9c3WzeihkPD4jvILzFtWgeOiR3OnnkO4B9HWe'',
+        ''1111111111 '');
+INSERT INTO users (name, email, password, phone_number)
+VALUES (''Owner Two'', ''owner.two@example.com'', ''$2a$10$KTQEBBo.dZXZL6USfu/qV.wxt./HSi09KCB5crxQFAvpLCCwnzW7O'',
+        ''2222222222 '');
+INSERT INTO users (name, email, password, phone_number)
+VALUES (''Owner Three'', ''owner.three@example.com'', ''$2a$10$tMOde/XYW82ohctp6jkHjOMQQ3repa3vupD20/WfO2O94X6mv8Dfe'',
+        ''3333333333 '');
+INSERT INTO users (name, email, password, phone_number)
+VALUES (''Owner Four'', ''owner.four@example.com'', ''$2a$10$1ikl5iG5/RHdOb2.7gE0UumlZQcFwZIvCmgAzepLu4DOK85y8twC6'',
+        ''4444444444 '');
+INSERT INTO users (name, email, password, phone_number)
+VALUES (''Admin User'', ''admin.user@example.com'', ''$2a$10$5CVbOzUidUJMUYJkdlOMXuIggBw5/61Fa1dzM5CEB/8fs2BTPnCfO'',
+        ''555 - 9999 '');
 
 -- Associate users with roles
-INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='john.doe@example.com'), 'CUSTOMER');
-INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='jane.smith@example.com'), 'CUSTOMER');
-INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='alice.johnson@example.com'), 'CUSTOMER');
-
-INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='owner.one@example.com'), 'OWNER');
-INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='owner.two@example.com'), 'OWNER');
-INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='owner.three@example.com'), 'OWNER');
-INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='owner.four@example.com'), 'OWNER');
-
-INSERT INTO user_roles (user_id, roles_rolename) VALUES ((SELECT id FROM users WHERE email='admin.user@example.com'), 'ADMIN');
+INSERT INTO user_roles (user_id, roles_rolename)
+VALUES ((SELECT id FROM users WHERE email = '' john.doe@example.com ''), ''CUSTOMER'');
+INSERT INTO user_roles (user_id, roles_rolename)
+VALUES ((SELECT id FROM users WHERE email = '' jane.smith@example.com ''), ''CUSTOMER'');
+INSERT INTO user_roles (user_id, roles_rolename)
+VALUES ((SELECT id FROM users WHERE email = '' alice.johnson@example.com ''), ''CUSTOMER'');
+INSERT INTO user_roles (user_id, roles_rolename)
+VALUES ((SELECT id FROM users WHERE email = '' owner.one@example.com ''), ''OWNER'');
+INSERT INTO user_roles (user_id, roles_rolename)
+VALUES ((SELECT id FROM users WHERE email = '' owner.two@example.com ''), ''OWNER'');
+INSERT INTO user_roles (user_id, roles_rolename)
+VALUES ((SELECT id FROM users WHERE email = '' owner.three@example.com ''), ''OWNER'');
+INSERT INTO user_roles (user_id, roles_rolename)
+VALUES ((SELECT id FROM users WHERE email = '' owner.four@example.com ''), ''OWNER'');
+INSERT INTO user_roles (user_id, roles_rolename)
+VALUES ((SELECT id FROM users WHERE email = '' admin.user@example.com ''), ''ADMIN'');
 
 -- Insert restaurants
-INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Italian Bistro', '123 Main Street, Springfield', '555-1234', (SELECT id FROM users WHERE email='owner.one@example.com'));
-INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Veggie Delight', '456 Oak Avenue, Shelbyville', '555-5678', (SELECT id FROM users WHERE email='owner.two@example.com'));
-INSERT INTO restaurants (name, address, phone_number, user_id) VALUES ('Sushi Place', '789 Maple Road, Capital City', '555-8765', (SELECT id FROM users WHERE email='owner.three@example.com'));
+INSERT INTO restaurants (name, address, phone_number, user_id)
+VALUES (''Italian Bistro'', ''123 Main Street, Springfield '', ''555 - 1234 '',
+        (SELECT id FROM users WHERE email = '' owner.one@example.com '') );
+INSERT INTO restaurants (name, address, phone_number, user_id)
+VALUES (''Veggie Delight'', ''456 Oak Avenue, Shelbyville '', ''555 - 5678 '',
+        (SELECT id FROM users WHERE email = '' owner.two@example.com '') );
+INSERT INTO restaurants (name, address, phone_number, user_id)
+VALUES (''Sushi Place'', ''789 Maple Road, Capital City'', ''555 - 8765 '',
+        (SELECT id FROM users WHERE email = '' owner.three@example.com '') );
+INSERT INTO restaurants (name, address, phone_number, user_id)
+VALUES (''Burger House'', ''321 Burger Lane, Springfield '', ''555 - 4321 '',
+        (SELECT id FROM users WHERE email = '' owner.four@example.com '') );
 
 -- Insert ingredients with owner_id
-INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id) VALUES ('Sugar', 100, 'grams', 1.0, 'Supplier A', '2024-12-31', 'Sweetener', 4);
-INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id) VALUES ('Flour', 50, 'grams', 0.5, 'Supplier B', '2024-12-31', 'Used in baking', 5);
-INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id) VALUES ('Butter', 30, 'grams', 1.5, 'Supplier C', '2024-12-31', 'Dairy product', 6);
-INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id) VALUES ('Salt', 200, 'grams', 0.2, 'Supplier D', '2024-12-31', 'Basic seasoning', 4);
-INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id) VALUES ('Pepper', 100, 'grams', 2.0, 'Supplier E', '2024-12-31', 'Spicy seasoning', 5);
-INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id) VALUES ('Olive Oil', 50, 'liters', 10.0, 'Supplier F', '2024-12-31', 'Cooking oil', 6);
+INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id)
+VALUES (''Sugar'', 100, ''grams'', 1.0, ''Supplier A'', ''2024 - 12 - 31 '', ''Sweetener'', 4);
+INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id)
+VALUES (''Flour'', 50, ''grams'', 0.5, ''Supplier B'', ''2024 - 12 - 31 '', ''Used in baking'', 5);
+INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id)
+VALUES (''Butter'', 30, ''grams'', 1.5, ''Supplier C'', ''2024 - 12 - 31 '', ''Dairy product'', 6);
+INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id)
+VALUES (''Salt'', 200, ''grams'', 0.2, ''Supplier D'', ''2024 - 12 - 31 '', ''Basic seasoning'', 4);
+INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id)
+VALUES (''Pepper'', 100, ''grams'', 2.0, ''Supplier E'', ''2024 - 12 - 31 '', ''Spicy seasoning'', 5);
+INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id)
+VALUES (''Olive Oil'', 50, ''liters'', 10.0, ''Supplier F'', ''2024 - 12 - 31 '', ''Cooking oil'', 6);
+INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id)
+VALUES (''Tomato Sauce'', 20, ''liters'', 15.0, ''Supplier G'', ''2025 - 06 - 30 '', ''Sauce for pizza and pasta'', 4);
+INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id)
+VALUES (''Cheese'', 60, ''grams'', 8.0, ''Supplier H'', ''2024 - 11 - 30 '', ''Topping for pizza and pasta'', 4);
+INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id)
+VALUES (''Lettuce'', 100, ''grams'', 1.2, ''Supplier I'', ''2024 - 10 - 20 '', ''Fresh vegetable for salads'', 5);
+INSERT INTO ingredients (name, quantity, unit, cost, supplier, expiration_date, description, owner_id)
+VALUES (''Chicken'', 75, ''grams'', 5.0, ''Supplier J'', ''2024 - 11 - 15 '', ''Meat for various dishes'', 6);
 
--- Insert menu items including new ones for Spaghetti Bolognese and Vegetable Lasagna
-INSERT INTO menu_items (name, price, description, image, restaurant_id) VALUES ('Cheese Pizza', 10.00, 'Cheese pizza with extra cheese topping', 'cheese_pizza.jpg', (SELECT id FROM restaurants WHERE name='Italian Bistro'));
-INSERT INTO menu_items (name, price, description, image, restaurant_id) VALUES ('Veggie Pizza', 12.00, 'Pizza with a variety of vegetables', 'veggie_pizza.jpg', (SELECT id FROM restaurants WHERE name='Veggie Delight'));
-INSERT INTO menu_items (name, price, description, image, restaurant_id) VALUES ('Spaghetti Bolognese', 15.00, 'Classic spaghetti with homemade bolognese sauce', 'spaghetti_bolognese.jpg', (SELECT id FROM restaurants WHERE name='Italian Bistro'));
-INSERT INTO menu_items (name, price, description, image, restaurant_id) VALUES ('Vegetable Lasagna', 14.00, 'Layers of pasta, fresh veggies, and rich tomato sauce', 'vegetable_lasagna.jpg', (SELECT id FROM restaurants WHERE name='Veggie Delight'));
+-- Insert menu items
+INSERT INTO menu_items (name, price, description, image, restaurant_id)
+VALUES (''Cheese Pizza'', 10.00, ''Cheese pizza with extra cheese topping'', ''cheese_pizza.jpg'',
+        (SELECT id FROM restaurants WHERE name = '' Italian Bistro '') );
+INSERT INTO menu_items (name, price, description, image, restaurant_id)
+VALUES (''Veggie Pizza'', 12.00, ''Pizza with a variety of vegetables'', ''veggie_pizza.jpg'',
+        (SELECT id FROM restaurants WHERE name = '' Veggie Delight '') );
+INSERT INTO menu_items (name, price, description, image, restaurant_id)
+VALUES (''Spaghetti Bolognese'', 15.00, ''Classic spaghetti with homemade bolognese sauce'',
+        ''spaghetti_bolognese.jpg'', (SELECT id FROM restaurants WHERE name = '' Italian Bistro '') );
+INSERT INTO menu_items (name, price, description, image, restaurant_id)
+VALUES (''Vegetable Lasagna'', 14.00, ''Layers of pasta, fresh veggies, and rich tomato sauce '',
+        ''vegetable_lasagna.jpg'', (SELECT id FROM restaurants WHERE name = '' Veggie Delight '') );
+INSERT INTO menu_items (name, price, description, image, restaurant_id)
+VALUES (''Sushi Platter'', 20.00, ''Assorted sushi rolls and sashimi'', ''sushi_platter.jpg'',
+        (SELECT id FROM restaurants WHERE name = '' Sushi Place '') );
+INSERT INTO menu_items (name, price, description, image, restaurant_id)
+VALUES (''Chicken Burger'', 9.00, ''Grilled chicken burger with lettuce and tomato'', ''chicken_burger.jpg'',
+        (SELECT id FROM restaurants WHERE name = '' Burger House '') );
+INSERT INTO menu_items (name, price, description, image, restaurant_id)
+VALUES (''Beef Burger'', 11.00, ''Juicy beef burger with cheese and bacon'', ''beef_burger.jpg'',
+        (SELECT id FROM restaurants WHERE name = '' Burger House '') );
 
 -- Associate ingredients with menu items
-INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id) VALUES (1, 1); -- Cheese Pizza heeft Sugar
-INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id) VALUES (1, 3); -- Cheese Pizza heeft Butter
-INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id) VALUES (2, 2); -- Veggie Pizza heeft Flour
-INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id) VALUES (2, 3); -- Veggie Pizza heeft Butter
+INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id)
+VALUES (1, 1); -- Cheese Pizza heeft Sugar
+INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id)
+VALUES (1, 3); -- Cheese Pizza heeft Butter
+INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id)
+VALUES (1, 8); -- Cheese Pizza heeft Cheese
+INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id)
+VALUES (2, 2); -- Veggie Pizza heeft Flour
+INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id)
+VALUES (2, 3); -- Veggie Pizza heeft Butter
+INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id)
+VALUES (2, 10); -- Veggie Pizza heeft Lettuce
+INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id)
+VALUES (3, 7); -- Spaghetti Bolognese heeft Tomato Sauce
+INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id)
+VALUES (3, 8); -- Spaghetti Bolognese heeft Cheese
+INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id)
+VALUES (4, 9); -- Vegetable Lasagna heeft Lettuce
+INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id)
+VALUES (4, 7); -- Vegetable Lasagna heeft Tomato Sauce
+INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id)
+VALUES (5, 1); -- Sushi Platter heeft Sugar
+INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id)
+VALUES (5, 2); -- Sushi Platter heeft Flour
+INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id)
+VALUES (6, 10); -- Chicken Burger heeft Chicken
+INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id)
+VALUES (6, 9); -- Chicken Burger heeft Lettuce
+INSERT INTO menu_item_ingredients (menu_item_id, ingredient_id)
+VALUES (7, 9);
+-- Beef Burger heeft Lettuce
 
 -- Insert some menus
-INSERT INTO menus (name, description) VALUES ('Italian Specials', 'A selection of Italian cuisine favorites');
-INSERT INTO menus (name, description) VALUES ('Vegetarian Delights', 'A variety of healthy vegetarian dishes');
+INSERT INTO menus (name, description)
+VALUES (''Italian Specials'', ''A selection of Italian cuisine favorites'');
+INSERT INTO menus (name, description)
+VALUES (''Vegetarian Delights'', ''A variety of healthy vegetarian dishes'');
+INSERT INTO menus (name, description)
+VALUES (''Sushi Specials'', ''A selection of sushi and sashimi'');
+INSERT INTO menus (name, description)
+VALUES (''Burger Bonanza'', ''A variety of delicious burgers'');
 
 -- Associate menu_items with menus
-INSERT INTO menu_menu_item (menu_id, menu_item_id) VALUES (1, 1); -- Cheese Pizza in Italian Specials
-INSERT INTO menu_menu_item (menu_id, menu_item_id) VALUES (1, 3); -- Spaghetti Bolognese in Italian Specials
-INSERT INTO menu_menu_item (menu_id, menu_item_id) VALUES (2, 2); -- Veggie Pizza in Vegetarian Delights
-INSERT INTO menu_menu_item (menu_id, menu_item_id) VALUES (2, 4); -- Vegetable Lasagna in Vegetarian Delights
+INSERT INTO menu_menu_item (menu_id, menu_item_id)
+VALUES (1, 1); -- Cheese Pizza in Italian Specials
+INSERT INTO menu_menu_item (menu_id, menu_item_id)
+VALUES (1, 3); -- Spaghetti Bolognese in Italian Specials
+INSERT INTO menu_menu_item (menu_id, menu_item_id)
+VALUES (2, 2); -- Veggie Pizza in Vegetarian Delights
+INSERT INTO menu_menu_item (menu_id, menu_item_id)
+VALUES (2, 4); -- Vegetable Lasagna in Vegetarian Delights
+INSERT INTO menu_menu_item (menu_id, menu_item_id)
+VALUES (3, 5); -- Sushi Platter in Sushi Specials
+INSERT INTO menu_menu_item (menu_id, menu_item_id)
+VALUES (4, 6); -- Chicken Burger in Burger Bonanza
+INSERT INTO menu_menu_item (menu_id, menu_item_id)
+VALUES (4, 7);
+-- Beef Burger in Burger Bonanza
 
 -- Insert delivery addresses ensuring correct alignment with user IDs and table fields
-INSERT INTO delivery_addresses (street, house_number, city, postcode, country, user_id) VALUES ('Maple Street', 123, 'Springfield', '12345', 'USA', 1);
-INSERT INTO delivery_addresses (street, house_number, city, postcode, country, user_id) VALUES ('Elm Street', 456, 'Shelbyville', '67890', 'USA', 2);
+INSERT INTO delivery_addresses (street, house_number, city, postcode, country, user_id)
+VALUES (''Maple Street'', 123, ''Springfield'', ''12345 '', ''USA'', 1);
+INSERT INTO delivery_addresses (street, house_number, city, postcode, country, user_id)
+VALUES (''Elm Street'', 456, ''Shelbyville'', ''67890 '', ''USA'', 2);
 
 -- Associate menus with restaurants
-UPDATE menus SET restaurant_id = 1 WHERE id = 1; -- Italian Specials hoort bij Italian Bistro
-UPDATE menus SET restaurant_id = 2 WHERE id = 2; -- Vegetarian Delights hoort bij Veggie Delight
+UPDATE menus
+SET restaurant_id = (SELECT id FROM restaurants WHERE name = '' Italian Bistro '')
+WHERE id = 1; -- Italian Specials hoort bij Italian Bistro
+UPDATE menus
+SET restaurant_id = (SELECT id FROM restaurants WHERE name = '' Veggie Delight '')
+WHERE id = 2; -- Vegetarian Delights hoort bij Veggie Delight
+UPDATE menus
+SET restaurant_id = (SELECT id FROM restaurants WHERE name = '' Sushi Place '')
+WHERE id = 3; -- Sushi Specials hoort bij Sushi Place
+UPDATE menus
+SET restaurant_id = (SELECT id FROM restaurants WHERE name = '' Burger House '')
+WHERE id = 4;
+-- Burger Bonanza hoort bij Burger House
 
 -- Insert orders with orderDateTime
-INSERT INTO orders (fulfilled, customer_id, restaurant_id, delivery_address_id, order_date_time) VALUES (true, 1, 1, 1, '2024-06-02T10:15:30'); -- Order 1, fulfilled, by John Doe from Italian Bistro to Maple Street
-INSERT INTO orders (fulfilled, customer_id, restaurant_id, delivery_address_id, order_date_time) VALUES (false, 2, 2, 2, '2024-06-01T09:20:25'); -- Order 2, not fulfilled, by Jane Smith from Veggie Delight to Elm Street
-INSERT INTO orders (fulfilled, customer_id, restaurant_id, delivery_address_id, order_date_time) VALUES (true, 1, 1, 1, '2024-06-02T14:45:00'); -- Order 3, fulfilled, by John Doe from Italian Bistro to Maple Street
+INSERT INTO orders (fulfilled, customer_id, restaurant_id, delivery_address_id, order_date_time)
+VALUES (true, 1, 1, 1,
+        ''2024 - 06 - 02T10:15:30''); -- Order 1, fulfilled, by John Doe from Italian Bistro to Maple Street
+INSERT INTO orders (fulfilled, customer_id, restaurant_id, delivery_address_id, order_date_time)
+VALUES (false, 2, 2, 2,
+        ''2024 - 06 - 01T09:20:25''); -- Order 2, not fulfilled, by Jane Smith from Veggie Delight to Elm Street
+INSERT INTO orders (fulfilled, customer_id, restaurant_id, delivery_address_id, order_date_time)
+VALUES (true, 1, 1, 1, ''2024 - 06 - 02T14:45:00'');
+-- Order 3, fulfilled, by John Doe from Italian Bistro to Maple Street
 
 -- Associate menu_items with orders
-INSERT INTO order_menu_items (order_id, menu_item_id) VALUES (1, 1); -- Order 1 heeft Cheese Pizza
-INSERT INTO order_menu_items (order_id, menu_item_id) VALUES (1, 3); -- Order 1 heeft Spaghetti Bolognese
-INSERT INTO order_menu_items (order_id, menu_item_id) VALUES (2, 2); -- Order 2 heeft Veggie Pizza
-INSERT INTO order_menu_items (order_id, menu_item_id) VALUES (2, 4); -- Order 2 heeft Vegetable Lasagna
-INSERT INTO order_menu_items (order_id, menu_item_id) VALUES (3, 1); -- Order 3 heeft Cheese Pizza
-INSERT INTO order_menu_items (order_id, menu_item_id) VALUES (3, 4); -- Order 3 heeft Vegetable Lasagna
+INSERT INTO order_menu_items (order_id, menu_item_id)
+VALUES (1, 1); -- Order 1 heeft Cheese Pizza
+INSERT INTO order_menu_items (order_id, menu_item_id)
+VALUES (1, 3); -- Order 1 heeft Spaghetti Bolognese
+INSERT INTO order_menu_items (order_id, menu_item_id)
+VALUES (2, 2); -- Order 2 heeft Veggie Pizza
+INSERT INTO order_menu_items (order_id, menu_item_id)
+VALUES (2, 4); -- Order 2 heeft Vegetable Lasagna
+INSERT INTO order_menu_items (order_id, menu_item_id)
+VALUES (3, 1); -- Order 3 heeft Cheese Pizza
+INSERT INTO order_menu_items (order_id, menu_item_id)
+VALUES (3, 4);
+-- Order 3 heeft Vegetable Lasagna
 
 -- Insert notifications
-INSERT INTO notifications (message, user_id) VALUES ('Your ingredient Sugar is running low.', (SELECT id FROM users WHERE email='owner.one@example.com'));
-INSERT INTO notifications (message, user_id) VALUES ('Your ingredient X is running low.', (SELECT id FROM users WHERE email='owner.one@example.com'));
-INSERT INTO notifications (message, user_id) VALUES ('Your ingredient Flour is running low.', (SELECT id FROM users WHERE email='owner.two@example.com'));
-INSERT INTO notifications (message, user_id) VALUES ('Your ingredient X is running low.', (SELECT id FROM users WHERE email='owner.two@example.com'));
-INSERT INTO notifications (message, user_id) VALUES ('Your ingredient Butter is expiring soon.', (SELECT id FROM users WHERE email='owner.three@example.com'));
-INSERT INTO notifications (message, user_id) VALUES ('Your ingredient X is expiring soon.', (SELECT id FROM users WHERE email='owner.three@example.com'));
+INSERT INTO notifications (message, user_id)
+VALUES (''Your ingredient Sugar is running low.'', (SELECT id FROM users WHERE email = '' owner.one@example.com '') );
+INSERT INTO notifications (message, user_id)
+VALUES (''Your ingredient Salt is running low.'', (SELECT id FROM users WHERE email = '' owner.one@example.com '') );
+INSERT INTO notifications (message, user_id)
+VALUES (''Your ingredient Flour is running low.'', (SELECT id FROM users WHERE email = '' owner.two@example.com '') );
+INSERT INTO notifications (message, user_id)
+VALUES (''Your ingredient Pepper is running low.'', (SELECT id FROM users WHERE email = '' owner.two@example.com '') );
+INSERT INTO notifications (message, user_id)
+VALUES (''Your ingredient Butter is expiring soon.'',
+        (SELECT id FROM users WHERE email = '' owner.three@example.com '') );
+INSERT INTO notifications (message, user_id)
+VALUES (''Your ingredient Olive Oil is expiring soon.'',
+        (SELECT id FROM users WHERE email = '' owner.three@example.com '') );
