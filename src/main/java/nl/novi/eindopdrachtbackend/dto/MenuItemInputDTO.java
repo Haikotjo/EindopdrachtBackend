@@ -9,8 +9,12 @@ import java.util.List;
  * Data Transfer Object for MenuItem input.
  */
 public class MenuItemInputDTO {
+    @NotBlank
     private String name;
+
+    @NotNull
     private double price;
+
     private String description;
     private String image;
     private List<Long> ingredientIds;

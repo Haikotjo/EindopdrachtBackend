@@ -26,12 +26,12 @@ public class MenuItemMapper {
         dto.setPrice(menuItem.getPrice());
         dto.setDescription(menuItem.getDescription());
         dto.setImage(menuItem.getImage());
-        if (menuItem.getIngredients() != null) {
-            List<IngredientDTO> ingredientDTOS = menuItem.getIngredients().stream()
-                    .map(IngredientMapper::toCustomerIngredientDTO)
-                    .collect(Collectors.toList());
-            dto.setIngredients(ingredientDTOS);
-        }
+
+        List<IngredientDTO> ingredientDTOS = menuItem.getIngredients().stream()
+                .map(IngredientMapper::toCustomerIngredientDTO)
+                .collect(Collectors.toList());
+        dto.setIngredients(ingredientDTOS);
+
         return dto;
     }
 

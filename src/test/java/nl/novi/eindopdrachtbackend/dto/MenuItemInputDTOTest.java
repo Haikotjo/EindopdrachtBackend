@@ -1,40 +1,38 @@
 package nl.novi.eindopdrachtbackend.dto;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class MenuItemInputDTOTest {
 
+    private MenuItemInputDTO menuItemInputDTO;
+
+    @BeforeEach
+    public void setUp() {
+        menuItemInputDTO = new MenuItemInputDTO();
+    }
+
     @Test
-    public void testMenuInputDTO() {
-        // Create Ingredient IDs list
+    public void testGettersAndSetters() {
+        menuItemInputDTO.setName("Pizza");
+        menuItemInputDTO.setPrice(12.5);
+        menuItemInputDTO.setDescription("Delicious cheese pizza");
+        menuItemInputDTO.setImage("image_url");
+
         List<Long> ingredientIds = new ArrayList<>();
         ingredientIds.add(1L);
         ingredientIds.add(2L);
-        ingredientIds.add(3L);
-
-        MenuItemInputDTO menuItemInputDTO = new MenuItemInputDTO();
-
-        menuItemInputDTO.setName("Pizza");
-        menuItemInputDTO.setPrice(9.99);
-        menuItemInputDTO.setDescription("Delicious cheese pizza");
-        menuItemInputDTO.setImage("image.jpg");
         menuItemInputDTO.setIngredientIds(ingredientIds);
 
-        // Assertions
         assertEquals("Pizza", menuItemInputDTO.getName());
-        assertEquals(9.99, menuItemInputDTO.getPrice());
+        assertEquals(12.5, menuItemInputDTO.getPrice(), 0.01);
         assertEquals("Delicious cheese pizza", menuItemInputDTO.getDescription());
-        assertEquals("image.jpg", menuItemInputDTO.getImage());
-        assertEquals(3, menuItemInputDTO.getIngredientIds().size());
-        assertEquals(1L, menuItemInputDTO.getIngredientIds().get(0));
-        assertEquals(2L, menuItemInputDTO.getIngredientIds().get(1));
-        assertEquals(3L, menuItemInputDTO.getIngredientIds().get(2));
-
-        // Test updating values
-        menuItemInputDTO.setName("Burger");
-        assertEquals("Burger", menuItemInputDTO.getName());
+        assertEquals("image_url", menuItemInputDTO.getImage());
+        assertEquals(ingredientIds, menuItemInputDTO.getIngredientIds());
     }
 }

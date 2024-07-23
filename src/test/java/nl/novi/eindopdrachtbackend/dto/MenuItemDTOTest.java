@@ -1,51 +1,59 @@
 package nl.novi.eindopdrachtbackend.dto;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 public class MenuItemDTOTest {
 
     @Test
-    public void testMenuItemDTO() throws NoSuchFieldException, IllegalAccessException {
-        // Create IngredientDTO list with reflection
-        List<IngredientDTO> ingredients = new ArrayList<>();
-        IngredientDTO cheese = new IngredientDTO();
-        setField(cheese, "id", 1L);
-        cheese.setName("Cheese");
-        cheese.setQuantity(2);
-        ingredients.add(cheese);
-
+    public void testMenuItemDTOGettersSetters() throws NoSuchFieldException, IllegalAccessException {
         MenuItemDTO menuItemDTO = new MenuItemDTO();
 
-        // Reflectively set id for MenuItemDTO
         setField(menuItemDTO, "id", 1L);
-
         menuItemDTO.setName("Pizza");
-        menuItemDTO.setPrice(9.99);
+        menuItemDTO.setPrice(12.5);
         menuItemDTO.setDescription("Delicious cheese pizza");
-        menuItemDTO.setImage("image.jpg");
+        menuItemDTO.setImage("image_url");
+
+        List<IngredientDTO> ingredients = new ArrayList<>();
         menuItemDTO.setIngredients(ingredients);
 
-        // Assertions
         assertEquals(1L, menuItemDTO.getId());
         assertEquals("Pizza", menuItemDTO.getName());
-        assertEquals(9.99, menuItemDTO.getPrice());
+        assertEquals(12.5, menuItemDTO.getPrice(), 0.01);
         assertEquals("Delicious cheese pizza", menuItemDTO.getDescription());
-        assertEquals("image.jpg", menuItemDTO.getImage());
-        assertEquals(1, menuItemDTO.getIngredients().size());
-        assertEquals("Cheese", menuItemDTO.getIngredients().get(0).getName());
-
-        // Test updating values
-        menuItemDTO.setName("Burger");
-        assertEquals("Burger", menuItemDTO.getName());
+        assertEquals("image_url", menuItemDTO.getImage());
+        assertEquals(ingredients, menuItemDTO.getIngredients());
     }
 
-    private void setField(Object object, String fieldName, Object value) throws NoSuchFieldException, IllegalAccessException {
-        Field field = object.getClass().getDeclaredField(fieldName);
+    @Test
+    public void testMenuItemDTOConstructor() throws NoSuchFieldException, IllegalAccessException {
+        List<IngredientDTO> ingredients = new ArrayList<>();
+        MenuItemDTO menuItemDTO = new MenuItemDTO(1L, "Pizza", 12.5, "Delicious cheese pizza", "image_url", ingredients);
+
+        assertEquals(1L, menuItemDTO.getId());
+        assertEquals("Pizza", menuItemDTO.getName());
+        assertEquals(12.5, menuItemDTO.getPrice(), 0.01);
+        assertEquals("Delicious cheese pizza", menuItemDTO.getDescription());
+        assertEquals("image_url", menuItemDTO.getImage());
+        assertEquals(ingredients, menuItemDTO.getIngredients());
+    }
+
+    @Test
+    public void testEmptyConstructor() {
+        MenuItemDTO menuItemDTO = new MenuItemDTO();
+        assertNull(menuItemDTO.getIngredients());
+    }
+
+    private void setField(Object targetObject, String fieldName, Object value) throws NoSuchFieldException, IllegalAccessException {
+        Field field = targetObject.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);
-        field.set(object, value);
+        field.set(targetObject, value);
     }
 }
