@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUserById(String email) {
         User currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + email));
-        return UserMapper.toUserDTO(currentUser);
+        return UserMapper.toFullUserDTO(currentUser);
     }
 
     /**
@@ -149,7 +149,7 @@ public class UserServiceImpl implements UserService {
         existingUser.getRoles().clear();
         existingUser.getRoles().add(newRole);
         userRepository.save(existingUser);
-        return UserMapper.toUserDTO(existingUser);
+        return UserMapper.toFullUserDTO(existingUser);
     }
 
     /**

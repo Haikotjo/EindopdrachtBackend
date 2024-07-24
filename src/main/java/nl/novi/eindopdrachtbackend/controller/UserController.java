@@ -34,7 +34,7 @@ public class UserController {
      *
      * @return ResponseEntity containing a list of UserDTO objects
      */
-    @GetMapping
+    @GetMapping("/admin/all")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<UserDTO> users = userService.getAllUsers();
@@ -126,7 +126,7 @@ public class UserController {
 
 
     /**
-     * Update user for all id's (ADMIN only)
+     * Update user for anny id (ADMIN only)
      *
      * @param id the ID of the user
      * @param userInputDTO the new user details
@@ -140,13 +140,13 @@ public class UserController {
     }
 
     /**
-     * Update user role for all id's (ADMIN only)
+     * Update user role for anny id (ADMIN only)
      *
      * @param id the ID of the user
      * @param userRoleUpdateDTO the new user role details
      * @return ResponseEntity containing the updated UserDTO object
      */
-    @PutMapping("/{id}/role")
+    @PutMapping("/role/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserDTO> updateUserRole(@PathVariable Long id, @RequestBody @Valid UserRoleUpdateDTO userRoleUpdateDTO) {
         UserDTO updatedUser = userService.updateUserRole(id, userRoleUpdateDTO);
@@ -166,7 +166,7 @@ public class UserController {
     }
 
     /**
-     * Delete user for all id's (ADMIN only)
+     * Delete user for anny id (ADMIN only)
      *
      * @param id the ID of the user to delete
      * @return ResponseEntity with status
