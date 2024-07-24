@@ -1,6 +1,7 @@
 package nl.novi.eindopdrachtbackend.repository;
 
 import nl.novi.eindopdrachtbackend.model.Notification;
+import nl.novi.eindopdrachtbackend.model.Role;
 import nl.novi.eindopdrachtbackend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -8,7 +9,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Repository interface for accessing Notification entities from the database.
+ * Repository interface for {@link Notification} entities.
+ * This interface provides CRUD operations for the Notification entity.
  */
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {

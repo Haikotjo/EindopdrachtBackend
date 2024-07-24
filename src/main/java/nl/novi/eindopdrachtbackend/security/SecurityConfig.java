@@ -120,6 +120,9 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "/users/profile").authenticated()
                                 .requestMatchers(HttpMethod.DELETE, "/users/admin/**").hasAuthority("ADMIN")
 
+                                // USER entity endpoints
+                                .requestMatchers(HttpMethod.GET, "/roles").hasAuthority("ADMIN")
+
                                 // Notification entity endpoints
                                 .requestMatchers(HttpMethod.GET, "/notifications/all").hasAnyAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/notifications/**").hasAnyAuthority("ADMIN", "OWNER")
@@ -131,10 +134,6 @@ public class SecurityConfig {
 
                                 // Notification test endpoints
                                 .requestMatchers(HttpMethod.GET, "/test/check-expiration-dates").permitAll()
-
-
-
-
 
                                 // DeliveryAddress entity endpoints
                                 .requestMatchers(HttpMethod.GET, "/address/admin/all").hasAuthority("ADMIN")
