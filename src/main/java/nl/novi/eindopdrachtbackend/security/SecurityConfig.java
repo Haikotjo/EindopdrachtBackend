@@ -103,7 +103,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "/restaurants/owner").hasAnyAuthority("OWNER", "ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/restaurants/admin/**").hasAuthority("ADMIN")
 
-                                // USER entity endpoints
+                                // User entity endpoints
                                 .requestMatchers(HttpMethod.GET, "/users/profile").authenticated()
                                 .requestMatchers(HttpMethod.GET, "/users/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/users/admin/all").hasAuthority("ADMIN")
@@ -120,20 +120,8 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "/users/profile").authenticated()
                                 .requestMatchers(HttpMethod.DELETE, "/users/admin/**").hasAuthority("ADMIN")
 
-                                // USER entity endpoints
+                                // Role entity endpoints
                                 .requestMatchers(HttpMethod.GET, "/roles").hasAuthority("ADMIN")
-
-                                // Notification entity endpoints
-                                .requestMatchers(HttpMethod.GET, "/notifications/all").hasAnyAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/notifications/**").hasAnyAuthority("ADMIN", "OWNER")
-                                .requestMatchers(HttpMethod.POST, "/notifications/**").hasAnyAuthority("ADMIN", "OWNER")
-                                .requestMatchers(HttpMethod.PUT, "/notifications/**").hasAnyAuthority("ADMIN", "OWNER")
-                                .requestMatchers(HttpMethod.DELETE, "/notifications/**").hasAnyAuthority("ADMIN", "OWNER")
-                                .requestMatchers(HttpMethod.GET, "/notifications/admin/**").hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/notifications/owner/**").hasAuthority("OWNER")
-
-                                // Notification test endpoints
-                                .requestMatchers(HttpMethod.GET, "/test/check-expiration-dates").permitAll()
 
                                 // DeliveryAddress entity endpoints
                                 .requestMatchers(HttpMethod.GET, "/address/admin/all").hasAuthority("ADMIN")
@@ -148,6 +136,18 @@ public class SecurityConfig {
 
                                 .requestMatchers(HttpMethod.DELETE, "/address/admin/{id}").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/address/customer").hasAuthority("CUSTOMER")
+
+                                // Notification entity endpoints
+                                .requestMatchers(HttpMethod.GET, "/notifications/all").hasAnyAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/notifications/**").hasAnyAuthority("ADMIN", "OWNER")
+                                .requestMatchers(HttpMethod.POST, "/notifications/**").hasAnyAuthority("ADMIN", "OWNER")
+                                .requestMatchers(HttpMethod.PUT, "/notifications/**").hasAnyAuthority("ADMIN", "OWNER")
+                                .requestMatchers(HttpMethod.DELETE, "/notifications/**").hasAnyAuthority("ADMIN", "OWNER")
+                                .requestMatchers(HttpMethod.GET, "/notifications/admin/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/notifications/owner/**").hasAuthority("OWNER")
+
+                                // Notification test endpoints
+                                .requestMatchers(HttpMethod.GET, "/test/check-expiration-dates").permitAll()
 
                                 // Order entity endpoints
                                 .requestMatchers(HttpMethod.GET, "/orders/admin/all").hasAuthority("ADMIN")

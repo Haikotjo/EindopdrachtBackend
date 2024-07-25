@@ -1,7 +1,6 @@
 package nl.novi.eindopdrachtbackend.repository;
 
 import nl.novi.eindopdrachtbackend.model.Menu;
-import nl.novi.eindopdrachtbackend.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -11,12 +10,20 @@ import java.util.List;
  * This interface provides CRUD operations for the Menu entity.
  */
 public interface MenuRepository extends JpaRepository<Menu, Long> {
+
     /**
-     * Find all menus by the restaurant's ID.
+     * Finds all menus by the restaurant's ID.
      *
      * @param restaurantId the ID of the restaurant
-     * @return list of Menu entities
+     * @return a list of Menu entities associated with the specified restaurant
      */
     List<Menu> findByRestaurant_Id(Long restaurantId);
+
+    /**
+     * Finds all menus by name, ignoring case.
+     *
+     * @param name the name of the menu
+     * @return a list of Menu entities with names matching the specified name, ignoring case
+     */
     List<Menu> findByNameIgnoreCase(String name);
 }
