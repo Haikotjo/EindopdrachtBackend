@@ -17,6 +17,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * SecurityConfig is a configuration class that sets up security settings for the application.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
@@ -25,21 +28,44 @@ public class SecurityConfig {
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
+    /**
+     * Constructs a SecurityConfig with the specified JwtService and UserRepository.
+     *
+     * @param jwtService the JwtService used for handling JWT tokens
+     * @param userRepository the UserRepository used for retrieving user data
+     */
     public SecurityConfig(JwtService jwtService, UserRepository userRepository) {
         this.jwtService = jwtService;
         this.userRepository = userRepository;
     }
 
+    /**
+     * Configures a UserDetailsService bean.
+     *
+     * @return a UserDetailsService implementation
+     */
     @Bean
     public UserDetailsService userDetailsService() {
         return new MyUserDetailsService(this.userRepository);
     }
 
+    /**
+     * Configures a PasswordEncoder bean.
+     *
+     * @return a PasswordEncoder implementation
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configures an AuthenticationManager bean.
+     *
+     * @param http the HttpSecurity to configure
+     * @return the AuthenticationManager
+     * @throws Exception if an error occurs during configuration
+     */
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder =
@@ -48,6 +74,13 @@ public class SecurityConfig {
         return authenticationManagerBuilder.build();
     }
 
+    /**
+     * Configures the security filter chain.
+     *
+     * @param http the HttpSecurity to configure
+     * @return the configured SecurityFilterChain
+     * @throws Exception if an error occurs during configuration
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -164,7 +197,11 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "/orders/**").hasAuthority("ADMIN")
 
 
+                                // Enabling this line will allow ADMIN to access all endpoints.
 //                .requestMatchers("/**").hasAnyAuthority("ADMIN")
+
+                                // Add this line to disable security for all endpoints
+//                                .anyRequest().permitAll()
 
                                 .anyRequest().authenticated()
                 )
