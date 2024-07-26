@@ -89,9 +89,11 @@ public class SecurityConfig {
 
                                 // Ingredient entity endpoints
                                 .requestMatchers(HttpMethod.GET, "/ingredients/admin/**").hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/ingredients/owner/**").hasAnyAuthority("ADMIN", "OWNER")
+                                .requestMatchers(HttpMethod.GET, "/ingredients/owner").hasAnyAuthority("ADMIN", "OWNER")
+                                .requestMatchers(HttpMethod.GET, "/ingredients/owner/ingredient/**").hasAnyAuthority("ADMIN", "OWNER")
+
                                 .requestMatchers(HttpMethod.GET, "/ingredients/owner/menu_item/**").hasAnyAuthority("ADMIN", "OWNER")
-                                .requestMatchers(HttpMethod.POST, "/ingredients/admin/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/ingredients/admin/create").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/ingredients/owner/**").hasAnyAuthority("ADMIN", "OWNER")
                                 .requestMatchers(HttpMethod.PUT, "/ingredients/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/ingredients/owner/**").hasAnyAuthority("ADMIN", "OWNER")
@@ -102,10 +104,10 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/menu-items/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/menu-items/owner/**").hasAnyAuthority("ADMIN", "OWNER")
                                 .requestMatchers(HttpMethod.GET, "/menu-items/restaurant/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/menu-items/{id}").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/menu-items/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/menu-items/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/menu-items/owner/**").hasAnyAuthority("OWNER", "ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/menu-items/owner/**").hasAnyAuthority("OWNER", "ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/menu-items/owner/**").hasAuthority("OWNER")
                                 .requestMatchers(HttpMethod.PUT, "/menu-items/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/menu-items/owner/**").hasAnyAuthority("OWNER", "ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/menu-items/admin/**").hasAuthority("ADMIN")
@@ -118,7 +120,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/menus/menu/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/menus/search").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/menus/admin/**").hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.POST, "/menus/owner/**").hasAnyAuthority("OWNER", "ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/menus/owner").hasAnyAuthority("OWNER", "ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/menus/owner/**").hasAnyAuthority("OWNER", "ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/menus/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/menus/owner/**").hasAnyAuthority("OWNER", "ADMIN")
@@ -144,7 +146,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/users/search/by-role").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/{userId}/address").hasAnyAuthority("ADMIN", "CUSTOMER")
                                 .requestMatchers(HttpMethod.GET, "/{userId}/restaurants").hasAnyAuthority("ADMIN", "OWNER")
-                                .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/users/customer").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/users/owner").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                                 .requestMatchers(HttpMethod.PUT, "/users/admin/**").hasAuthority("ADMIN")
@@ -211,3 +213,94 @@ public class SecurityConfig {
         return http.build();
     }
 }
+
+
+
+
+
+//package nl.novi.eindopdrachtbackend.security;
+//
+//import nl.novi.eindopdrachtbackend.repository.UserRepository;
+//import org.springframework.context.annotation.Bean;
+//import org.springframework.context.annotation.Configuration;
+//import org.springframework.security.authentication.AuthenticationManager;
+//import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+//import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+//import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+//import org.springframework.security.config.http.SessionCreationPolicy;
+//import org.springframework.security.core.userdetails.UserDetailsService;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.web.SecurityFilterChain;
+//
+///**
+// * SecurityConfig is a configuration class that sets up security settings for the application.
+// */
+//@Configuration
+//@EnableWebSecurity
+//public class SecurityConfig {
+//
+//    private final UserRepository userRepository;
+//
+//    /**
+//     * Constructs a SecurityConfig with the specified UserRepository.
+//     *
+//     * @param userRepository the UserRepository used for retrieving user data
+//     */
+//    public SecurityConfig(UserRepository userRepository) {
+//        this.userRepository = userRepository;
+//    }
+//
+//    /**
+//     * Configures a UserDetailsService bean.
+//     *
+//     * @return a UserDetailsService implementation
+//     */
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        return new MyUserDetailsService(this.userRepository);
+//    }
+//
+//    /**
+//     * Configures a PasswordEncoder bean.
+//     *
+//     * @return a PasswordEncoder implementation
+//     */
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
+//
+//    /**
+//     * Configures an AuthenticationManager bean.
+//     *
+//     * @param http the HttpSecurity to configure
+//     * @return the AuthenticationManager
+//     * @throws Exception if an error occurs during configuration
+//     */
+//    @Bean
+//    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+//        AuthenticationManagerBuilder authenticationManagerBuilder =
+//                http.getSharedObject(AuthenticationManagerBuilder.class);
+//        authenticationManagerBuilder.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
+//        return authenticationManagerBuilder.build();
+//    }
+//
+//    /**
+//     * Configures the security filter chain to allow all requests without authentication.
+//     *
+//     * @param http the HttpSecurity to configure
+//     * @return the configured SecurityFilterChain
+//     * @throws Exception if an error occurs during configuration
+//     */
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http
+//                .csrf(csrf -> csrf.disable())
+//                .authorizeHttpRequests(authz -> authz
+//                        .anyRequest().permitAll() // Allow all requests without authentication
+//                )
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+//        return http.build();
+//    }
+//}

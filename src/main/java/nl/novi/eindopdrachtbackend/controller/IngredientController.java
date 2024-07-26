@@ -107,28 +107,6 @@ public class IngredientController {
     }
 
     /**
-     * Get a specific ingredient for the logged-in owner.
-     *
-     * @param id the ID of the ingredient
-     * @return ResponseEntity containing the IngredientDTO object
-     */
-    @GetMapping("/owner/ingredient/{id}")
-    @PreAuthorize("hasAuthority('OWNER')")
-    public ResponseEntity<IngredientDTO> getIngredientByIdForOwner(@PathVariable Long id) {
-        try {
-            String currentUserEmail = SecurityUtils.getCurrentAuthenticatedUserEmail();
-            User currentUser = userRepository.findByEmail(currentUserEmail)
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + currentUserEmail));
-            IngredientDTO ingredient = ingredientService.getIngredientByIdForOwner(id, currentUser.getId());
-            return new ResponseEntity<>(ingredient, HttpStatus.OK);
-        } catch (ResourceNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    /**
      * Create an ingredient for the logged-in owner.
      *
      * @param ingredientInputDTO the ingredient input data transfer object
