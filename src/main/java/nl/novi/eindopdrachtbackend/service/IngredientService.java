@@ -35,15 +35,6 @@ public interface IngredientService {
     List<IngredientDTO> getAllIngredientsForLoggedInOwner(String email);
 
     /**
-     * Get ingredient by ID for Owner (own ingredients only).
-     *
-     * @param id ingredient ID
-     * @param ownerId owner ID
-     * @return IngredientDTO for the specified ID and owner
-     */
-    IngredientDTO getIngredientByIdForOwner(Long id, Long ownerId);
-
-    /**
      * Get ingredient by ID for Admin.
      *
      * @param id ingredient ID

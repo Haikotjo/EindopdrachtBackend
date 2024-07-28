@@ -79,16 +79,6 @@ public class IngredientServiceImpl implements IngredientService {
      * {@inheritDoc}
      */
     @Override
-    public IngredientDTO getIngredientByIdForOwner(Long id, Long ownerId) {
-        Ingredient ingredient = ingredientRepository.findByIdAndOwner_Id(id, ownerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Ingredient not found for this id :: " + id + " and owner id :: " + ownerId));
-        return IngredientMapper.toOwnerIngredientDTO(ingredient);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public IngredientDTO createIngredientForOwner(IngredientInputDTO ingredientInputDTO, User owner) {
         Ingredient ingredient = IngredientMapper.toIngredient(ingredientInputDTO, owner);
         Ingredient savedIngredient = ingredientRepository.save(ingredient);

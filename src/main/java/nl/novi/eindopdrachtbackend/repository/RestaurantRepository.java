@@ -1,12 +1,17 @@
 package nl.novi.eindopdrachtbackend.repository;
 
 import nl.novi.eindopdrachtbackend.model.Restaurant;
+import nl.novi.eindopdrachtbackend.model.Role;
 import nl.novi.eindopdrachtbackend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository interface for {@link Restaurant} entities.
+ * This interface provides CRUD operations for the Restaurant entity.
+ */
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     /**
      * Find restaurants by name, case insensitive.

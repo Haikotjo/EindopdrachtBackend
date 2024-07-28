@@ -1,0 +1,48 @@
+@startuml
+actor Customer as User
+participant OrderController
+participant OrderService
+participant UserRepository
+participant RestaurantRepository
+participant DeliveryAddressRepository
+participant MenuItemRepository
+participant OrderRepository
+participant NotificationService
+
+User -> OrderController : createOrder(customerId, orderInputDTO)
+activate OrderController
+OrderController -> OrderService : createOrder(customerId, orderInputDTO)
+activate OrderService
+OrderService -> UserRepository : findById(customerId)
+activate UserRepository
+UserRepository --> OrderService : User
+deactivate UserRepository
+OrderService -> RestaurantRepository : findById(orderInputDTO.getRestaurantId())
+activate RestaurantRepository
+RestaurantRepository --> OrderService : Restaurant
+deactivate RestaurantRepository
+OrderService -> DeliveryAddressRepository : findById(orderInputDTO.getDeliveryAddressId())
+activate DeliveryAddressRepository
+DeliveryAddressRepository --> OrderService : DeliveryAddress
+deactivate DeliveryAddressRepository
+OrderService -> MenuItemRepository : findById(menuItemId) <<loop>>
+activate MenuItemRepository
+MenuItemRepository --> OrderService : MenuItem <<loop>>
+deactivate MenuItemRepository
+OrderService -> OrderRepository : save(order)
+activate OrderRepository
+OrderRepository --> OrderService : savedOrder
+deactivate OrderRepository
+OrderService -> NotificationService : notifyOwner(savedOrder)
+activate NotificationService
+NotificationService -> RestaurantRepository : getOwner(savedOrder.restaurant.id)
+activate RestaurantRepository
+RestaurantRepository --> NotificationService : Owner
+deactivate RestaurantRepository
+NotificationService -> Owner : newOrderNotification(savedOrder)
+deactivate NotificationService
+OrderService --> OrderController : OrderDTO
+deactivate OrderService
+OrderController --> User : orderConfirmation
+deactivate OrderController
+@enduml

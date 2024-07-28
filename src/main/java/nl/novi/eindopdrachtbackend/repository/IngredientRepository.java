@@ -2,6 +2,7 @@ package nl.novi.eindopdrachtbackend.repository;
 
 import nl.novi.eindopdrachtbackend.dto.IngredientDTO;
 import nl.novi.eindopdrachtbackend.model.Ingredient;
+import nl.novi.eindopdrachtbackend.model.Role;
 import nl.novi.eindopdrachtbackend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,7 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Repository interface for Ingredient entity.
+ * Repository interface for {@link Ingredient} entities.
+ * This interface provides CRUD operations for the Ingredient entity.
  */
 public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
 

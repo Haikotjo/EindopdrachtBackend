@@ -1,0 +1,97 @@
+@startuml
+
+class Ingredient {
+  +id : Long
+  +name : String
+  +quantity : int
+  +unit : String
+  +cost : double
+  +supplier : String
+  +expirationDate : LocalDate
+  +description : String
+}
+
+class MenuItem {
+  +id : Long
+  +name : String
+  +price : double
+  +description : String
+  +image : String
+}
+
+class Menu {
+  +id : Long
+  +name : String
+  +description : String
+}
+
+class Order {
+  +id : Long
+  +orderDateTime : LocalDateTime
+  +fulfilled : boolean
+}
+
+class Restaurant {
+  +id : Long
+  +name : String
+  +address : String
+  +phoneNumber : String
+}
+
+class User {
+  +id : Long
+  +name : String
+  +email : String
+  +password : String
+  +phoneNumber : String
+}
+
+
+class DeliveryAddress {
+  +id : Long
+  +street : String
+  +houseNumber : int
+  +city : String
+  +postcode : String
+  +country : String
+}
+
+class Notification {
+  +id : Long
+  +message : String
+}
+
+enum UserRole {
+  CUSTOMER
+  OWNER
+  ADMIN
+}
+
+class Role {
+  +rolename : UserRole
+}
+
+Ingredient "1" --> "*" MenuItem : contains
+MenuItem "*" --> "*" Menu : included in
+MenuItem "*" --> "*" Order : part of
+MenuItem "*" --> "1" Restaurant : offered by
+Menu "*" --> "1" Restaurant : offered by
+Restaurant "1" --> "1" User : owned by
+Restaurant "1" --> "*" Menu : offers
+Restaurant "1" --> "*" Order : processes
+Restaurant "1" --> "*" MenuItem : offers
+Ingredient "*" --> "1" User : owned by
+User "*" --> "*" Role : has
+Role "*" --> "*" User : belongs to
+User "1" --> "*" Order : places
+User "1" --> "1" DeliveryAddress : lives at
+User "1" --> "1" Restaurant : owns
+User "1" --> "*" Ingredient : owns
+Order "1" --> "1" User : placed by
+Order "1" --> "1" Restaurant : from
+Order "1" --> "1" DeliveryAddress : delivered to
+Order "*" --> "*" MenuItem : includes
+DeliveryAddress "1" --> "1" User : belongs to
+Notification "1" --> "1" User : for
+
+@enduml

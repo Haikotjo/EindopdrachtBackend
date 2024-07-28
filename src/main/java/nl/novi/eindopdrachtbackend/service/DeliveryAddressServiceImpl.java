@@ -1,5 +1,6 @@
 package nl.novi.eindopdrachtbackend.service;
 
+import jakarta.transaction.Transactional;
 import nl.novi.eindopdrachtbackend.dto.DeliveryAddressDTO;
 import nl.novi.eindopdrachtbackend.dto.DeliveryAddressInputDTO;
 import nl.novi.eindopdrachtbackend.dto.DeliveryAddressMapper;
@@ -154,7 +155,7 @@ public class DeliveryAddressServiceImpl implements DeliveryAddressService {
     /**
      * {@inheritDoc}
      */
-    @Override
+    @Transactional
     public void deleteDeliveryAddressForAdmin(Long id) {
         DeliveryAddress address = deliveryAddressRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Delivery address not found for this id :: " + id));
@@ -173,7 +174,7 @@ public class DeliveryAddressServiceImpl implements DeliveryAddressService {
     /**
      * {@inheritDoc}
      */
-    @Override
+    @Transactional
     public void deleteDeliveryAddressForCustomer(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + userId));
