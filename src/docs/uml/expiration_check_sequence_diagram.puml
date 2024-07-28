@@ -1,0 +1,29 @@
+@startuml
+participant SchedulerOrUser
+participant ExpirationDateCheckerService
+participant IngredientRepository
+participant UserRepository
+participant NotificationService
+
+SchedulerOrUser -> ExpirationDateCheckerService : checkExpirationDates()
+activate ExpirationDateCheckerService
+ExpirationDateCheckerService -> IngredientRepository : findAll()
+activate IngredientRepository
+IngredientRepository --> ExpirationDateCheckerService : List<Ingredient>
+deactivate IngredientRepository
+
+loop for each ingredient
+    ExpirationDateCheckerService -> ExpirationDateCheckerService : isExpiringSoon(ingredient)
+    alt ingredient is expiring soon
+        ExpirationDateCheckerService -> UserRepository : findById(ingredient.ownerId)
+        activate UserRepository
+        UserRepository --> ExpirationDateCheckerService : User
+        deactivate UserRepository
+        ExpirationDateCheckerService -> NotificationService : createNotification(notificationInputDTO, owner)
+        activate NotificationService
+        NotificationService --> ExpirationDateCheckerService : confirmation
+        deactivate NotificationService
+    end
+end
+deactivate ExpirationDateCheckerService
+@enduml
