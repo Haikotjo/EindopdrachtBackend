@@ -181,7 +181,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/notifications/admin/**").hasAuthority("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/notifications/owner/**").hasAuthority("OWNER")
 
-                                // Notification test endpoints
+                                //  Test endpoints
                                 .requestMatchers(HttpMethod.GET, "/test/check-expiration-dates").permitAll()
 
                                 // Order entity endpoints
@@ -215,7 +215,7 @@ public class SecurityConfig {
 }
 
 
-
+                                        //  Turn all above off and below on to disable security
 
 
 //package nl.novi.eindopdrachtbackend.security;
